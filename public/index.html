@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/styles.css">
+	<script src="js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/require.js"></script>
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                baseUrl: 'js'
+            };
+
+            var dependencies = [
+                'customActivity'
+            ];
+
+            require(config, dependencies);
+        })();
+    </script>
+    <style>
+        .hide{
+            display: none;
+        }
+    
+        .show{
+            display: block;
+        }
+
+        .inputStyle{
+            border-color: rgba(255, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<script type="text/javascript">
+    function checkADCode(){
+            var adCodeVal = $("#AdCode").val();
+            if(adCodeVal==""){
+                $("#adCodeInfo").addClass("show");
+                $("#adCodeInfo").removeClass("hide");
+                $("#AdCode").addClass("inputStyle");
+            }
+            else{
+                $("#adCodeInfo").addClass("hide");
+                $("#adCodeInfo").removeClass("show");
+                $("#AdCode").removeClass("inputStyle");
+            }
+        }
+
+        function checkAdPosition(){
+            var AdPositionVal = $("#AdPosition").val();
+            if(AdPositionVal==""){
+                $("#AdPositionInfo").addClass("show");
+                $("#AdPositionInfo").removeClass("hide");
+                $("#AdPosition").addClass("inputStyle");
+            }
+            else{
+                $("#AdPositionInfo").addClass("hide");
+                $("#AdPositionInfo").removeClass("show");
+                $("#AdPosition").removeClass("inputStyle");
+            }
+        }
+</script>
+<body>
+    <div id="step1" class="step">
+        <h1>Targeted Ad Allocation</h1>
+        <pre>
+    Instructions:
+    1.  *Compulsory input: (1) Targeted Ad Code (2) Ad Position
+    2.  If no Targeted Ad Start Date is specified, Targeted Ad Start Date will be considered as current datetime (UTC+8)
+    3.  To set Targeted Ad End Date, please either specify a fixed date, or input Duration and Targeted Ad End Date will be considered as Targeted Ad Start Date + Duration
+    4.  If Targeted Ad End Date and Duration are both specified, Targeted Ad End Date will be considered as Targeted Ad Start Date + Duration
+        </pre>
+        <h3>Define the following targeted ad details for campaign execution</h3>
+        Targeted Ad Code<font color="#FF0000">*</font>
+        <input id="AdCode" type="text" name="AdCode" onblur="checkADCode()" /><br/>
+        <span id="adCodeInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
+        Targeted Ad Start Date
+        <input id="AdStartDate" type="datetime-local" name="AdStartDate" /><br/>
+        Targeted Ad End Date
+        <input id="AdEndDate" type="datetime-local" name="AdEndDate" /><br/>
+        Targeted Ad Duration
+        <input id="Duration" type="number" name="Duration" /><br/>
+        Stores Location Group
+        <input id="LocationGroup" type="text" name="LocationGroup" /><br/>
+        Ad Position<font color="#FF0000">*</font>
+        <input id="AdPosition" type="text" name="AdPosition" onblur="checkAdPosition()" /><br/>
+        <span id="AdPositionInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
+        Ranked Value
+        <input id="RankedValue" type="text" name="RankedValue" /><br/>
+
+    </div>
+</body>
+
+</html>
