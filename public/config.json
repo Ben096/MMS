@@ -21,7 +21,7 @@
                 }              
       ],
           "outArguments": [],
-          "url": "https://caoffer.herokuapp.com/journeybuilder/execute",
+          "url": "https://caoffer.herokuapp.com/offer/execute",
            "verb": "POST",
             "body": "",
             "header": "",
@@ -34,24 +34,24 @@
     "configurationArguments": {
       "applicationExtensionKey": "95680b56-7b64-4eaf-95c3-23c06adba95c",
       "save": {
-        "url": "https://caoffer.herokuapp.com/journeybuilder/save",
+        "url": "https://caoffer.herokuapp.com/offer/save",
         "verb": "POST",
         "customerKey":"31283535-3541-48c5-8336-a748b4af9e80",
         "useJwt": true
        },
        "publish": {
-        "url": "https://caoffer.herokuapp.com/journeybuilder/publish",
+        "url": "https://caoffer.herokuapp.com/offer/publish",
         "verb": "POST",
         "customerKey":"31283535-3541-48c5-8336-a748b4af9e80",
         "useJwt": true
        },
       "stop": {
-        "url": "https://caoffer.herokuapp.com/journeybuilder/stop",
+        "url": "https://caoffer.herokuapp.com/offer/stop",
            "verb": "POST",
         "useJwt": false
       },
       "validate": {
-        "url": "https://caoffer.herokuapp.com/journeybuilder/validate",
+        "url": "https://caoffer.herokuapp.com/offer/validate",
         "verb": "POST",
         "useJwt": false
       }

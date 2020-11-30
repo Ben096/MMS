@@ -40,15 +40,15 @@ app.post('/logout', routes.logout );
 // } );
 
 // Custom Hello World Activity Routes
-app.post('/journeybuilder/save/', activity.save );
+app.post('/offer/save/', activity.save );
 // app.post('/journeybuilder/save/', function(res,req){
 // 	console.log('save app.js');
 // 	alert('save app');
 // 	res.send(200,'save app.js');
 // });
-app.post('/journeybuilder/validate/', activity.validate );
-app.post('/journeybuilder/publish/', activity.publish );
-app.post('/journeybuilder/execute/', activity.execute );
+app.post('/offer/validate/', activity.validate );
+app.post('/offer/publish/', activity.publish );
+app.post('/offer/execute/', activity.execute );
 
 //Toknization
 app.post('/sfmctokenization/resolve/', activity.resolveToken );
