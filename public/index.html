@@ -38,32 +38,18 @@
 </head>
 <script type="text/javascript">
     function checkADCode(){
-            var adCodeVal = $("#AdCode").val();
-            if(adCodeVal==""){
-                $("#adCodeInfo").addClass("show");
-                $("#adCodeInfo").removeClass("hide");
-                $("#AdCode").addClass("inputStyle");
-            }
-            else{
-                $("#adCodeInfo").addClass("hide");
-                $("#adCodeInfo").removeClass("show");
-                $("#AdCode").removeClass("inputStyle");
-            }
+        var OfferIDVal = $("#OfferID").val();
+        if(OfferIDVal==""){
+            $("#OfferIDInfo").addClass("show");
+            $("#OfferIDInfo").removeClass("hide");
+            $("#OfferID").addClass("inputStyle");
         }
-
-        function checkAdPosition(){
-            var AdPositionVal = $("#AdPosition").val();
-            if(AdPositionVal==""){
-                $("#AdPositionInfo").addClass("show");
-                $("#AdPositionInfo").removeClass("hide");
-                $("#AdPosition").addClass("inputStyle");
-            }
-            else{
-                $("#AdPositionInfo").addClass("hide");
-                $("#AdPositionInfo").removeClass("show");
-                $("#AdPosition").removeClass("inputStyle");
-            }
+        else{
+            $("#OfferIDInfo").addClass("hide");
+            $("#OfferIDInfo").removeClass("show");
+            $("#OfferID").removeClass("inputStyle");
         }
+    }
 </script>
 <body>
     <div id="step1" class="step">
@@ -77,22 +63,14 @@
         </pre>
         <h3>Define the following targeted ad details for campaign execution</h3>
         Targeted Ad Code<font color="#FF0000">*</font>
-        <input id="AdCode" type="text" name="AdCode" onblur="checkADCode()" /><br/>
-        <span id="adCodeInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
+        <input id="OfferID" type="text" name="Offer ID" onblur="checkADCode()" /><br/>
+        <span id="OfferIDInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
         Targeted Ad Start Date
-        <input id="AdStartDate" type="datetime-local" name="AdStartDate" /><br/>
+        <input id="OfferStartDate" type="datetime-local" name="Offer Start Date" /><br/>
         Targeted Ad End Date
-        <input id="AdEndDate" type="datetime-local" name="AdEndDate" /><br/>
-        Targeted Ad Duration
+        <input id="OfferExpiryDate" type="datetime-local" name="Offer Expiry Date" /><br/>
+        Duration (in terms of Day)
         <input id="Duration" type="number" name="Duration" /><br/>
-        Stores Location Group
-        <input id="LocationGroup" type="text" name="LocationGroup" /><br/>
-        Ad Position<font color="#FF0000">*</font>
-        <input id="AdPosition" type="text" name="AdPosition" onblur="checkAdPosition()" /><br/>
-        <span id="AdPositionInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
-        Ranked Value
-        <input id="RankedValue" type="text" name="RankedValue" /><br/>
-
     </div>
 </body>
 
