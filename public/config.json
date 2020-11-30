@@ -8,8 +8,8 @@
     "type": "REST",
     "lang": {
         "en-US": {
-            "name": "Ben CA",
-          "description": "DTT custom Journey Builder activity POC",
+            "name": "Offer",
+          "description": "Offer Custom Activity",
           "step1Label": "Configure Activity"
         }
     },
@@ -21,7 +21,7 @@
                 }              
       ],
           "outArguments": [],
-          "url": "https://benca.herokuapp.com/journeybuilder/execute",
+          "url": "https://caoffer.herokuapp.com/journeybuilder/execute",
            "verb": "POST",
             "body": "",
             "header": "",
@@ -32,26 +32,26 @@
         }
     },
     "configurationArguments": {
-      "applicationExtensionKey": "49485e52-b26e-4610-afb6-4c4259be4180",
+      "applicationExtensionKey": "95680b56-7b64-4eaf-95c3-23c06adba95c",
       "save": {
-        "url": "https://benca.herokuapp.com/journeybuilder/save",
+        "url": "https://caoffer.herokuapp.com/journeybuilder/save",
         "verb": "POST",
         "customerKey":"31283535-3541-48c5-8336-a748b4af9e80",
         "useJwt": true
        },
        "publish": {
-        "url": "https://benca.herokuapp.com/journeybuilder/publish",
+        "url": "https://caoffer.herokuapp.com/journeybuilder/publish",
         "verb": "POST",
         "customerKey":"31283535-3541-48c5-8336-a748b4af9e80",
         "useJwt": true
        },
       "stop": {
-        "url": "https://benca.herokuapp.com/journeybuilder/stop",
+        "url": "https://caoffer.herokuapp.com/journeybuilder/stop",
            "verb": "POST",
         "useJwt": false
       },
       "validate": {
-        "url": "https://benca.herokuapp.com/journeybuilder/validate",
+        "url": "https://caoffer.herokuapp.com/journeybuilder/validate",
         "verb": "POST",
         "useJwt": false
       }
