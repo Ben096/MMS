@@ -207,7 +207,7 @@ define([
         payload['metaData'].isConfigured = true;
 
         console.log('payload=='+payload);
-        console.log('payload attribute=='+payload['arguments'].execute.inArguments);
+        console.log('payload attribute=='+JSON.stringify(payload['arguments'].execute.inArguments));
         connection.trigger('updateActivity', payload);
     }
 
