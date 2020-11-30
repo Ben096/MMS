@@ -53,22 +53,24 @@
 </script>
 <body>
     <div id="step1" class="step">
-        <h1>Targeted Ad Allocation</h1>
+        <h1>Offer Allocation</h1>
+        <h3>Define the following offer details for campaign execution.</h3>
         <pre>
     Instructions:
-    1.  *Compulsory input: (1) Targeted Ad Code (2) Ad Position
-    2.  If no Targeted Ad Start Date is specified, Targeted Ad Start Date will be considered as current datetime (UTC+8)
-    3.  To set Targeted Ad End Date, please either specify a fixed date, or input Duration and Targeted Ad End Date will be considered as Targeted Ad Start Date + Duration
-    4.  If Targeted Ad End Date and Duration are both specified, Targeted Ad End Date will be considered as Targeted Ad Start Date + Duration
+    1.  *Compulsory input: Offer ID
+    2.  If no Offer Start Date is specified, Offer Start Date will be considered as current datetime (UTC+8)
+    3.  To set Offer Expiry Date, please either specify a fixed date, or input Duration and Offer Expiry Date will be considered as Offer Start Date + Duration.
+    4.  If Offer Expiry Date and Duration are both specified, Offer Expiry Date will be considered as Offer Start Date + Duration
+
         </pre>
-        <h3>Define the following targeted ad details for campaign execution</h3>
-        Targeted Ad Code<font color="#FF0000">*</font>
-        <input id="OfferID" type="text" name="Offer ID" onblur="checkADCode()" /><br/>
+
+        Offer ID<font color="#FF0000">*</font>
+        <input id="OfferID" type="text" name="OfferID" onblur="checkADCode()" /><br/>
         <span id="OfferIDInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
-        Targeted Ad Start Date
-        <input id="OfferStartDate" type="datetime-local" name="Offer Start Date" /><br/>
-        Targeted Ad End Date
-        <input id="OfferExpiryDate" type="datetime-local" name="Offer Expiry Date" /><br/>
+        Offer Start Date
+        <input id="OfferStartDate" type="datetime-local" name="OfferStartDate" /><br/>
+        Offer Expiry Date
+        <input id="OfferExpiryDate" type="datetime-local" name="OfferExpiryDate" /><br/>
         Duration (in terms of Day)
         <input id="Duration" type="number" name="Duration" /><br/>
     </div>
