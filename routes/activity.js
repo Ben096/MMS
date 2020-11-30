@@ -56,20 +56,6 @@ function logData(req) {
     console.log("originalUrl: " + req.originalUrl);
 	console.log("headers inspect: " + util.inspect(req.headers) );
 	console.log("headers stringify: " + JSON.stringify( req.headers  ));
-	/*
-	var buf = Buffer.from(util.inspect(req.body));  
-	console.log("body no inspect: " + req.body);	
-	console.log("body buffer: " + buf.toString());
-	
-	var j2 = buf.toJSON();
-	console.log("body json: " + JSON.stringify(j2) );
-	
-	var j3 = buf.toJSON();
-	console.log("body json: " + JSON.stringify(buf.toString()) );
-	*/
-	//let j1 = JSON.stringify(buf);
-	//console.log("body json: " + j1 );
-	
 }
 
 
@@ -148,15 +134,3 @@ exports.validate = function (req, res) {
 exports.resolveToken = function (req, res) {
  
 };
-/*
-function resolveArray(type, tokenArray) {
-	client.connect();
-	//var qry = 'CALL insert_activity_log ( \'HourlyBatch\' ,  \'JBInbound\',\''+ pl+'\',\'Log\' )';
-	client.func( 'resolve_token_batch',[type, tokenArray] ,(err, res) => {
-	  if (err) throw err;
-	  for (let row of res.rows) {
-		console.log(JSON.stringify(row));
-	  }
-	  client.end();
-	});
-}*/

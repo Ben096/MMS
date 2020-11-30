@@ -9,10 +9,6 @@ define([
     var authTokens = {};
     var payload = {};
 
-
-	
-	var AdCode = '';
-
     $(window).ready(onRender);
 
     connection.on('initActivity', initialize);
@@ -56,13 +52,10 @@ define([
         console.log(inArguments);
 
         var map = {};
-        map.ADCode = '';
+        map.OfferID = '';
         map.duration='';
         map.endDate = '';
         map.startDate = '';
-        map.LocationGroup = '';
-        map.AdPosition = '';
-        map.RankedValue = '';
         //init UI data form
         $.each(inArguments, function (index, inArgument) {
             $.each(inArgument, function (key, val) {
@@ -74,32 +67,20 @@ define([
                 else if(key=='endDate' && val!=""){
                     map.endDate = val;
                 }
-                else if(key=='ADCode' && val!=""){
-                    map.ADCode = val;
+                else if(key=='OfferID' && val!=""){
+                    map.OfferID = val;
                 }
                 else if(key=='Duration' && val!=""){
                     map.duration = val;
-                }
-                else if(key=='LocationGroup' && val!=""){
-                    map.LocationGroup = val;
-                }
-                else if(key=='AdPosition' && val!=""){
-                    map.AdPosition = val;
-                }
-                else if(key=='RankedValue' && val!=""){
-                    map.RankedValue = val;
                 }
             });
         });
 
         //init 
-        $('#AdCode').val(map.ADCode);
+        $('#OfferID').val(map.OfferID);
         $('#Duration').val(map.duration);
-        $('#AdEndDate').val(map.endDate);
-        $('#AdStartDate').val(map.startDate);
-        $('#LocationGroup').val(map.LocationGroup);
-        $('#AdPosition').val(map.AdPosition);
-        $('#RankedValue').val(map.RankedValue);
+        $('#OfferExpiryDate').val(map.endDate);
+        $('#OfferStartDate').val(map.startDate);
 
        console.log('initActivity function');
     }
@@ -153,83 +134,49 @@ define([
         var postcardTextValue = $('#postcard-text').val();
 
         //retrieve the input field value
-        var AdC = $('#AdCode').val();
-        var AdStartDate = $('#AdStartDate').val();
-        var LocationGroup = $('#LocationGroup').val();
-        var AdPosition = $('#AdPosition').val();
-        var RankedValue = $('#RankedValue').val();
+        var OfferID = $('#OfferID').val();
+        var OfferStartDate = $('#OfferStartDate').val();
+
         //check required field
-        if(AdPosition==""){
-            $("#AdPositionInfo").addClass("show");
-            $("#AdPositionInfo").removeClass("hide");
-            $("#AdPosition").addClass("inputStyle");
-            return;
-        }
-        if(AdC==""){
-            $("#adCodeInfo").addClass("show");
-            $("#adCodeInfo").removeClass("hide");
-            $("#AdCode").addClass("inputStyle");
+        if(OfferID==""){
+            $("#OfferIDInfo").addClass("show");
+            $("#OfferIDInfo").removeClass("hide");
+            $("#OfferID").addClass("inputStyle");
             return;
         }
          
         //CA UI Input value
-        payload['arguments'].execute.inArguments.push({"ADCode": AdC });
+        payload['arguments'].execute.inArguments.push({"OfferID": OfferID });
 
-        if(AdStartDate==''){
+        if(OfferStartDate==''){
             console.log('set startDate to today');
             var today = new Date();
-            AdStartDate = dateFormat(today);
-            //convert local dateTime
-            // var addHour = today.setHours(today.getHours() + 14);
-            // AdStartDate = new Date(addHour);
+            OfferStartDate = dateFormat(today);
         }
-        payload['arguments'].execute.inArguments.push({"startDate": AdStartDate });
-        // else{
-        //     var targetDate = new Date(AdStartDate);
-        //     //convert local dateTime
-        //     var addHour = targetDate.setHours(targetDate.getHours() + 14);
-        //     AdStartDate = new Date(addHour);
-        // }
+        payload['arguments'].execute.inArguments.push({"OfferStartDate": OfferStartDate });
 
 
-        var AdEndDate = $('#AdEndDate').val();
+
+        var OfferExpiryDate = $('#OfferExpiryDate').val();
         var duration = $('#Duration').val();
         
         if(duration != ''){
             console.log("se enddate with duration");
-            var startDate = new Date(AdStartDate);
+            var startDate = new Date(OfferStartDate);
             var i = parseInt(duration);
             console.log("i==>"+i);
             var endDate = +startDate + 1000*60*60*24*i;
             console.log("duration enddate==>"+new Date(endDate));
-            AdEndDate = dateFormat(new Date(endDate));
+            OfferExpiryDate = dateFormat(new Date(endDate));
             payload['arguments'].execute.inArguments.push({"Duration": duration });
         }
-        else if(AdEndDate==''){
+        else if(OfferExpiryDate==''){
             console.log('set endDate to today');
             var today = new Date();
-            AdEndDate = dateFormat(today);
-            // //convert local dateTime
-            // var addHour = today.setHours(today.getHours() + 14);
-            // AdEndDate = new Date(addHour);
+            OfferExpiryDate = dateFormat(today);
+
         }
-        payload['arguments'].execute.inArguments.push({"endDate": AdEndDate });
-        // else{
-        //     var targetDate = new Date(AdEndDate);
-        //     //convert local dateTime
-        //     var addHour = targetDate.setHours(targetDate.getHours() + 14);
-        //     AdEndDate = new Date(addHour);
-        // }
-        
-        if(LocationGroup != ''){
-            payload['arguments'].execute.inArguments.push({"LocationGroup": LocationGroup });
-        }
-        if(AdPosition != ''){
-            payload['arguments'].execute.inArguments.push({"AdPosition": AdPosition });
-        }
-        if(RankedValue != ''){
-            payload['arguments'].execute.inArguments.push({"RankedValue": RankedValue });
-        }
+        payload['arguments'].execute.inArguments.push({"OfferExpiryDate": OfferExpiryDate });
 		
 		//
 		//payload['arguments'].execute.inArguments.push({"DEName": "{{Event." + eventDefinitionKey+".name}}" });
