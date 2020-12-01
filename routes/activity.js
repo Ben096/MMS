@@ -69,7 +69,7 @@ function retrieveDataFromDE(){
                         for (const property of result.Properties.Property) {
                             var nameStr= property.Name;
                             var valueStr = property.Value;
-                            dataResult.nameStr = valueStr
+                            dataResult.nameStr = valueStr;
                         }
                     }
                 }
@@ -235,21 +235,21 @@ exports.resolveToken = function (req, res) {
 };
 
 function setScheduleJob(rule,retrieveDataFromDB){
-    console.log("start scheduleJob");
-    var j = schedule.scheduleJob(rule,function(){
-        console.log("schedule Job Starting");
-        console.log("retrySchedule==>"+scheduleJobRetry);
-        if(scheduleJobRetry>=3){
-            console.log("stop schedule");
-            console.log("stop database server connection");
-            j.cancel();
-        }
-        else{
-            retrieveDataFromDE().then(function(){
-                retrieveDataFromDB();
-            });
-        }
-    });
+    // console.log("start scheduleJob");
+    // var j = schedule.scheduleJob(rule,function(){
+    //     console.log("schedule Job Starting");
+    //     console.log("retrySchedule==>"+scheduleJobRetry);
+    //     if(scheduleJobRetry>=3){
+    //         console.log("stop schedule");
+    //         console.log("stop database server connection");
+    //         j.cancel();
+    //     }
+    //     else{
+    //         retrieveDataFromDE().then(function(){
+    //             retrieveDataFromDB();
+    //         });
+    //     }
+    // });
 }
 
 function retrieveDataFromDB(){
