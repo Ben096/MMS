@@ -5,7 +5,6 @@ var util = require('util');
 const Path = require('path');
 const JWT = require(Path.join(__dirname, '..', 'lib', 'jwtDecoder.js'));
 var util = require('util');
-var http = require('https');
 //var sync = require('synchronize');
 
 // const { Client } = require('pg');
@@ -100,7 +99,6 @@ exports.execute = function (req, res) {
             logData(req);
 			console.log( JSON.stringify(  decodedArgs  ));
 			console.log( JSON.stringify(  decoded  ));
-			insertActivityLog(JSON.stringify(  decodedArgs  ));
             res.send(200, 'Execute');
         } else {
             console.error('inArguments invalid.');
