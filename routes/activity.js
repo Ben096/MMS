@@ -38,39 +38,43 @@ var journeyID = '';
 var dataResult = {};
 
 function retrieveDataFromDE(){
-    //retrieve from DataExtension
-    const deRow = client.dataExtensionRow({
-            //dataExtension which you want to retrieve from
-            Name: 'OfferDemo',
-            //field name
-            props: ['offerID', 'item1','item2'],
-            filter: {
-                leftOperand: 'offerID',
-                //operator includes : equals, notEquals, greaterThan, lessThan
-                operator: 'equals',
-                rightOperand: offerID
-            }
-            // to return all rows, delete the filter property
-    });
+    return new Promise((resolve, reject) => {
+        //retrieve from DataExtension
+        const deRow = client.dataExtensionRow({
+                //dataExtension which you want to retrieve from
+                Name: 'OfferDemo',
+                //field name
+                props: ['offerID', 'item1','item2'],
+                filter: {
+                    leftOperand: 'offerID',
+                    //operator includes : equals, notEquals, greaterThan, lessThan
+                    operator: 'equals',
+                    rightOperand: offerID
+                }
+                // to return all rows, delete the filter property
+        });
 
-    deRow.get((err, res) => {
-        if (err) {
-            console.error(err.message);
-        } 
-        else {
-            var temp = res.body.Results;
-            if(!temp==""){
-                for (const result of res.body.Results) {
-                    for (const property of result.Properties.Property) {
-                        var nameStr= property.Name;
-                        var valueStr = property.Value;
-                        dataResult.nameStr = valueStr
+        deRow.get((err, res) => {
+            if (err) {
+                console.error(err.message);
+            } 
+            else {
+                var temp = res.body.Results;
+                if(!temp==""){
+                    for (const result of res.body.Results) {
+                        for (const property of result.Properties.Property) {
+                            var nameStr= property.Name;
+                            var valueStr = property.Value;
+                            dataResult.nameStr = valueStr
+                        }
                     }
                 }
             }
-        }
+        });
+        console.log("return dataResult==>"+JSON.stringify(dataResult));
+        resolve();
     });
-    console.log("return dataResult==>"+JSON.stringify(dataResult));
+    
 }
 
 
