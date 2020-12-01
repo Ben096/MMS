@@ -61,10 +61,10 @@ define([
             $.each(inArgument, function (key, val) {
                 console.log("customActivity key==>"+key);
                 console.log("customActivity val==>"+val);
-                if(key=='startDate' && val!=""){
+                if(key=='OfferStartDate' && val!=""){
                     map.startDate = val;
                 }
-                else if(key=='endDate' && val!=""){
+                else if(key=='OfferExpiryDate' && val!=""){
                     map.endDate = val;
                 }
                 else if(key=='OfferID' && val!=""){
