@@ -66,6 +66,8 @@ function retrieveDataFromDE(){
                 if(!temp==""){
                     for (const result of res.body.Results) {
                         for (const property of result.Properties.Property) {
+                            console.log("retrieve name==>"+property.Name);
+                            console.log("retrieve value==>"+property.Value);
                             var nameStr= property.Name;
                             var valueStr = property.Value;
                             dataResult.nameStr = valueStr
