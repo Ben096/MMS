@@ -5,7 +5,6 @@ var util = require('util');
 const Path = require('path');
 const JWT = require(Path.join(__dirname, '..', 'lib', 'jwtDecoder.js'));
 var util = require('util');
-// var schedule = require('node-schedule');
 
 const ET_Client     = require('sfmc-fuelsdk-node');
 const clientId      = "rnriw78wwxfrpdw9ss37wown";
@@ -42,7 +41,6 @@ var scheduleJobRetry=0;
 function retrieveDataFromDE(){
 
     return new Promise((resolve, reject)=>{
-        console.log("retrieveDataFromDE function");
         //retrieve from DataExtension
         const deRow = client.dataExtensionRow({
                 //dataExtension which you want to retrieve from
@@ -69,7 +67,7 @@ function retrieveDataFromDE(){
                         for (const property of result.Properties.Property) {
                             var nameStr= property.Name;
                             var valueStr = property.Value;
-                            dataResult.nameStr = valueStr;
+                            dataResult.nameStr = valueStr
                         }
                     }
                 }
@@ -208,13 +206,6 @@ exports.execute = function (req, res) {
  * POST Handler for /publish/ route of Activity.
  */
 exports.publish = function (req, res) {
-    console.log('publish module');
-    //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
-    var rule = '0/1 * * * * *';
-    console.log("rule==>"+rule);
-    //reset 
-    scheduleJobRetry = 0;
-    setScheduleJob(rule,retrieveDataFromDB);
     
     res.send(200, 'Publish');
 };
@@ -234,23 +225,7 @@ exports.resolveToken = function (req, res) {
  
 };
 
-function setScheduleJob(rule,retrieveDataFromDB){
-    // console.log("start scheduleJob");
-    // var j = schedule.scheduleJob(rule,function(){
-    //     console.log("schedule Job Starting");
-    //     console.log("retrySchedule==>"+scheduleJobRetry);
-    //     if(scheduleJobRetry>=3){
-    //         console.log("stop schedule");
-    //         console.log("stop database server connection");
-    //         j.cancel();
-    //     }
-    //     else{
-    //         retrieveDataFromDE().then(function(){
-    //             retrieveDataFromDB();
-    //         });
-    //     }
-    // });
-}
+
 
 function retrieveDataFromDB(){
     console.log("retrieveDataFromDB function");
