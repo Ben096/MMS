@@ -5,7 +5,7 @@ var util = require('util');
 const Path = require('path');
 const JWT = require(Path.join(__dirname, '..', 'lib', 'jwtDecoder.js'));
 var util = require('util');
-var schedule = require('node-schedule');
+// var schedule = require('node-schedule');
 
 const ET_Client     = require('sfmc-fuelsdk-node');
 const clientId      = "rnriw78wwxfrpdw9ss37wown";
