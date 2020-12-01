@@ -40,6 +40,7 @@ var dataResult = {};
 var scheduleJobRetry=0;
 
 function retrieveDataFromDE(){
+    console.log("offerIDTarget==>"+offerIDTarget);
     return new Promise((resolve, reject) => {
         //retrieve from DataExtension
         const deRow = client.dataExtensionRow({
@@ -173,6 +174,7 @@ exports.execute = function (req, res) {
                 if(offerID!=null){
                     map.offerID = offerID;
                     offerIDTarget=offerID;
+                    console.log("execute offerIDTarget==>"+offerIDTarget);
                 }
                 // else if(startDate!=null){
                 //     map.startDate = startDate;
