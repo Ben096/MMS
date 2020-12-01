@@ -41,6 +41,7 @@ var scheduleJobRetry=0;
 
 function retrieveDataFromDE(){
     console.log("offerIDTarget==>"+offerIDTarget);
+    console.log("start retrieveDataFromDE");
     return new Promise((resolve, reject) => {
         //retrieve from DataExtension
         const deRow = client.dataExtensionRow({
@@ -66,8 +67,6 @@ function retrieveDataFromDE(){
                 if(!temp==""){
                     for (const result of res.body.Results) {
                         for (const property of result.Properties.Property) {
-                            console.log("retrieve name==>"+property.Name);
-                            console.log("retrieve value==>"+property.Value);
                             var nameStr= property.Name;
                             var valueStr = property.Value;
                             dataResult.nameStr = valueStr
@@ -76,7 +75,6 @@ function retrieveDataFromDE(){
                 }
             }
         });
-        console.log("return dataResult==>"+JSON.stringify(dataResult));
         resolve();
     });
     
@@ -133,7 +131,6 @@ function logData(req) {
 exports.edit = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
-    logData(req);
     res.send(200, 'Edit');
 };
 
@@ -143,7 +140,6 @@ exports.edit = function (req, res) {
 exports.save = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
-    logData(req);
     res.send(200, 'Save');
 };
 
