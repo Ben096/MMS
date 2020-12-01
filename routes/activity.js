@@ -5,6 +5,7 @@ var util = require('util');
 const Path = require('path');
 const JWT = require(Path.join(__dirname, '..', 'lib', 'jwtDecoder.js'));
 var util = require('util');
+var schedule = require('node-schedule');
 
 const ET_Client     = require('sfmc-fuelsdk-node');
 const clientId      = "rnriw78wwxfrpdw9ss37wown";
@@ -36,6 +37,7 @@ const client = new ET_Client(
 var offerID = "";
 var journeyID = '';
 var dataResult = {};
+var scheduleJobRetry=0;
 
 function retrieveDataFromDE(){
     return new Promise((resolve, reject) => {
@@ -205,6 +207,19 @@ exports.execute = function (req, res) {
  * POST Handler for /publish/ route of Activity.
  */
 exports.publish = function (req, res) {
+    console.log('publish module');
+    var nowDate = new Date();
+    var m = nowDate.getMonth() + 1;
+    var d = nowDate.getDate();
+    var h = nowDate.getHours();
+    var f = nowDate.getMinutes();
+    var mm = parseInt(f)+5;
+    //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
+    var rule = '0 0/1 * * * *';
+    console.log("rule==>"+rule);
+    //reset 
+    scheduleJobRetry = 0;
+    setScheduleJob(rule,retrieveDataFromDB);
     res.send(200, 'Publish');
 };
 
@@ -222,3 +237,25 @@ exports.validate = function (req, res) {
 exports.resolveToken = function (req, res) {
  
 };
+
+function setScheduleJob(rule,retrieveDataFromDB){
+    console.log("start scheduleJob");
+    var j = schedule.scheduleJob(rule,function(){
+        console.log("schedule Job Starting");
+        console.log("retrySchedule==>"+scheduleJobRetry);
+        if(scheduleJobRetry>=3){
+            console.log("stop schedule");
+            console.log("stop database server connection");
+            j.cancel();
+        }
+        else{
+            retrieveDataFromDE().then(function(){
+                retrieveDataFromDB();
+            });
+        }
+    });
+}
+
+function retrieveDataFromDB(){
+    console.log("retrieveDataFromDB function");
+}
