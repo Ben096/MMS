@@ -34,7 +34,7 @@ const client = new ET_Client(
   }
 );
 
-var offerID = "";
+var offerIDTarget = "";
 var journeyID = '';
 var dataResult = {};
 var scheduleJobRetry=0;
@@ -51,7 +51,7 @@ function retrieveDataFromDE(){
                     leftOperand: 'offerID',
                     //operator includes : equals, notEquals, greaterThan, lessThan
                     operator: 'equals',
-                    rightOperand: offerID
+                    rightOperand: offerIDTarget
                 }
                 // to return all rows, delete the filter property
         });
@@ -172,19 +172,20 @@ exports.execute = function (req, res) {
                 var offerID = decoded.inArguments[i].OfferID;
                 if(offerID!=null){
                     map.offerID = offerID;
+                    offerIDTarget=offerID;
                 }
-                else if(startDate!=null){
-                    map.startDate = startDate;
-                }
-                else if(endDate!=null){
-                    map.endDate = endDate;
-                }
-                else if(name != null){
-                    map.name = name;
-                }
-                else if(Email!=null){
-                    map.Email = Email;
-                }
+                // else if(startDate!=null){
+                //     map.startDate = startDate;
+                // }
+                // else if(endDate!=null){
+                //     map.endDate = endDate;
+                // }
+                // else if(name != null){
+                //     map.name = name;
+                // }
+                // else if(Email!=null){
+                //     map.Email = Email;
+                // }
             }
             var isEmpty = JSON.stringify(map)=="{}";
             if(isEmpty!=true){
