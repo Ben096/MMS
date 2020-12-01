@@ -58,7 +58,7 @@ function retrieveDataFromDE(){
 
         deRow.get((err, res) => {
             if (err) {
-                console.error(err.message);
+                console.error("retrieve error===>"+err.message);
             } 
             else {
                 var temp = res.body.Results;
@@ -154,7 +154,7 @@ exports.execute = function (req, res) {
 
         // verification error -> unauthorized request
         if (err) {
-            console.error(err);			
+            console.error("JWT error===>"+err);			
             return res.status(401).end();
         }
 
