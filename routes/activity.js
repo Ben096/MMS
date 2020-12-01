@@ -215,7 +215,7 @@ exports.publish = function (req, res) {
     var f = nowDate.getMinutes();
     var mm = parseInt(f)+5;
     //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
-    var rule = '0 35 17 01 12 2020';
+    var rule = '0 0/1 * * * *';
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
@@ -257,5 +257,6 @@ function setScheduleJob(rule,retrieveDataFromDB){
 }
 
 function retrieveDataFromDB(){
+    scheduleJobRetry++;
     console.log("retrieveDataFromDB function");
 }
