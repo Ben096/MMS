@@ -61,6 +61,7 @@ function retrieveDataFromDE(){
         deRow.get((err, res) => {
             if (err) {
                 console.error("retrieve error===>"+err.message);
+                reject();
             } 
             else {
                 var temp = res.body.Results;
@@ -72,13 +73,13 @@ function retrieveDataFromDE(){
                             dataResult.nameStr = valueStr
                         }
                     }
-                    resolve();
                 }
                 else{
                     //stop the schedule Job and Journey
+                    console.log("end schedule");
                     scheduleJobRetry = 3;
-                    reject();
                 }
+                resolve();
             }
         });
     });
@@ -262,6 +263,12 @@ function setScheduleJob(rule,retrieveDataFromDB){
 }
 
 function retrieveDataFromDB(){
-    scheduleJobRetry++;
-    console.log("retrieveDataFromDB function");
+    if(scheduleJobRetry>=3){
+        console.log("stop retrieveDataFromDB");
+        return;
+    }
+    else{
+        scheduleJobRetry++;
+        console.log("retrieveDataFromDB function");
+    }
 }
