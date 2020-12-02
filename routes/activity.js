@@ -65,7 +65,9 @@ function retrieveDataFromDE(){
             } 
             else {
                 var temp = res.body.Results;
+                console.log("temp==>"+JSON.stringify(temp));
                 if(!temp==""){
+                    console.log("enter deRow");
                     for (const result of res.body.Results) {
                         for (const property of result.Properties.Property) {
                             var nameStr= property.Name;
