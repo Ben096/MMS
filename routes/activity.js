@@ -72,10 +72,15 @@ function retrieveDataFromDE(){
                             dataResult.nameStr = valueStr
                         }
                     }
+                    resolve();
+                }
+                else{
+                    //stop the schedule Job and Journey
+                    scheduleJobRetry = 3;
+                    reject();
                 }
             }
         });
-        resolve();
     });
     
 }
@@ -139,7 +144,7 @@ exports.edit = function (req, res) {
  */
 exports.save = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
-    //console.log( req.body );
+    console.log("Save");
     res.send(200, 'Save');
 };
 
@@ -229,8 +234,7 @@ exports.publish = function (req, res) {
  */
 exports.validate = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
-    //console.log( req.body );
-    logData(req);
+    console.log("Validate");
     res.send(200, 'Validate');
 };
 
