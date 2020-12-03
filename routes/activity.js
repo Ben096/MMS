@@ -66,7 +66,9 @@ function retrieveDataFromDE(){
             else {
                 var temp = res.body.Results;
                 console.log("temp==>"+JSON.stringify(temp));
-                if(!temp==""){
+                console.log("temp!= ==>"+(temp!=""));
+                console.log("temp= ==>"+(temp==""));
+                if(temp!=""){
                     console.log("enter deRow");
                     for (const result of res.body.Results) {
                         for (const property of result.Properties.Property) {
@@ -169,8 +171,7 @@ exports.execute = function (req, res) {
             var map = {};
             journeyID = decoded.journeyId;
             // decoded in arguments
-            var decodedArgs = decoded.inArguments[0];            
-            logData(req);
+            var decodedArgs = decoded.inArguments[0];
 			console.log( JSON.stringify(  decodedArgs  ));
 			console.log( JSON.stringify(  decoded  ));
             for(var i in decoded.inArguments){
