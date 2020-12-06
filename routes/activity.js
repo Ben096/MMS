@@ -444,3 +444,14 @@ function insertDataIntoDB(queryStr,parameters){
         client.release();
     });
 }
+
+function dateFormat(date){
+        var y = date.getFullYear();
+        var m = (date.getMonth() + 1) < 10 ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1);
+        var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
+        var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
+        var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
+        var formatdate = y+'-'+m+'-'+d + "T" + h + ":" + f;
+        console.log("formdate===>"+formatdate);
+        return formatdate;
+    }
