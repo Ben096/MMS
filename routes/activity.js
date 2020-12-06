@@ -7,6 +7,20 @@ const JWT = require(Path.join(__dirname, '..', 'lib', 'jwtDecoder.js'));
 var util = require('util');
 var schedule = require('node-schedule');
 
+//connect postgreSql
+var pgOpt = require('pg');
+var pgConfig = {
+    user: 'ldqtsrlnhklkwm',
+    database: 'd3dvc63s4josrb',
+    password: '3165f7e45987e7ec447054650fab84a15194a75b6283b1c5bdb5a3f809894d9e',
+    host: 'ec2-75-101-212-64.compute-1.amazonaws.com',
+    port: '5432',
+    poolSize: 5,
+    poolIdleTimeout: 30000,
+    reapIntervalMillis: 10000
+};
+var pgPool = new pgOpt.Pool(pgConfig);
+
 const ET_Client     = require('sfmc-fuelsdk-node');
 const clientId      = "rnriw78wwxfrpdw9ss37wown";
 const clientSecret  = "BDNX68eeMORjV1a6fZcVku6s";
@@ -16,6 +30,15 @@ const stack         = null;
 const origin              = 'https://mcjhmstdw76qsk9kk6m1zpwm4xf4.rest.marketingcloudapis.com/';
 const authOrigin          = 'https://mcjhmstdw76qsk9kk6m1zpwm4xf4.auth.marketingcloudapis.com/';
 const soapOrigin          = 'https://mcjhmstdw76qsk9kk6m1zpwm4xf4.soap.marketingcloudapis.com/';
+
+
+var retrieveTokenUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.auth.marketingcloudapis.com/v2/token";
+var insertDEUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.rest.marketingcloudapis.com/data/v1/async/dataextensions/key:offerTarget/rows";
+var tokenRequestData={
+"grant_type": "client_credentials",
+"client_id": "rnriw78wwxfrpdw9ss37wown",
+"client_secret": "BDNX68eeMORjV1a6fZcVku6s" 
+};
 
 const client = new ET_Client(
   clientId, 
@@ -34,9 +57,10 @@ const client = new ET_Client(
   }
 );
 
+var access_token = "";
 var offerIDTarget = "";
 var journeyID = '';
-var dataResult = {};
+var dataResult = [];
 var scheduleJobRetry=0;
 
 function retrieveDataFromDE(){
@@ -72,9 +96,11 @@ function retrieveDataFromDE(){
                     console.log("enter deRow");
                     for (const result of res.body.Results) {
                         for (const property of result.Properties.Property) {
-                            var nameStr= property.Name;
-                            var valueStr = property.Value;
-                            dataResult.nameStr = valueStr
+                            // var nameStr= property.Name;
+                            // var valueStr = property.Value;
+                            // dataResult.nameStr = valueStr
+                            //dataResult.push(property);
+                            dataResult.push(property.Value);
                         }
                     }
                 }
@@ -172,37 +198,36 @@ exports.execute = function (req, res) {
             journeyID = decoded.journeyId;
             // decoded in arguments
             var decodedArgs = decoded.inArguments[0];
-			console.log( JSON.stringify(  decodedArgs  ));
-			console.log( JSON.stringify(  decoded  ));
             for(var i in decoded.inArguments){
                 var startDate = decoded.inArguments[i].OfferStartDate;
                 var endDate = decoded.inArguments[i].OfferExpiryDate;
                 var offerID = decoded.inArguments[i].OfferID;
+                var name = decoded.inArguments[i].name;
+                var Email = decoded.inArguments[i].Email;
                 if(offerID!=null){
                     map.offerID = offerID;
                     offerIDTarget=offerID;
-                    console.log("execute offerIDTarget==>"+offerIDTarget);
                 }
-                // else if(startDate!=null){
-                //     map.startDate = startDate;
-                // }
-                // else if(endDate!=null){
-                //     map.endDate = endDate;
-                // }
-                // else if(name != null){
-                //     map.name = name;
-                // }
-                // else if(Email!=null){
-                //     map.Email = Email;
-                // }
+                else if(startDate!=null){
+                    map.startDate = startDate;
+                }
+                else if(endDate!=null){
+                    map.endDate = endDate;
+                }
+                else if(name != null){
+                    map.name = name;
+                }
+                else if(Email!=null){
+                    map.Email = Email;
+                }
             }
             var isEmpty = JSON.stringify(map)=="{}";
             if(isEmpty!=true){
-                // map.journeyid = journeyID;
-                // map.status = 'pending';
-                // var queryStr = 'INSERT INTO ben.offer(name,email,startdate,enddate,,journeyid,status,createdate,offerid,item1,item2) VALUES($1::varchar, $2::varchar,$3::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar)';
-                // var parameters = [map.name,map.Email,map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID,];
-                // insertDataIntoDB(queryStr,parameters);
+                map.journeyid = journeyID;
+                map.status = 'pending';
+                var queryStr = 'INSERT INTO offer.offer(name,email,startdate,enddate,journeyid,status,createdate,offerid) VALUES($1::varchar, $2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar)';
+                var parameters = [map.name,map.Email,map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID];
+                insertDataIntoDB(queryStr,parameters);
             }
             res.send(200, 'Execute');
         } else {
@@ -229,7 +254,7 @@ exports.publish = function (req, res) {
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
-    setScheduleJob(rule,retrieveDataFromDB);
+    setScheduleJob(rule);
     res.send(200, 'Publish');
 };
 
@@ -247,7 +272,7 @@ exports.resolveToken = function (req, res) {
  
 };
 
-function setScheduleJob(rule,retrieveDataFromDB){
+function setScheduleJob(rule){
     console.log("start scheduleJob");
     var j = schedule.scheduleJob(rule,function(){
         console.log("schedule Job Starting");
@@ -271,7 +296,151 @@ function retrieveDataFromDB(){
         return;
     }
     else{
-        scheduleJobRetry++;
         console.log("retrieveDataFromDB function");
+        
+        pgPool.connect(function (isErr, client, done) {
+            console.log("start connection");
+            console.log("journeyID==?=>"+journeyID);
+            if (isErr) {
+                console.log('connect query:' + isErr.message);
+                return;
+            }
+            client.query("select id,name,offerID,startdate,enddate from offer.offer where status !='success' and journeyid=$1 and createdate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
+                done();//释放连接，归还给连接池
+                if (isErr) {
+                    console.log('retrieve from db query error:' + isErr.message);
+                } 
+                else {
+                    //console.log('query success, data is: ' + JSON.stringify(rst.rows));
+                    reuslt = rst.rows;
+                    var data = rst.rows;
+                    //console.log("get data-->"+JSON.stringify(reuslt));
+                    var requestData={
+                        "items": []
+                    };
+                    for(var key in data){
+                        var resultMap = {};
+                        resultMap.name =data[key].name;
+                        //resultMap.Email =data[key].email;
+                        resultMap.startdate =data[key].startdate;
+                        resultMap.enddate =data[key].enddate;
+                        resultMap.offerID =data[key].offerid;
+                        resultMap.item1 = dataResult[0];
+                        resultMap.item2 = dataResult[1];
+                        //insert related DB rows
+                        // for(var i in dataResult){
+                        //     resultMap.item1 = dataResult[i];
+                        // }
+                        requestData.items[key] = resultMap;
+                    }
+                    var temp = requestData.items;
+                    var len = temp.length;
+                    if(len ==0){
+                        console.log("no data to retrieve");
+                        scheduleJobRetry++;
+                    }
+                    else{
+                        //console.log("requestData==>"+JSON.stringify(requestData));
+                        console.log("enter insertDE operation");
+                        insertDataIntoDE(insertDEUrl,requestData,retrieveAccessToken);
+                    }
+                }
+            });
+        });
     }
+}
+
+function insertDataIntoDE(url,data,retrieveAccessToken){
+    retrieveAccessToken(retrieveTokenUrl,tokenRequestData,data,url);
+}
+
+function retrieveAccessToken(url,data,deData,deUrl){
+    request({
+        url: url,
+        method: "POST",
+        json: true,
+        headers : {
+            "Content-type" : "application/JSON"
+        },
+        body: tokenRequestData
+    }, function(error, response, body) {
+        if (!error) {
+            //console.log(body) // 请求成功的处理逻辑
+            access_token = body.access_token;
+            console.log("get token==>"+access_token);
+            //console.log('dedata==>'+JSON.stringify(deData));
+            console.log("deURL==>"+deUrl);
+            request({
+                url: deUrl,
+                method: "POST",
+                json: true,
+                headers : {
+                    "Content-type" : "application/JSON",
+                    "Authorization" : "Bearer "+access_token
+                },
+                body: deData
+                }, function(error, response, body) {
+                    if(error){
+                        console.log("has error");
+                        console.log("response==>"+JSON.stringify(response));
+                        console.log("body==>"+JSON.stringify(body));
+                    }
+                    else{
+                        console.log('done');
+                        var targetRecords = deData.items;
+                        console.log("target data len==>"+targetRecords.length);
+                        //console.log("targetRecords==>"+JSON.stringify(targetRecords));
+                        var len = targetRecords.length-1;
+                        if(targetRecords.length > 0){
+                            updateRecordsStatus(targetRecords[len].id);
+                        }
+                    }
+                }
+            );
+        }
+        else{
+            console.log("retrieve token error==>"+error);
+        }
+    });
+}
+
+function updateRecordsStatus(id){
+    pgPool.connect(function (isErr, client, done) {
+        if (isErr) {
+            console.log('connect query:' + isErr.message);
+            return;
+        }
+        else{
+            console.log("last index==>"+id);
+            console.log("produce journeyID==>"+journeyID);
+            //call producure
+            client.query("CALL offer.updatestatus($1,$2);",[parseInt(id),journeyID],function(isErr, rst){
+                if(isErr){
+                    console.log('call proc error:' + isErr.message);
+                }   
+                else{ 
+                    console.log("call proc successfully");
+                }
+            });
+            client.release();
+        }
+    });
+}
+
+function insertDataIntoDB(queryStr,parameters){
+    pgPool.connect(function (isErr, client){
+        if (isErr) {
+            console.log('connect query:' + isErr.message);
+            return;
+        }
+        client.query(queryStr, parameters, function (isErr, rst) {
+            //done();//释放连接，归还给连接池
+            if (isErr) {
+                console.log('execute query error:' + isErr.message);
+            } else {
+                //console.log('insert success!! ');
+            }
+        });
+        client.release();
+    });
 }

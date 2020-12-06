@@ -196,18 +196,12 @@ define([
             else if("Email"==fieldname){
                 payload['arguments'].execute.inArguments.push({"Email": "{{Event." + eventDefinitionKey+".Email}}" });
             }
-            else if("ID"==fieldname){
-                payload['arguments'].execute.inArguments.push({"ID": "{{Event." + eventDefinitionKey+".ID}}" });
-            }
             //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
  		}
-        
-
         payload['metaData'].isConfigured = true;
-
-        console.log('payload=='+JSON.stringify(payload));
-        console.log('payload attribute=='+JSON.stringify(payload['arguments'].execute.inArguments));
+        // console.log('payload=='+JSON.stringify(payload));
+        // console.log('payload attribute=='+JSON.stringify(payload['arguments'].execute.inArguments));
         connection.trigger('updateActivity', payload);
     }
 
