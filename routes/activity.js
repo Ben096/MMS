@@ -225,7 +225,7 @@ exports.execute = function (req, res) {
             if(isEmpty!=true){
                 map.journeyid = journeyID;
                 map.status = 'pending';
-                var queryStr = 'INSERT INTO offer.offer(name,email,startdate,enddate,journeyid,status,createdate,offerid) VALUES($1::varchar, $2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar)';
+                var queryStr = 'INSERT INTO offer.offer(name,email,startdate,enddate,journeyid,status,createddate,offerid) VALUES($1::varchar, $2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar)';
                 var parameters = [map.name,map.Email,map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID];
                 insertDataIntoDB(queryStr,parameters);
             }
@@ -250,7 +250,7 @@ exports.publish = function (req, res) {
     var f = nowDate.getMinutes();
     var mm = parseInt(f)+5;
     //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
-    var rule = '0 5/5,59 * * * *';
+    var rule = '59 5/5,59 * * * *';
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
