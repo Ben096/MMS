@@ -360,51 +360,51 @@ function retrieveDataFromDB(){
                             case "OfferType":
                             OfferType=valueT;
                             break;
-                            case "Country":
-                            item1=valueT;
-                            break;
+                            // case "Country":
+                            // item1=valueT;
+                            // break;
                             case "StoreGroup":
                             StoreGroup=valueT;
                             break;
                             case "Brand":
                             Brand=valueT;
                             break;
-                            case "OfferName":
-                            item1=valueT;
-                            break;
+                            // case "OfferName":
+                            // item1=valueT;
+                            // break;
                             case "PointCost":
                             PointCost=valueT;
                             break;
-                            case "SKU":
-                            item1=valueT;
-                            break;
-                            case "ProductCategory":
-                            item1=valueT;
-                            break;
-                            case "ProductSubCategory":
-                            item1=valueT;
-                            break;
-                            case "ProductClass":
-                            item1=valueT;
-                            break;
-                            case "RetailValue":
-                            item1=valueT;
-                            break;
-                            case "SpendThreshold":
-                            item1=valueT;
-                            break;
+                            // case "SKU":
+                            // item1=valueT;
+                            // break;
+                            // case "ProductCategory":
+                            // item1=valueT;
+                            // break;
+                            // case "ProductSubCategory":
+                            // item1=valueT;
+                            // break;
+                            // case "ProductClass":
+                            // item1=valueT;
+                            // break;
+                            // case "RetailValue":
+                            // item1=valueT;
+                            // break;
+                            // case "SpendThreshold":
+                            // item1=valueT;
+                            // break;
                             case "PromotionCategory":
                             PromotionCategory=valueT;
                             break;
                             case "RankedValue":
                             RankedValue=valueT;
                             break;
-                            case "AllocationMethod":
-                            item1=valueT;
-                            break;
-                            case "AlwaysOn":
-                            item1=valueT;
-                            break;
+                            // case "AllocationMethod":
+                            // item1=valueT;
+                            // break;
+                            // case "AlwaysOn":
+                            // item1=valueT;
+                            // break;
                             case "PromotionCategoryRank":
                             PromotionCategoryRank=valueT;
                             break;
