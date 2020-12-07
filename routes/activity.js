@@ -334,8 +334,8 @@ function retrieveDataFromDB(){
                     var item2='';
                     console.log('dataResult str==>'+JSON.stringify(dataResult));
                     for(var i in dataResult){
-                        var nameT = dataResult[i].name;
-                        var valueT = dataResult[i].value;
+                        var nameT = dataResult[i].Name;
+                        var valueT = dataResult[i].Value;
                         if(nameT=='item1'){
                             item1=valueT;
                         }
