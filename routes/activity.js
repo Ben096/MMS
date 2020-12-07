@@ -297,7 +297,7 @@ function retrieveDataFromDB(){
     }
     else{
         console.log("retrieveDataFromDB function");
-        
+        var dateStr = dateFormat(new Date());
         pgPool.connect(function (isErr, client, done) {
             console.log("start connection");
             console.log("journeyID==?=>"+journeyID);
