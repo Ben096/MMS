@@ -207,20 +207,20 @@ exports.execute = function (req, res) {
                 var offerID = decoded.inArguments[i].OfferID;
                 var name = decoded.inArguments[i].name;
                 var Email = decoded.inArguments[i].Email;
-                if(offerID!=null || offerID!=''){
+                if(offerID!=null && offerID!=''){
                     map.offerID = offerID;
                     offerIDTarget=offerID;
                 }
-                else if(startDate!=null || startDate!=''){
+                else if(startDate!=null && startDate!=''){
                     map.startDate = startDate;
                 }
-                else if(endDate!=null || endDate!=''){
+                else if(endDate!=null && endDate!=''){
                     map.endDate = endDate;
                 }
-                else if(name != null || name!=''){
+                else if(name != null && name!=''){
                     map.name = name;
                 }
-                else if(Email!=null || Email!=''){
+                else if(Email!=null && Email!=''){
                     map.Email = Email;
                 }
             }
@@ -290,7 +290,7 @@ function setScheduleJob(rule){
             j.cancel();
         }
         else{
-            if(offerIDTarget!=null || offerIDTarget!=''){
+            if(offerIDTarget!=null && offerIDTarget!=''){
                 console.log("enter sfmc-fuelsdk-node");
                 retrieveDataFromDE().then(function(){
                     retrieveDataFromDB();
@@ -394,7 +394,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
             console.log("deURL==>"+deUrl);
             request({
                 url: deUrl,
-                method: "POST",
+                method: "PUT",
                 json: true,
                 headers : {
                     "Content-type" : "application/JSON",
