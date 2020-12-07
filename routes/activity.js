@@ -396,10 +396,11 @@ function retrieveAccessToken(url,data,deData,deUrl){
                         console.log('done');
                         var targetRecords = deData.items;
                         console.log("target data len==>"+targetRecords.length);
-                        //console.log("targetRecords==>"+JSON.stringify(targetRecords));
+                        console.log("targetRecords==>"+JSON.stringify(targetRecords));
                         var len = targetRecords.length-1;
                         if(targetRecords.length > 0){
-                            updateRecordsStatus(targetRecords[len].id);
+                            console.log("targetID in loop==>"+targetRecords[len].id);
+                            //updateRecordsStatus(targetRecords[len].id);
                         }
                     }
                 }
@@ -435,6 +436,8 @@ function updateRecordsStatus(id){
 }
 
 function insertDataIntoDB(queryStr,parameters){
+    console.log("insert str==>"+queryStr);
+    console.log("insert str==>"+JSON.stringify(parameters));
     pgPool.connect(function (isErr, client){
         if (isErr) {
             console.log('connect query:' + isErr.message);
@@ -461,4 +464,4 @@ function dateFormat(date){
         var formatdate = y+'-'+m+'-'+d + "T" + h + ":" + f;
         console.log("formdate===>"+formatdate);
         return formatdate;
-    }
+}
