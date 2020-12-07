@@ -196,6 +196,9 @@ define([
             else if("Email"==fieldname){
                 payload['arguments'].execute.inArguments.push({"Email": "{{Event." + eventDefinitionKey+".Email}}" });
             }
+            else if("LoyaltyID"==fieldname){
+                payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
+            }
             //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
  		}

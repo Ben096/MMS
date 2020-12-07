@@ -34,7 +34,7 @@ const soapOrigin          = 'https://mcjhmstdw76qsk9kk6m1zpwm4xf4.soap.marketing
 
 
 var retrieveTokenUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.auth.marketingcloudapis.com/v2/token";
-var insertDEUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.rest.marketingcloudapis.com/data/v1/async/dataextensions/key:offerTarget/rows";
+var insertDEUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.rest.marketingcloudapis.com/data/v1/async/dataextensions/key:OfferMatrixDeliveryTable/rows";
 var tokenRequestData={
 "grant_type": "client_credentials",
 "client_id": "rnriw78wwxfrpdw9ss37wown",
@@ -71,9 +71,12 @@ function retrieveDataFromDE(){
         //retrieve from DataExtension
         const deRow = client.dataExtensionRow({
                 //dataExtension which you want to retrieve from
-                Name: 'OfferDemo',
+                Name: 'BaseOfferTable',
                 //field name
-                props: ['offerID', 'item1','item2'],
+                props: ['OfferId', 'ALPExternalReference','OfferType','Country','StoreGroup',
+                'Brand','OfferName','OfferStartDate','OfferExpiryDate','PointCost','SKU','ProductCategory',
+                'ProductSubCategory','ProductClass','RetailValue','SpendThreshold','PromotionCategory',
+                'RankedValue','AllocationMethod','OfferDuration','AlwaysOn','PromotionCategoryRank'],
                 filter: {
                     leftOperand: 'offerID',
                     //operator includes : equals, notEquals, greaterThan, lessThan
@@ -90,9 +93,9 @@ function retrieveDataFromDE(){
             } 
             else {
                 var temp = res.body.Results;
-                console.log("temp==>"+JSON.stringify(temp));
-                console.log("temp!= ==>"+(temp!=""));
-                console.log("temp= ==>"+(temp==""));
+                // console.log("temp==>"+JSON.stringify(temp));
+                // console.log("temp!= ==>"+(temp!=""));
+                // console.log("temp= ==>"+(temp==""));
                 if(temp!=""){
                     console.log("enter deRow");
                     for (const result of res.body.Results) {
@@ -207,6 +210,8 @@ exports.execute = function (req, res) {
                 var offerID = decoded.inArguments[i].OfferID;
                 var name = decoded.inArguments[i].name;
                 var Email = decoded.inArguments[i].Email;
+                var duration = decoded.inArguments[i].Duration;
+                var LoyaltyID = decoded.inArguments[i].LoyaltyID;
                 if(offerID!=null && offerID!=''){
                     map.offerID = offerID;
                     offerIDTarget=offerID;
@@ -223,13 +228,19 @@ exports.execute = function (req, res) {
                 else if(Email!=null && Email!=''){
                     map.Email = Email;
                 }
+                else if(duration!=null && duration!=''){
+                    map.duration = duration;
+                }
+                else if(LoyaltyID!=null && LoyaltyID!=''){
+                    map.LoyaltyID = LoyaltyID;
+                }
             }
             var isEmpty = JSON.stringify(map)=="{}";
             if(isEmpty!=true){
                 map.journeyid = journeyID;
                 map.status = 'pending';
-                var queryStr = 'INSERT INTO offer.offer(name,email,startdate,enddate,journeyid,status,createddate,offerid) VALUES($1::varchar, $2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar)';
-                var parameters = [map.name,map.Email,map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID];
+                var queryStr = 'INSERT INTO offer.offer(loyaltyid,name,email,startdate,enddate,journeyid,status,createddate,offerid,duration) VALUES($1::varchar, $2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar)';
+                var parameters = [map.LoyaltyID,map.name,map.Email,map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID];
                 insertDataIntoDB(queryStr,parameters);
             }
             //res.send(200, 'Execute');
@@ -316,7 +327,7 @@ function retrieveDataFromDB(){
                 console.log('connect query:' + isErr.message);
                 return;
             }
-            client.query("select id,name,offerID,startdate,enddate from offer.offer where status !='success' and journeyid=$1 and createddate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
+            client.query("select id,name,offerID,startdate,enddate,duration,loyaltyid from offer.offer where status !='success' and journeyid=$1 and createddate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
                 done();//释放连接，归还给连接池
                 if (isErr) {
                     console.log('retrieve from db query error:' + isErr.message);
@@ -330,29 +341,107 @@ function retrieveDataFromDB(){
                         "items": []
                     };
                     //insert related DB rows
-                    var item1='';
-                    var item2='';
+                    var PointCost='';
+                    var PromotionCategory='';
+                    var StoreGroup = '';
+                    var Brand = '';
+                    var OfferType = '';
+                    var ALPExternalReference='';
+                    var PromotionCategoryRank='';
+                    var RankedValue = '';
                     console.log('dataResult str==>'+JSON.stringify(dataResult));
                     for(var i in dataResult){
                         var nameT = dataResult[i].Name;
                         var valueT = dataResult[i].Value;
-                        if(nameT=='item1'){
+                        switch(nameT){
+                            case "ALPExternalReference":
+                            ALPExternalReference=valueT;
+                            break;
+                            case "OfferType":
+                            OfferType=valueT;
+                            break;
+                            case "Country":
                             item1=valueT;
+                            break;
+                            case "StoreGroup":
+                            StoreGroup=valueT;
+                            break;
+                            case "Brand":
+                            Brand=valueT;
+                            break;
+                            case "OfferName":
+                            item1=valueT;
+                            break;
+                            case "PointCost":
+                            PointCost=valueT;
+                            break;
+                            case "SKU":
+                            item1=valueT;
+                            break;
+                            case "ProductCategory":
+                            item1=valueT;
+                            break;
+                            case "ProductSubCategory":
+                            item1=valueT;
+                            break;
+                            case "ProductClass":
+                            item1=valueT;
+                            break;
+                            case "RetailValue":
+                            item1=valueT;
+                            break;
+                            case "SpendThreshold":
+                            item1=valueT;
+                            break;
+                            case "PromotionCategory":
+                            PromotionCategory=valueT;
+                            break;
+                            case "RankedValue":
+                            RankedValue=valueT;
+                            break;
+                            case "AllocationMethod":
+                            item1=valueT;
+                            break;
+                            case "AlwaysOn":
+                            item1=valueT;
+                            break;
+                            case "PromotionCategoryRank":
+                            PromotionCategoryRank=valueT;
+                            break;
                         }
-                        else if(nameT=='item2'){
-                            item2=valueT;
-                        }
+
                     }
 
                     for(var key in data){
                         var resultMap = {};
-                        resultMap.name =data[key].name;
-                        resultMap.Email =data[key].email;
-                        resultMap.startdate =data[key].startdate;
-                        resultMap.enddate =data[key].enddate;
-                        resultMap.offerID =data[key].offerid;
-                        resultMap.item1 = item1;
-                        resultMap.item2 = item2;
+                        resultMap.LoyaltyID =data[key].loyaltyid;
+                        resultMap.OfferId =data[key].offerid;
+
+                        resultMap.PointCost =data[key].PointCost;
+                        resultMap.PromotionCategory =data[key].PromotionCategory;
+                        resultMap.StoreGroup =data[key].StoreGroup;
+                        resultMap.Brand =data[key].Brand;
+                        resultMap.OfferType =data[key].OfferType;
+                        resultMap.OfferStartDate =data[key].startdate;
+                        resultMap.OfferExpiryDate =data[key].enddate;
+                        //resultMap.IsSaved =data[key].offerid;
+                        //resultMap.OfferSaveUnsaveDate =data[key].offerid;
+                        //resultMap.IsRedeemed =data[key].offerid;
+                        //resultMap.OfferRedemptionDate =data[key].offerid;
+                        resultMap.ALPExternalReference =data[key].ALPExternalReference;
+                        resultMap.PromotionCategoryRank =data[key].PromotionCategoryRank;
+                        resultMap.RankedValue =data[key].RankedValue;
+                        //resultMap.RewardRetailValue =data[key].offerid;
+
+
+
+                        // resultMap.name =data[key].name;
+                        // resultMap.Email =data[key].email;
+                        // resultMap.startdate =data[key].startdate;
+                        // resultMap.enddate =data[key].enddate;
+                        // resultMap.item1 = item1;
+                        // resultMap.item2 = item2;
+
                         resultMap.id = data[key].id;
                         requestData.items[key] = resultMap;
                     }
@@ -416,7 +505,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
                         var len = targetRecords.length-1;
                         if(targetRecords.length > 0){
                             console.log("targetID in loop==>"+targetRecords[len].id);
-                            //updateRecordsStatus(targetRecords[len].id);
+                            updateRecordsStatus(targetRecords[len].id);
                         }
                     }
                 }
