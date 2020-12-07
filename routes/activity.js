@@ -203,6 +203,7 @@ exports.execute = function (req, res) {
                 var endDate = decoded.inArguments[i].OfferExpiryDate;
                 var offerID = decoded.inArguments[i].OfferID;
                 var name = decoded.inArguments[i].name;
+                console.log("name====>>>"+name);
                 var Email = decoded.inArguments[i].Email;
                 if(offerID!=null){
                     map.offerID = offerID;
@@ -305,7 +306,7 @@ function retrieveDataFromDB(){
                 console.log('connect query:' + isErr.message);
                 return;
             }
-            client.query("select id,name,offerID,startdate,enddate from offer.offer where status !='success' and journeyid=$1 and createdate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
+            client.query("select id,name,offerID,startdate,enddate from offer.offer where status !='success' and journeyid=$1 and createddate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
                 done();//释放连接，归还给连接池
                 if (isErr) {
                     console.log('retrieve from db query error:' + isErr.message);
