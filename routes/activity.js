@@ -167,7 +167,7 @@ function logData(req) {
 exports.edit = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log("Edit");
-    res.send(200, 'Edit');
+    res.status(200).send('Edit');
 };
 
 /*
@@ -176,7 +176,8 @@ exports.edit = function (req, res) {
 exports.save = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log("Save");
-    res.send(200, 'Save');
+    //res.send(200, 'Save');
+    res.status(200).send('Save');
 };
 
 /*
@@ -230,7 +231,8 @@ exports.execute = function (req, res) {
                 var parameters = [map.name,map.Email,map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID];
                 insertDataIntoDB(queryStr,parameters);
             }
-            res.send(200, 'Execute');
+            //res.send(200, 'Execute');
+            res.status(200).send('Execute');
         } else {
             console.error('inArguments invalid.');
             return res.status(400).end();
@@ -256,7 +258,8 @@ exports.publish = function (req, res) {
     //reset 
     scheduleJobRetry = 0;
     setScheduleJob(rule);
-    res.send(200, 'Publish');
+    //res.send(200, 'Publish');
+    res.status(200).send('Publish');
 };
 
 /*
@@ -265,7 +268,8 @@ exports.publish = function (req, res) {
 exports.validate = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log("Validate");
-    res.send(200, 'Validate');
+    //res.send(200, 'Validate');
+    res.status(200).send('Validate');
 };
 
 
@@ -298,6 +302,7 @@ function retrieveDataFromDB(){
     }
     else{
         console.log("retrieveDataFromDB function");
+        var reuslt = '';
         var dateStr = dateFormat(new Date());
         pgPool.connect(function (isErr, client, done) {
             console.log("start connection");
