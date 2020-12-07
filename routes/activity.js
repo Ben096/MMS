@@ -207,20 +207,20 @@ exports.execute = function (req, res) {
                 var name = decoded.inArguments[i].name;
                 console.log("name====>>>"+name);
                 var Email = decoded.inArguments[i].Email;
-                if(offerID!=null){
+                if(offerID!=null || offerID!=''){
                     map.offerID = offerID;
                     offerIDTarget=offerID;
                 }
-                else if(startDate!=null){
+                else if(startDate!=null || startDate!=''){
                     map.startDate = startDate;
                 }
-                else if(endDate!=null){
+                else if(endDate!=null || endDate!=''){
                     map.endDate = endDate;
                 }
-                else if(name != null){
+                else if(name != null || name!=''){
                     map.name = name;
                 }
-                else if(Email!=null){
+                else if(Email!=null || Email!=''){
                     map.Email = Email;
                 }
             }
@@ -321,7 +321,7 @@ function retrieveDataFromDB(){
                     //console.log('query success, data is: ' + JSON.stringify(rst.rows));
                     reuslt = rst.rows;
                     var data = rst.rows;
-                    //console.log("get data-->"+JSON.stringify(reuslt));
+                    console.log("get data-->"+JSON.stringify(reuslt));
                     var requestData={
                         "items": []
                     };
@@ -375,7 +375,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
             //console.log(body) // 请求成功的处理逻辑
             access_token = body.access_token;
             console.log("get token==>"+access_token);
-            //console.log('dedata==>'+JSON.stringify(deData));
+            console.log('dedata==>'+JSON.stringify(deData));
             console.log("deURL==>"+deUrl);
             request({
                 url: deUrl,
