@@ -332,6 +332,7 @@ function retrieveDataFromDB(){
                     //insert related DB rows
                     var item1='';
                     var item2='';
+                    console.log('dataResult str==>'+JSON.stringify(dataResult));
                     for(var i in dataResult){
                         var nameT = dataResult[i].name;
                         var valueT = dataResult[i].value;
