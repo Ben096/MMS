@@ -6,6 +6,7 @@ const Path = require('path');
 const JWT = require(Path.join(__dirname, '..', 'lib', 'jwtDecoder.js'));
 var util = require('util');
 var schedule = require('node-schedule');
+var request = require('request');
 
 //connect postgreSql
 var pgOpt = require('pg');
