@@ -417,20 +417,20 @@ function retrieveDataFromDB(){
                         resultMap.LoyaltyID =data[key].loyaltyid;
                         resultMap.OfferId =data[key].offerid;
 
-                        resultMap.PointCost =data[key].PointCost;
-                        resultMap.PromotionCategory =data[key].PromotionCategory;
-                        resultMap.StoreGroup =data[key].StoreGroup;
-                        resultMap.Brand =data[key].Brand;
-                        resultMap.OfferType =data[key].OfferType;
+                        resultMap.PointCost =PointCost;
+                        resultMap.PromotionCategory =PromotionCategory;
+                        resultMap.StoreGroup =StoreGroup;
+                        resultMap.Brand =Brand;
+                        resultMap.OfferType =OfferType;
                         resultMap.OfferStartDate =data[key].startdate;
                         resultMap.OfferExpiryDate =data[key].enddate;
                         //resultMap.IsSaved =data[key].offerid;
                         //resultMap.OfferSaveUnsaveDate =data[key].offerid;
                         //resultMap.IsRedeemed =data[key].offerid;
                         //resultMap.OfferRedemptionDate =data[key].offerid;
-                        resultMap.ALPExternalReference =data[key].ALPExternalReference;
-                        resultMap.PromotionCategoryRank =data[key].PromotionCategoryRank;
-                        resultMap.RankedValue =data[key].RankedValue;
+                        resultMap.ALPExternalReference =ALPExternalReference;
+                        resultMap.PromotionCategoryRank =PromotionCategoryRank;
+                        resultMap.RankedValue =RankedValue;
                         //resultMap.RewardRetailValue =data[key].offerid;
 
 
