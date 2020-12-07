@@ -254,10 +254,11 @@ exports.publish = function (req, res) {
     var f = nowDate.getMinutes();
     var mm = parseInt(f)+5;
     //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
-    var rule = '59 5/5,59 * * * *';
+    var rule = '0 0/5 * * * *';
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
+    offerIDTarget='';
     setScheduleJob(rule);
     //res.send(200, 'Publish');
     res.status(200).send('Publish');
@@ -289,9 +290,12 @@ function setScheduleJob(rule){
             j.cancel();
         }
         else{
-            retrieveDataFromDE().then(function(){
-                retrieveDataFromDB();
-            });
+            if(offerIDTarget!=null || offerIDTarget!=''){
+                console.log("enter sfmc-fuelsdk-node");
+                retrieveDataFromDE().then(function(){
+                    retrieveDataFromDB();
+                });
+            }
         }
     });
 }
