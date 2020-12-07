@@ -101,7 +101,7 @@ function retrieveDataFromDE(){
                             // var valueStr = property.Value;
                             // dataResult.nameStr = valueStr
                             //dataResult.push(property);
-                            dataResult.push(property.Value);
+                            dataResult.push(property);
                         }
                     }
                 }
@@ -325,19 +325,30 @@ function retrieveDataFromDB(){
                     var requestData={
                         "items": []
                     };
+                    //insert related DB rows
+                    var item1='';
+                    var item2='';
+                    for(var i in dataResult){
+                        var nameT = dataResult[i].name;
+                        var valueT = dataResult[i].value;
+                        if(nameT=='item1'){
+                            item1=valueT;
+                        }
+                        else if(nameT=='item2'){
+                            item2=valueT;
+                        }
+                    }
+
                     for(var key in data){
                         var resultMap = {};
                         resultMap.name =data[key].name;
-                        //resultMap.Email =data[key].email;
+                        resultMap.Email =data[key].email;
                         resultMap.startdate =data[key].startdate;
                         resultMap.enddate =data[key].enddate;
                         resultMap.offerID =data[key].offerid;
-                        resultMap.item1 = dataResult[0];
-                        resultMap.item2 = dataResult[1];
-                        //insert related DB rows
-                        // for(var i in dataResult){
-                        //     resultMap.item1 = dataResult[i];
-                        // }
+                        resultMap.item1 = item1;
+                        resultMap.item2 = item2;
+                        resultMap.id = data[key].id;
                         requestData.items[key] = resultMap;
                     }
                     var temp = requestData.items;
