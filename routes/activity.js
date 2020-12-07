@@ -200,12 +200,12 @@ exports.execute = function (req, res) {
             journeyID = decoded.journeyId;
             // decoded in arguments
             var decodedArgs = decoded.inArguments[0];
+            console.log("inArguments====>"+JSON.stringify(decoded.inArguments));
             for(var i in decoded.inArguments){
                 var startDate = decoded.inArguments[i].OfferStartDate;
                 var endDate = decoded.inArguments[i].OfferExpiryDate;
                 var offerID = decoded.inArguments[i].OfferID;
                 var name = decoded.inArguments[i].name;
-                console.log("name====>>>"+name);
                 var Email = decoded.inArguments[i].Email;
                 if(offerID!=null || offerID!=''){
                     map.offerID = offerID;
