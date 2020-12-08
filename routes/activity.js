@@ -302,7 +302,7 @@ function setScheduleJob(rule){
             if(offerIDTarget!=null && offerIDTarget!=''){
                 console.log("enter sfmc-fuelsdk-node");
                 retrieveDataFromDE().then(function(){
-                    retrieveDataFromDB();
+                    retrieveDataFromDB(insertDataIntoDE);
                 });
             }
         }
