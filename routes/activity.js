@@ -73,10 +73,8 @@ function retrieveDataFromDE(){
                 //dataExtension which you want to retrieve from
                 Name: 'BaseOfferTable',
                 //field name
-                props: ['OfferId', 'ALPExternalReference','OfferType','Country','StoreGroup',
-                'Brand','OfferName','OfferStartDate','OfferExpiryDate','PointCost','SKU','ProductCategory',
-                'ProductSubCategory','ProductClass','RetailValue','SpendThreshold','PromotionCategory',
-                'RankedValue','AllocationMethod','OfferDuration','AlwaysOn','PromotionCategoryRank'],
+                props: ['OfferId','ALPExternalReference','OfferType','StoreGroup','Brand','PointCost',
+                'PromotionCategory','RankedValue','PromotionCategoryRank'],
                 filter: {
                     leftOperand: 'offerID',
                     //operator includes : equals, notEquals, greaterThan, lessThan
@@ -265,7 +263,7 @@ exports.publish = function (req, res) {
     var f = nowDate.getMinutes();
     var mm = parseInt(f)+5;
     //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
-    var rule = '0 0/5 * * * *';
+    var rule = '0 0/15 * * * *';
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
@@ -311,7 +309,7 @@ function setScheduleJob(rule){
     });
 }
 
-function retrieveDataFromDB(){
+function retrieveDataFromDB(insertDataIntoDE){
     if(scheduleJobRetry>=3){
         console.log("stop retrieveDataFromDB");
         return;
@@ -360,51 +358,21 @@ function retrieveDataFromDB(){
                             case "OfferType":
                             OfferType=valueT;
                             break;
-                            // case "Country":
-                            // item1=valueT;
-                            // break;
                             case "StoreGroup":
                             StoreGroup=valueT;
                             break;
                             case "Brand":
                             Brand=valueT;
                             break;
-                            // case "OfferName":
-                            // item1=valueT;
-                            // break;
                             case "PointCost":
                             PointCost=valueT;
                             break;
-                            // case "SKU":
-                            // item1=valueT;
-                            // break;
-                            // case "ProductCategory":
-                            // item1=valueT;
-                            // break;
-                            // case "ProductSubCategory":
-                            // item1=valueT;
-                            // break;
-                            // case "ProductClass":
-                            // item1=valueT;
-                            // break;
-                            // case "RetailValue":
-                            // item1=valueT;
-                            // break;
-                            // case "SpendThreshold":
-                            // item1=valueT;
-                            // break;
                             case "PromotionCategory":
                             PromotionCategory=valueT;
                             break;
                             case "RankedValue":
                             RankedValue=valueT;
                             break;
-                            // case "AllocationMethod":
-                            // item1=valueT;
-                            // break;
-                            // case "AlwaysOn":
-                            // item1=valueT;
-                            // break;
                             case "PromotionCategoryRank":
                             PromotionCategoryRank=valueT;
                             break;
@@ -424,29 +392,15 @@ function retrieveDataFromDB(){
                         resultMap.OfferType =OfferType;
                         resultMap.OfferStartDate =data[key].startdate;
                         resultMap.OfferExpiryDate =data[key].enddate;
-                        //resultMap.IsSaved =data[key].offerid;
-                        //resultMap.OfferSaveUnsaveDate =data[key].offerid;
-                        //resultMap.IsRedeemed =data[key].offerid;
-                        //resultMap.OfferRedemptionDate =data[key].offerid;
                         resultMap.ALPExternalReference =ALPExternalReference;
                         resultMap.PromotionCategoryRank =PromotionCategoryRank;
                         resultMap.RankedValue =RankedValue;
-                        //resultMap.RewardRetailValue =data[key].offerid;
-
-
-
-                        // resultMap.name =data[key].name;
-                        // resultMap.Email =data[key].email;
-                        // resultMap.startdate =data[key].startdate;
-                        // resultMap.enddate =data[key].enddate;
-                        // resultMap.item1 = item1;
-                        // resultMap.item2 = item2;
-
                         resultMap.id = data[key].id;
                         requestData.items[key] = resultMap;
                     }
                     var temp = requestData.items;
                     var len = temp.length;
+                    console.log("len==>"+len);
                     if(len ==0){
                         console.log("no data to retrieve");
                         scheduleJobRetry++;
