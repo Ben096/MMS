@@ -64,6 +64,11 @@ var journeyID = '';
 var dataResult = [];
 var scheduleJobRetry=0;
 
+var versionList = [];
+var currentDateMap = {};
+var executionTimes = [];
+
+
 function retrieveDataFromDE(){
     console.log("offerIDTarget==>"+offerIDTarget);
     console.log("start retrieveDataFromDE");
@@ -91,9 +96,6 @@ function retrieveDataFromDE(){
             } 
             else {
                 var temp = res.body.Results;
-                // console.log("temp==>"+JSON.stringify(temp));
-                // console.log("temp!= ==>"+(temp!=""));
-                // console.log("temp= ==>"+(temp==""));
                 if(temp!=""){
                     console.log("enter deRow");
                     for (const result of res.body.Results) {
@@ -176,16 +178,14 @@ exports.edit = function (req, res) {
  * POST Handler for /save/ route of Activity.
  */
 exports.save = function (req, res) {
-    // Data from the req and put it in an array accessible to the main app.
     console.log("Save");
-    //res.send(200, 'Save');
     res.status(200).send('Save');
 };
 
 /*
  * POST Handler for /execute/ route of Activity.
  */
-exports.execute = function (req, res) {
+exports.execute = function (req,res) {
 	
     // example on how to decode JWT
     JWT(req.body, 'Hello world', (err, decoded) => {
@@ -198,33 +198,32 @@ exports.execute = function (req, res) {
 
         if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
             var map = {};
+            var mapDate = {};
+            let currentStartDate = '';
+            let currentEndDate = '';
             journeyID = decoded.journeyId;
             // decoded in arguments
             var decodedArgs = decoded.inArguments[0];
-            console.log("inArguments====>"+JSON.stringify(decoded.inArguments));
+            var versionNumber = '';
             for(var i in decoded.inArguments){
                 var startDate = decoded.inArguments[i].OfferStartDate;
                 var endDate = decoded.inArguments[i].OfferExpiryDate;
                 var offerID = decoded.inArguments[i].OfferID;
-                var name = decoded.inArguments[i].name;
-                var Email = decoded.inArguments[i].Email;
                 var duration = decoded.inArguments[i].Duration;
                 var LoyaltyID = decoded.inArguments[i].LoyaltyID;
+                //versionNumber = decoded.inArguments[i].version;
+                versionNumber = decoded.inArguments[i].version;
                 if(offerID!=null && offerID!=''){
                     map.offerID = offerID;
                     offerIDTarget=offerID;
                 }
                 else if(startDate!=null && startDate!=''){
                     map.startDate = startDate;
+                    mapDate.startDate = startDate;
                 }
                 else if(endDate!=null && endDate!=''){
                     map.endDate = endDate;
-                }
-                else if(name != null && name!=''){
-                    map.name = name;
-                }
-                else if(Email!=null && Email!=''){
-                    map.Email = Email;
+                    mapDate.endDate = endDate;
                 }
                 else if(duration!=null && duration!=''){
                     map.duration = duration;
@@ -233,12 +232,39 @@ exports.execute = function (req, res) {
                     map.LoyaltyID = LoyaltyID;
                 }
             }
+
+            if(executionTimes.hasOwnProperty(versionNumber)){
+                
+            }
+            else{
+                //for first time running
+                let i = parseInt(versionNumber); 
+                executionTimes[i]=1;
+            }
+            // if(versionNumber != null && versionNumber != ''){
+            //     if(versionList.hasOwnProperty(versionNumber)){
+            //         console.log("has property");
+            //         //retrieve mapDate, and add one day
+            //         let indexNum = parseInt(versionNumber);
+            //         let dateObj = versionList[indexNum];
+            //         addOneDate(dateObj.startDate);
+            //         addOneDate(dateObj.endDate);
+            //     }
+            //     else{
+            //         //for first time running
+            //         console.log("has no property");
+            //         let indexNum = parseInt(versionNumber);
+            //         versionList.splice(indexNum,0,mapDate);
+            //     }
+            // }
+
+
             var isEmpty = JSON.stringify(map)=="{}";
             if(isEmpty!=true){
                 map.journeyid = journeyID;
                 map.status = 'pending';
-                var queryStr = 'INSERT INTO offer.offer(name,email,startdate,enddate,journeyid,status,createddate,offerid,duration,loyaltyid) VALUES($1::varchar, $2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
-                var parameters = [map.name,map.Email,map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID,map.duration,map.LoyaltyID];
+                var queryStr = 'INSERT INTO offer.offer(startdate,enddate,journeyid,status,createddate,offerid,duration,loyaltyid) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar)';
+                var parameters = [map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID,map.duration,map.LoyaltyID];
                 insertDataIntoDB(queryStr,parameters);
             }
             //res.send(200, 'Execute');
@@ -256,13 +282,6 @@ exports.execute = function (req, res) {
  */
 exports.publish = function (req, res) {
     console.log('publish module');
-    var nowDate = new Date();
-    var m = nowDate.getMonth() + 1;
-    var d = nowDate.getDate();
-    var h = nowDate.getHours();
-    var f = nowDate.getMinutes();
-    var mm = parseInt(f)+5;
-    //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
     var rule = '0 0/15 * * * *';
     console.log("rule==>"+rule);
     //reset 
@@ -316,25 +335,24 @@ function retrieveDataFromDB(insertDataIntoDE){
     }
     else{
         console.log("retrieveDataFromDB function");
-        var reuslt = '';
+        // var reuslt = '';
         var dateStr = dateFormat(new Date());
         pgPool.connect(function (isErr, client, done) {
-            console.log("start connection");
             console.log("journeyID==?=>"+journeyID);
             if (isErr) {
                 console.log('connect query:' + isErr.message);
                 return;
             }
-            client.query("select id,name,offerID,startdate,enddate,duration,loyaltyid from offer.offer where status !='success' and journeyid=$1 and createddate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
+            client.query("select id,offerID,startdate,enddate,duration,loyaltyid from offer.offer where status !='success' and journeyid=$1 and createddate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
                 done();//释放连接，归还给连接池
                 if (isErr) {
                     console.log('retrieve from db query error:' + isErr.message);
                 } 
                 else {
                     //console.log('query success, data is: ' + JSON.stringify(rst.rows));
-                    reuslt = rst.rows;
+                    // reuslt = rst.rows;
                     var data = rst.rows;
-                    console.log("get data-->"+JSON.stringify(reuslt));
+                    console.log("get data-->"+JSON.stringify(data));
                     var requestData={
                         "items": []
                     };
@@ -396,6 +414,7 @@ function retrieveDataFromDB(insertDataIntoDE){
                         resultMap.PromotionCategoryRank =PromotionCategoryRank;
                         resultMap.RankedValue =RankedValue;
                         resultMap.id = data[key].id;
+
                         requestData.items[key] = resultMap;
                     }
                     var temp = requestData.items;
@@ -406,7 +425,6 @@ function retrieveDataFromDB(insertDataIntoDE){
                         scheduleJobRetry++;
                     }
                     else{
-                        //console.log("requestData==>"+JSON.stringify(requestData));
                         console.log("enter insertDE operation");
                         insertDataIntoDE(insertDEUrl,requestData,retrieveAccessToken);
                     }
@@ -515,12 +533,19 @@ function insertDataIntoDB(queryStr,parameters){
 }
 
 function dateFormat(date){
-        var y = date.getFullYear();
-        var m = (date.getMonth() + 1) < 10 ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1);
-        var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
-        var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
-        var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
-        var formatdate = y+'-'+m+'-'+d + "T" + h + ":" + f;
-        console.log("formdate===>"+formatdate);
-        return formatdate;
+    var y = date.getFullYear();
+    var m = (date.getMonth() + 1) < 10 ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1);
+    var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
+    var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
+    var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
+    var formatdate = y+'-'+m+'-'+d + "T" + h + ":" + f;
+    console.log("formdate===>"+formatdate);
+    return formatdate;
+}
+
+function addOneDate(dateStr,actionTimes){
+    var addDays = parseInt(actionTimes);
+    var targetDate = +(new Date(dateStr)) + 1000*60*60*24*addDays;
+    var targetDateStr = dateFormat(new Date(targetDate));
+    return targetDateStr;
 }

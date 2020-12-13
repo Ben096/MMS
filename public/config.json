@@ -32,7 +32,7 @@
         }
     },
     "configurationArguments": {
-      "applicationExtensionKey": "95680b56-7b64-4eaf-95c3-23c06adba95c",
+      "applicationExtensionKey": "a916f834-cc28-4aa9-a7bc-12f86b0f58d7",
       "save": {
         "url": "https://caoffer.herokuapp.com/offer/save",
         "verb": "POST",

@@ -8,6 +8,7 @@ define([
     var connection = new Postmonger.Session();
     var authTokens = {};
     var payload = {};
+    var versionNumber = '';
 
     $(window).ready(onRender);
 
@@ -121,6 +122,14 @@ define([
     connection.trigger('requestInteraction');
     connection.on('requestedInteraction', function(interaction) {
         console.log("interaction==>"+JSON.stringify(interaction));
+        $.each(interaction,function(key,val)){
+            console.log("interaction key==>"+key);
+            console.log("interaction val==>"+val);
+            if(key=="version"){
+                console.log("version===>"+val);
+                versionNumber = val;
+            }
+        }
     });
 
 	String.prototype.replaceAll = function (FindText, RepText) {
@@ -129,6 +138,11 @@ define([
 	}
  
     function save() {
+
+        if(versionNumber != ''){
+            payload['arguments'].execute.inArguments.push({"version": versionNumber });
+        }
+
         console.log('customActivity Save function');
         var postcardURLValue = $('#postcard-url').val();
         var postcardTextValue = $('#postcard-text').val();
@@ -190,13 +204,7 @@ define([
 			var fieldname = fieldval.split('.')[2];
 			console.log('cx debug fieldname ', fieldname);
 			console.log('cx debug fieldval ', fieldval);
-            if("name"==fieldname){
-                payload['arguments'].execute.inArguments.push({"name": "{{Event." + eventDefinitionKey+".name}}" });
-            }
-            else if("Email"==fieldname){
-                payload['arguments'].execute.inArguments.push({"Email": "{{Event." + eventDefinitionKey+".Email}}" });
-            }
-            else if("LoyaltyID"==fieldname){
+            if("LoyaltyID"==fieldname){
                 payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
             }
             //the key is still fieldname, can not change into field name
