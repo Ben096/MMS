@@ -15,6 +15,8 @@ define([
     var duration = '';
     var OfferID = '';
 
+    var inArgumentsData='';
+
     $(window).ready(onRender);
 
     connection.on('initActivity', initialize);
@@ -56,24 +58,26 @@ define([
         map.endDate = '';
         map.startDate = '';
         //init UI data form
-        $.each(inArguments, function (index, inArgument) {
-            $.each(inArgument, function (key, val) {
-                console.log("customActivity key==>"+key);
-                console.log("customActivity val==>"+val);
-                if(key=='OfferStartDate'){
-                    map.startDate = val;
-                }
-                else if(key=='OfferExpiryDate'){
-                    map.endDate = val;
-                }
-                else if(key=='OfferID'){
-                    map.OfferID = val;
-                }
-                else if(key=='Duration'){
-                    map.duration = val;
-                }
-            });
-        });
+        // $.each(inArguments, function (index, inArgument) {
+        //     $.each(inArgument, function (key, val) {
+        //         console.log("customActivity key==>"+key);
+        //         console.log("customActivity val==>"+val);
+        //         if(key=='OfferStartDate'){
+        //             map.startDate = val;
+        //         }
+        //         else if(key=='OfferExpiryDate'){
+        //             map.endDate = val;
+        //         }
+        //         else if(key=='OfferID'){
+        //             map.OfferID = val;
+        //         }
+        //         else if(key=='Duration'){
+        //             map.duration = val;
+        //         }
+        //     });
+        // });
+
+        inArgumentsData = inArguments;
 
         //init 
         // $('#OfferID').val(map.OfferID);
@@ -120,10 +124,22 @@ define([
     connection.on('requestedInteraction', function(interaction) {
         console.log("interaction==>"+JSON.stringify(interaction));
         $.each(interaction,function(key,val){
-            console.log("interaction key==>"+key);
-            console.log("interaction val==>"+val);
             if(key=="version"){
-                console.log("version===>"+val);
+                $.each(inArgumentsData,function(index, inArgument){
+                    $.each(inArgument, function (key, val){
+                        console.log("inter key==>"+key);
+                        console.log("inter val==>"+JSON.stringify(val));
+                        if(key=="versionNumber"){
+                            var mapObj = val;
+                            //init 
+                            $('#OfferID').val(mapObj.OfferID);
+                            $('#Duration').val(mapObj.duration);
+                            $('#OfferExpiryDate').val(mapObj.endDate);
+                            $('#OfferStartDate').val(mapObj.startDate);
+
+                        }
+                    });
+                });
                 versionNumber = val;
             }
         });
@@ -140,7 +156,7 @@ define([
 
         if(versionNumber != ''){
             uiArgument.version = versionNumber;
-            //payload['arguments'].execute.inArguments.push({"version": versionNumber });
+            payload['arguments'].execute.inArguments.push({"versionNumber": uiArgument });
         }
 
         console.log('customActivity Save function');
@@ -169,7 +185,7 @@ define([
             OfferStartDate = dateFormat(today);
         }
         //payload['arguments'].execute.inArguments.push({"OfferStartDate": OfferStartDate });
-        uiArgument.OfferStartDate = startDate;
+        uiArgument.startDate = startDate;
 
         var OfferExpiryDate = $('#OfferExpiryDate').val();
         var duration = $('#Duration').val();
@@ -183,7 +199,7 @@ define([
             console.log("duration enddate==>"+new Date(endDate));
             OfferExpiryDate = dateFormat(new Date(endDate));
             //payload['arguments'].execute.inArguments.push({"Duration": duration });
-            uiArgument.Duration = duration;
+            uiArgument.duration = duration;
         }
         else if(OfferExpiryDate==''){
             console.log('set endDate to today');
@@ -191,8 +207,7 @@ define([
             OfferExpiryDate = dateFormat(today);
 
         }
-        payload['arguments'].execute.inArguments.push({"OfferExpiryDate": OfferExpiryDate });
-		uiArgument.OfferExpiryDate = OfferExpiryDate;
+		uiArgument.endDate = OfferExpiryDate;
 		//
 		//payload['arguments'].execute.inArguments.push({"DEName": "{{Event." + eventDefinitionKey+".name}}" });
 
@@ -206,7 +221,8 @@ define([
 			console.log('cx debug fieldname ', fieldname);
 			console.log('cx debug fieldval ', fieldval);
             if("LoyaltyID"==fieldname){
-                payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
+                //payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
+                uiArgument.LoyaltyID = fieldval;
             }
             //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
