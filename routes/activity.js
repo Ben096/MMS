@@ -64,6 +64,8 @@ var journeyID = '';
 var dataResult = [];
 var scheduleJobRetry=0;
 var addDays = -1;
+var currentStartDate = "";
+var currentEndDate = "";
 
 function retrieveDataFromDE(){
     console.log("offerIDTarget==>"+offerIDTarget);
@@ -194,7 +196,6 @@ exports.execute = function (req,res) {
 
         if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
             var map = {};
-            var mapDate = {};
             journeyID = decoded.journeyId;
             // decoded in arguments
             var decodedArgs = decoded.inArguments[0];
@@ -211,13 +212,13 @@ exports.execute = function (req,res) {
                     map.offerID = offerID;
                     offerIDTarget=offerID;
                 }
-                else if(startDate!=null && startDate!=''){
+                else if(startDate!=null && startDate!='' && currentStartDate==""){
                     map.startDate = startDate;
-                    mapDate.startDate = startDate;
+                    currentStartDate = startDate;
                 }
-                else if(endDate!=null && endDate!=''){
+                else if(endDate!=null && endDate!='' && currentEndDate==""){
                     map.endDate = endDate;
-                    mapDate.endDate = endDate;
+                    currentEndDate = endDate;
                 }
                 else if(duration!=null && duration!=''){
                     map.duration = duration;
@@ -232,7 +233,7 @@ exports.execute = function (req,res) {
                 map.journeyid = journeyID;
                 map.status = 'pending';
                 var queryStr = 'INSERT INTO offer.offer(startdate,enddate,journeyid,status,createddate,offerid,duration,loyaltyid) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar)';
-                var parameters = [map.startDate,map.endDate,map.journeyid,map.status,dateFormat(new Date()),map.offerID,map.duration,map.LoyaltyID];
+                var parameters = [addOneDate(currentStartDate,addDays),addOneDate(currentEndDate,addDays),map.journeyid,map.status,dateFormat(new Date()),map.offerID,map.duration,map.LoyaltyID];
                 insertDataIntoDB(queryStr,parameters);
             }
             //res.send(200, 'Execute');
@@ -276,10 +277,11 @@ exports.validate = function (req, res) {
  * POST Handler for /stop/ route of Activity.
  */
 exports.stop = function (req, res) {
-    // Data from the req and put it in an array accessible to the main app.
     console.log("stop");
-    //res.send(200, 'Validate');
     addDays = -1;
+    scheduleJobRetry = 3;
+    currentEndDate = "";
+    currentStartDate = "";
     console.log("stop addDays==>"+addDays);
     res.status(200).send('stop');
 };
