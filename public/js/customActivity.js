@@ -8,7 +8,12 @@ define([
     var connection = new Postmonger.Session();
     var authTokens = {};
     var payload = {};
+
     var versionNumber = '';
+    var startDate = '';
+    var endDate = '';
+    var duration = '';
+    var OfferID = '';
 
     $(window).ready(onRender);
 
@@ -24,13 +29,6 @@ define([
 
         connection.trigger('requestTokens');
         connection.trigger('requestEndpoints');
-		/*
- connection.trigger('updateButton', {
-            button: 'next',
-            text: 'next',
-            enabled: true
-        });*/
-        // $('#AdCode').val(AdCode);
 		console.log ('onRender function');
 		
     }
@@ -50,7 +48,7 @@ define([
 
         var inArguments = hasInArguments ? payload['arguments'].execute.inArguments : {};
 
-        console.log(inArguments);
+        console.log("inargument==>"+JSON.stringify(inArguments));
 
         var map = {};
         map.OfferID = '';
@@ -78,10 +76,10 @@ define([
         });
 
         //init 
-        $('#OfferID').val(map.OfferID);
-        $('#Duration').val(map.duration);
-        $('#OfferExpiryDate').val(map.endDate);
-        $('#OfferStartDate').val(map.startDate);
+        // $('#OfferID').val(map.OfferID);
+        // $('#Duration').val(map.duration);
+        // $('#OfferExpiryDate').val(map.endDate);
+        // $('#OfferStartDate').val(map.startDate);
 
        console.log('initActivity function');
     }
@@ -104,8 +102,7 @@ define([
 			eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
 			console.log(">>>Event Definition Key " + eventDefinitionKey);
 			/*If you want to see all*/
-			console.log('>>>Request Trigger', 
-			JSON.stringify(eventDefinitionModel));
+			console.log('>>>Request Trigger',JSON.stringify(eventDefinitionModel));
 		}
 
 	});
@@ -122,14 +119,14 @@ define([
     connection.trigger('requestInteraction');
     connection.on('requestedInteraction', function(interaction) {
         console.log("interaction==>"+JSON.stringify(interaction));
-        $.each(interaction,function(key,val)){
+        $.each(interaction,function(key,val){
             console.log("interaction key==>"+key);
             console.log("interaction val==>"+val);
             if(key=="version"){
                 console.log("version===>"+val);
                 versionNumber = val;
             }
-        }
+        });
     });
 
 	String.prototype.replaceAll = function (FindText, RepText) {
@@ -139,8 +136,11 @@ define([
  
     function save() {
 
+        var uiArgument = {};
+
         if(versionNumber != ''){
-            payload['arguments'].execute.inArguments.push({"version": versionNumber });
+            uiArgument.version = versionNumber;
+            //payload['arguments'].execute.inArguments.push({"version": versionNumber });
         }
 
         console.log('customActivity Save function');
@@ -160,16 +160,16 @@ define([
         }
          
         //CA UI Input value
-        payload['arguments'].execute.inArguments.push({"OfferID": OfferID });
+        //payload['arguments'].execute.inArguments.push({"OfferID": OfferID });
+        uiArgument.OfferID = OfferID;
 
         if(OfferStartDate==''){
             console.log('set startDate to today');
             var today = new Date();
             OfferStartDate = dateFormat(today);
         }
-        payload['arguments'].execute.inArguments.push({"OfferStartDate": OfferStartDate });
-
-
+        //payload['arguments'].execute.inArguments.push({"OfferStartDate": OfferStartDate });
+        uiArgument.OfferStartDate = startDate;
 
         var OfferExpiryDate = $('#OfferExpiryDate').val();
         var duration = $('#Duration').val();
@@ -182,7 +182,8 @@ define([
             var endDate = +startDate + 1000*60*60*24*i;
             console.log("duration enddate==>"+new Date(endDate));
             OfferExpiryDate = dateFormat(new Date(endDate));
-            payload['arguments'].execute.inArguments.push({"Duration": duration });
+            //payload['arguments'].execute.inArguments.push({"Duration": duration });
+            uiArgument.Duration = duration;
         }
         else if(OfferExpiryDate==''){
             console.log('set endDate to today');
@@ -191,7 +192,7 @@ define([
 
         }
         payload['arguments'].execute.inArguments.push({"OfferExpiryDate": OfferExpiryDate });
-		
+		uiArgument.OfferExpiryDate = OfferExpiryDate;
 		//
 		//payload['arguments'].execute.inArguments.push({"DEName": "{{Event." + eventDefinitionKey+".name}}" });
 
