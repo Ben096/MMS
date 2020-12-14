@@ -38,8 +38,8 @@ var retrieveTokenUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.auth.marketingcloud
 var insertDEUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.rest.marketingcloudapis.com/data/v1/async/dataextensions/key:OfferMatrixDeliveryTable/rows";
 var tokenRequestData={
 "grant_type": "client_credentials",
-"client_id": "rnriw78wwxfrpdw9ss37wown",
-"client_secret": "BDNX68eeMORjV1a6fZcVku6s" 
+"client_id": "pes9dm03ov1ec39rpdeed71o",
+"client_secret": "zmg1PH3zPiFi0C7j3SOjJGAc" 
 };
 
 const client = new ET_Client(
