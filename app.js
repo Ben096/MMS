@@ -49,6 +49,7 @@ app.post('/offer/save/', activity.save );
 app.post('/offer/validate/', activity.validate );
 app.post('/offer/publish/', activity.publish );
 app.post('/offer/execute/', activity.execute );
+app.post('/offer/stop/', activity.stop );
 
 //Toknization
 app.post('/sfmctokenization/resolve/', activity.resolveToken );

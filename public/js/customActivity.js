@@ -9,14 +9,6 @@ define([
     var authTokens = {};
     var payload = {};
 
-    var versionNumber = '';
-    var startDate = '';
-    var endDate = '';
-    var duration = '';
-    var OfferID = '';
-
-    var inArgumentsData='';
-
     $(window).ready(onRender);
 
     connection.on('initActivity', initialize);
@@ -31,6 +23,13 @@ define([
 
         connection.trigger('requestTokens');
         connection.trigger('requestEndpoints');
+		/*
+ connection.trigger('updateButton', {
+            button: 'next',
+            text: 'next',
+            enabled: true
+        });*/
+        // $('#AdCode').val(AdCode);
 		console.log ('onRender function');
 		
     }
@@ -50,7 +49,7 @@ define([
 
         var inArguments = hasInArguments ? payload['arguments'].execute.inArguments : {};
 
-        console.log("inargument==>"+JSON.stringify(inArguments));
+        console.log(inArguments);
 
         var map = {};
         map.OfferID = '';
@@ -58,32 +57,30 @@ define([
         map.endDate = '';
         map.startDate = '';
         //init UI data form
-        // $.each(inArguments, function (index, inArgument) {
-        //     $.each(inArgument, function (key, val) {
-        //         console.log("customActivity key==>"+key);
-        //         console.log("customActivity val==>"+val);
-        //         if(key=='OfferStartDate'){
-        //             map.startDate = val;
-        //         }
-        //         else if(key=='OfferExpiryDate'){
-        //             map.endDate = val;
-        //         }
-        //         else if(key=='OfferID'){
-        //             map.OfferID = val;
-        //         }
-        //         else if(key=='Duration'){
-        //             map.duration = val;
-        //         }
-        //     });
-        // });
-
-        inArgumentsData = inArguments;
+        $.each(inArguments, function (index, inArgument) {
+            $.each(inArgument, function (key, val) {
+                console.log("customActivity key==>"+key);
+                console.log("customActivity val==>"+val);
+                if(key=='OfferStartDate'){
+                    map.startDate = val;
+                }
+                else if(key=='OfferExpiryDate'){
+                    map.endDate = val;
+                }
+                else if(key=='OfferID'){
+                    map.OfferID = val;
+                }
+                else if(key=='Duration'){
+                    map.duration = val;
+                }
+            });
+        });
 
         //init 
-        // $('#OfferID').val(map.OfferID);
-        // $('#Duration').val(map.duration);
-        // $('#OfferExpiryDate').val(map.endDate);
-        // $('#OfferStartDate').val(map.startDate);
+        $('#OfferID').val(map.OfferID);
+        $('#Duration').val(map.duration);
+        $('#OfferExpiryDate').val(map.endDate);
+        $('#OfferStartDate').val(map.startDate);
 
        console.log('initActivity function');
     }
@@ -106,7 +103,8 @@ define([
 			eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
 			console.log(">>>Event Definition Key " + eventDefinitionKey);
 			/*If you want to see all*/
-			console.log('>>>Request Trigger',JSON.stringify(eventDefinitionModel));
+			console.log('>>>Request Trigger', 
+			JSON.stringify(eventDefinitionModel));
 		}
 
 	});
@@ -124,24 +122,8 @@ define([
     connection.on('requestedInteraction', function(interaction) {
         console.log("interaction==>"+JSON.stringify(interaction));
         $.each(interaction,function(key,val){
-            if(key=="version"){
-                $.each(inArgumentsData,function(index, inArgument){
-                    $.each(inArgument, function (key, val){
-                        console.log("inter key==>"+key);
-                        console.log("inter val==>"+JSON.stringify(val));
-                        if(key=="versionNumber"){
-                            var mapObj = val;
-                            //init 
-                            $('#OfferID').val(mapObj.OfferID);
-                            $('#Duration').val(mapObj.duration);
-                            $('#OfferExpiryDate').val(mapObj.endDate);
-                            $('#OfferStartDate').val(mapObj.startDate);
-
-                        }
-                    });
-                });
-                versionNumber = val;
-            }
+            console.log("interaction key==>"+key);
+            console.log("interaction val==>"+val);
         });
     });
 
@@ -151,13 +133,6 @@ define([
 	}
  
     function save() {
-
-        var uiArgument = {};
-
-        if(versionNumber != ''){
-            uiArgument.version = versionNumber;
-            payload['arguments'].execute.inArguments.push({"versionNumber": uiArgument });
-        }
 
         console.log('customActivity Save function');
         var postcardURLValue = $('#postcard-url').val();
@@ -176,16 +151,16 @@ define([
         }
          
         //CA UI Input value
-        //payload['arguments'].execute.inArguments.push({"OfferID": OfferID });
-        uiArgument.OfferID = OfferID;
+        payload['arguments'].execute.inArguments.push({"OfferID": OfferID });
 
         if(OfferStartDate==''){
             console.log('set startDate to today');
             var today = new Date();
             OfferStartDate = dateFormat(today);
         }
-        //payload['arguments'].execute.inArguments.push({"OfferStartDate": OfferStartDate });
-        uiArgument.startDate = startDate;
+        payload['arguments'].execute.inArguments.push({"OfferStartDate": OfferStartDate });
+
+
 
         var OfferExpiryDate = $('#OfferExpiryDate').val();
         var duration = $('#Duration').val();
@@ -198,8 +173,7 @@ define([
             var endDate = +startDate + 1000*60*60*24*i;
             console.log("duration enddate==>"+new Date(endDate));
             OfferExpiryDate = dateFormat(new Date(endDate));
-            //payload['arguments'].execute.inArguments.push({"Duration": duration });
-            uiArgument.duration = duration;
+            payload['arguments'].execute.inArguments.push({"Duration": duration });
         }
         else if(OfferExpiryDate==''){
             console.log('set endDate to today');
@@ -207,7 +181,8 @@ define([
             OfferExpiryDate = dateFormat(today);
 
         }
-		uiArgument.endDate = OfferExpiryDate;
+        payload['arguments'].execute.inArguments.push({"OfferExpiryDate": OfferExpiryDate });
+		
 		//
 		//payload['arguments'].execute.inArguments.push({"DEName": "{{Event." + eventDefinitionKey+".name}}" });
 
@@ -221,8 +196,7 @@ define([
 			console.log('cx debug fieldname ', fieldname);
 			console.log('cx debug fieldval ', fieldval);
             if("LoyaltyID"==fieldname){
-                //payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
-                uiArgument.LoyaltyID = fieldval;
+                payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
             }
             //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });

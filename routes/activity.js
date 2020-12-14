@@ -63,11 +63,7 @@ var offerIDTarget = "";
 var journeyID = '';
 var dataResult = [];
 var scheduleJobRetry=0;
-
-var versionList = [];
-var currentDateMap = {};
-var executionTimes = [];
-
+var addDays = -1;
 
 function retrieveDataFromDE(){
     console.log("offerIDTarget==>"+offerIDTarget);
@@ -199,8 +195,6 @@ exports.execute = function (req,res) {
         if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
             var map = {};
             var mapDate = {};
-            let currentStartDate = '';
-            let currentEndDate = '';
             journeyID = decoded.journeyId;
             // decoded in arguments
             var decodedArgs = decoded.inArguments[0];
@@ -233,32 +227,6 @@ exports.execute = function (req,res) {
                 }
             }
 
-            if(executionTimes.hasOwnProperty(versionNumber)){
-                
-            }
-            else{
-                //for first time running
-                let i = parseInt(versionNumber); 
-                executionTimes[i]=1;
-            }
-            // if(versionNumber != null && versionNumber != ''){
-            //     if(versionList.hasOwnProperty(versionNumber)){
-            //         console.log("has property");
-            //         //retrieve mapDate, and add one day
-            //         let indexNum = parseInt(versionNumber);
-            //         let dateObj = versionList[indexNum];
-            //         addOneDate(dateObj.startDate);
-            //         addOneDate(dateObj.endDate);
-            //     }
-            //     else{
-            //         //for first time running
-            //         console.log("has no property");
-            //         let indexNum = parseInt(versionNumber);
-            //         versionList.splice(indexNum,0,mapDate);
-            //     }
-            // }
-
-
             var isEmpty = JSON.stringify(map)=="{}";
             if(isEmpty!=true){
                 map.journeyid = journeyID;
@@ -287,6 +255,8 @@ exports.publish = function (req, res) {
     //reset 
     scheduleJobRetry = 0;
     offerIDTarget='';
+    addDays++;
+    console.log("addDays==>"+addDays);
     setScheduleJob(rule);
     //res.send(200, 'Publish');
     res.status(200).send('Publish');
@@ -300,6 +270,18 @@ exports.validate = function (req, res) {
     console.log("Validate");
     //res.send(200, 'Validate');
     res.status(200).send('Validate');
+};
+
+/*
+ * POST Handler for /stop/ route of Activity.
+ */
+exports.stop = function (req, res) {
+    // Data from the req and put it in an array accessible to the main app.
+    console.log("stop");
+    //res.send(200, 'Validate');
+    addDays = -1;
+    console.log("stop addDays==>"+addDays);
+    res.status(200).send('stop');
 };
 
 
