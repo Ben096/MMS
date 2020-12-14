@@ -161,9 +161,9 @@ define([
         payload['arguments'].execute.inArguments.push({"OfferStartDate": OfferStartDate });
 
 
-
         var OfferExpiryDate = $('#OfferExpiryDate').val();
         var duration = $('#Duration').val();
+        payload['arguments'].execute.inArguments.push({"Duration": duration });
         
         if(duration != ''){
             console.log("se enddate with duration");
