@@ -23,8 +23,9 @@ var pgConfig = {
 var pgPool = new pgOpt.Pool(pgConfig);
 
 const ET_Client     = require('sfmc-fuelsdk-node');
-const clientId      = "rnriw78wwxfrpdw9ss37wown";
-const clientSecret  = "BDNX68eeMORjV1a6fZcVku6s";
+//should be same as the installed package
+const clientId      = "pes9dm03ov1ec39rpdeed71o";
+const clientSecret  = "zmg1PH3zPiFi0C7j3SOjJGAc";
 const stack         = null;
 
 
