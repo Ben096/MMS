@@ -201,6 +201,7 @@ exports.execute = function (req,res) {
             // decoded in arguments
             var decodedArgs = decoded.inArguments[0];
             var versionNumber = '';
+            console.log("decoded.inArguments==>"+JSON.stringify(decoded.inArguments));
             for(var i in decoded.inArguments){
                 var startDate = decoded.inArguments[i].OfferStartDate;
                 var endDate = decoded.inArguments[i].OfferExpiryDate;
