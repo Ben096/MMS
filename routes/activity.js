@@ -67,6 +67,7 @@ var scheduleJobRetry=0;
 var addDays = -1;
 var currentStartDate = "";
 var currentEndDate = "";
+var isStartSchedule = false;
 
 function retrieveDataFromDE(){
     console.log("offerIDTarget==>"+offerIDTarget);
@@ -196,6 +197,7 @@ exports.execute = function (req,res) {
         }
 
         if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
+            isStartSchedule = true;
             var map = {};
             journeyID = decoded.journeyId;
             // decoded in arguments
@@ -284,6 +286,7 @@ exports.stop = function (req, res) {
     scheduleJobRetry = 3;
     currentEndDate = "";
     currentStartDate = "";
+    isStartSchedule = false;
     console.log("stop addDays==>"+addDays);
     res.status(200).send('stop');
 };
@@ -303,7 +306,7 @@ function setScheduleJob(rule){
             console.log("stop database server connection");
             j.cancel();
         }
-        else{
+        else if(isStartSchedule==true){
             if(offerIDTarget!=null && offerIDTarget!=''){
                 console.log("enter sfmc-fuelsdk-node");
                 retrieveDataFromDE().then(function(){
