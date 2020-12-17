@@ -4,14 +4,14 @@ var util = require('util');
 // Deps
 const Path = require('path');
 const JWT = require(Path.join(__dirname, '..', 'lib', 'jwtDecoder.js'));
-var util = require('util');
+// var util = require('util');
+// var http = require('https');
 var schedule = require('node-schedule');
-var request = require('request');
 
 //connect postgreSql
 var pgOpt = require('pg');
 var pgConfig = {
-    user: 'ldqtsrlnhklkwm',
+	user: 'ldqtsrlnhklkwm',
     database: 'd3dvc63s4josrb',
     password: '3165f7e45987e7ec447054650fab84a15194a75b6283b1c5bdb5a3f809894d9e',
     host: 'ec2-75-101-212-64.compute-1.amazonaws.com',
@@ -22,104 +22,47 @@ var pgConfig = {
 };
 var pgPool = new pgOpt.Pool(pgConfig);
 
-const ET_Client     = require('sfmc-fuelsdk-node');
-//should be same as the installed package
-const clientId      = "pes9dm03ov1ec39rpdeed71o";
-const clientSecret  = "zmg1PH3zPiFi0C7j3SOjJGAc";
-const stack         = null;
+    // var mysql = require('mysql');
+//connect mysql
+// var mysql = require('mysql');
+// var connection = mysql.createConnection({
+//   host     : 'cdb-5sm6xif4.cd.tencentcdb.com',
+//   user     : 'ben',
+//   password : 'ben_123@456!',
+//   port:'10009',
+//   database : 'big_data'
+// });
+// connection.connect();
 
+//var sync = require('synchronize');
 
-const origin              = 'https://mcjhmstdw76qsk9kk6m1zpwm4xf4.rest.marketingcloudapis.com/';
-const authOrigin          = 'https://mcjhmstdw76qsk9kk6m1zpwm4xf4.auth.marketingcloudapis.com/';
-const soapOrigin          = 'https://mcjhmstdw76qsk9kk6m1zpwm4xf4.soap.marketingcloudapis.com/';
+//must install this module
+var request = require('request');
+
+var tokenRequestData={
+"grant_type": "client_credentials",
+"client_id": "ax4u00gwgz98miujvqwekf5q",
+"client_secret": "HOgl7v37hVwSOjNYuPHOSdUP" 
+};
+
+var access_token = "";
+var journeyID = '';
+var scheduleJobRetry=0;
+// var requestData={
+// 	"items": []
+// };
 
 
 var retrieveTokenUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.auth.marketingcloudapis.com/v2/token";
-var insertDEUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.rest.marketingcloudapis.com/data/v1/async/dataextensions/key:OfferMatrixDeliveryTable/rows";
-var tokenRequestData={
-"grant_type": "client_credentials",
-"client_id": "pes9dm03ov1ec39rpdeed71o",
-"client_secret": "zmg1PH3zPiFi0C7j3SOjJGAc" 
-};
+var insertDEUrl = "https://mcjhmstdw76qsk9kk6m1zpwm4xf4.rest.marketingcloudapis.com/data/v1/async/dataextensions/key:CustomActivity_TargetedAd_DEV/rows";
 
-const client = new ET_Client(
-  clientId, 
-  clientSecret, 
-  stack, 
-  {
-    origin, 
-    authOrigin, 
-    soapOrigin, 
-    authOptions: { 
-      authVersion: 2, 
-      accountId: 7327915, 
-      scope: 'data_extensions_read data_extensions_write',
-      applicationType: 'server'
-    }
-  }
-);
-
-var access_token = "";
-var offerIDTarget = "";
-var journeyID = '';
-var dataResult = [];
-var scheduleJobRetry=0;
-var addDays = -1;
-var currentStartDate = "";
-var currentEndDate = "";
-var isStartSchedule = false;
-
-function retrieveDataFromDE(){
-    console.log("offerIDTarget==>"+offerIDTarget);
-    console.log("start retrieveDataFromDE");
-    return new Promise((resolve, reject) => {
-        //retrieve from DataExtension
-        const deRow = client.dataExtensionRow({
-                //dataExtension which you want to retrieve from
-                Name: 'BaseOfferTable',
-                //field name
-                props: ['OfferId','ALPExternalReference','OfferType','StoreGroup','Brand','PointCost',
-                'PromotionCategory','RankedValue','PromotionCategoryRank'],
-                filter: {
-                    leftOperand: 'offerID',
-                    //operator includes : equals, notEquals, greaterThan, lessThan
-                    operator: 'equals',
-                    rightOperand: offerIDTarget
-                }
-                // to return all rows, delete the filter property
-        });
-
-        deRow.get((err, res) => {
-            if (err) {
-                console.error("retrieve error===>"+err.message);
-                reject();
-            } 
-            else {
-                var temp = res.body.Results;
-                if(temp!=""){
-                    console.log("enter deRow");
-                    for (const result of res.body.Results) {
-                        for (const property of result.Properties.Property) {
-                            // var nameStr= property.Name;
-                            // var valueStr = property.Value;
-                            // dataResult.nameStr = valueStr
-                            //dataResult.push(property);
-                            dataResult.push(property);
-                        }
-                    }
-                }
-                else{
-                    //stop the schedule Job and Journey
-                    console.log("end schedule");
-                    scheduleJobRetry = 3;
-                }
-                resolve();
-            }
-        });
-    });
-    
-}
-
+var isStarScheduleJob = false;
+// const { Client } = require('pg');
+// const client = new Client({
+// 	  connectionString: process.env.DATABASE_URL,
+// 	  ssl: true,
+// 	});
+// client.connect();
 
 exports.logExecuteData = [];
 
@@ -162,89 +105,149 @@ function logData(req) {
     console.log("originalUrl: " + req.originalUrl);
 	console.log("headers inspect: " + util.inspect(req.headers) );
 	console.log("headers stringify: " + JSON.stringify( req.headers  ));
+	/*
+	var buf = Buffer.from(util.inspect(req.body));  
+	console.log("body no inspect: " + req.body);	
+	console.log("body buffer: " + buf.toString());
+	
+	var j2 = buf.toJSON();
+	console.log("body json: " + JSON.stringify(j2) );
+	
+	var j3 = buf.toJSON();
+	console.log("body json: " + JSON.stringify(buf.toString()) );
+	*/
+	//let j1 = JSON.stringify(buf);
+	//console.log("body json: " + j1 );
+	
 }
 
+// function insertActivityLog(pl) {
+// 	client.connect();
+// 	var qry = 'CALL insert_activity_log ( \'HourlyBatch\' ,  \'JBInbound\',\''+ pl+'\',\'Log\' )';
+// 	client.query(qry, (err, res) => {
+// 	  if (err) throw err;
+// 	  for (let row of res.rows) {
+// 		console.log(JSON.stringify(row));
+// 	  }
+// 	  client.end();
+// 	});
+// }
 
 /*
  * POST Handler for / route of Activity (this is the edit route).
  */
 exports.edit = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
-    console.log("Edit");
+    console.log( 'Edit module' );
+    //logData(req);
+    //res.send(200, 'Edit');
     res.status(200).send('Edit');
+};
+
+/*
+ * POST Handler for /stop/ route of Activity.
+ */
+exports.stop = function (req, res) {
+    // Data from the req and put it in an array accessible to the main app.
+    console.log( 'stop module' );
+    isStarScheduleJob = false;
+    scheduleJobRetry = 3;
+    //logData(req);
+    //res.send(200, 'stop');
+    res.status(200).send('stop');
 };
 
 /*
  * POST Handler for /save/ route of Activity.
  */
 exports.save = function (req, res) {
-    console.log("Save");
+    console.log('save module');
+
+    //logData(req);
+    //res.send(200, 'Save');
     res.status(200).send('Save');
 };
 
 /*
  * POST Handler for /execute/ route of Activity.
  */
-exports.execute = function (req,res) {
-	
+exports.execute = function (req, res) {
+	//console.log('execute module');
     // example on how to decode JWT
     JWT(req.body, 'Hello world', (err, decoded) => {
 
         // verification error -> unauthorized request
         if (err) {
-            console.error("JWT error===>"+err);			
+            console.error("JWT==>"+err);			
             return res.status(401).end();
         }
 
-        if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
-            isStartSchedule = true;
-            var map = {};
-            journeyID = decoded.journeyId;
-            // decoded in arguments
-            var decodedArgs = decoded.inArguments[0];
-            var versionNumber = '';
-            console.log("decoded.inArguments==>"+JSON.stringify(decoded.inArguments));
-            for(var i in decoded.inArguments){
-                var startDate = decoded.inArguments[i].OfferStartDate;
-                var endDate = decoded.inArguments[i].OfferExpiryDate;
-                var offerID = decoded.inArguments[i].OfferID;
-                var duration = decoded.inArguments[i].Duration;
-                var LoyaltyID = decoded.inArguments[i].LoyaltyID;
-                //versionNumber = decoded.inArguments[i].version;
-                versionNumber = decoded.inArguments[i].version;
-                if(offerID!=null && offerID!=''){
-                    map.offerID = offerID;
-                    offerIDTarget=offerID;
-                }
-                else if(startDate!=null && startDate!='' && currentStartDate==""){
-                    map.startDate = startDate;
-                    currentStartDate = startDate;
-                }
-                else if(endDate!=null && endDate!='' && currentEndDate==""){
-                    map.endDate = endDate;
-                    currentEndDate = endDate;
-                }
-                else if(duration!=null && duration!=''){
-                    map.duration = duration;
-                }
-                else if(LoyaltyID!=null && LoyaltyID!=''){
-                    map.LoyaltyID = LoyaltyID;
-                }
-            }
 
-            var isEmpty = JSON.stringify(map)=="{}";
-            if(isEmpty!=true){
-                map.journeyid = journeyID;
-                map.status = 'pending';
-                var queryStr = 'INSERT INTO offer.offer(startdate,enddate,journeyid,status,createddate,offerid,duration,loyaltyid) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar)';
-                var parameters = [addOneDate(currentStartDate,addDays),addOneDate(currentEndDate,addDays),map.journeyid,map.status,dateFormat(new Date()),map.offerID,map.duration,map.LoyaltyID];
-                insertDataIntoDB(queryStr,parameters);
-            }
+        if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
+        	isStarScheduleJob = true;
+            var map = {};
+            // decoded in arguments
+            var decodedArgs = decoded.inArguments[0];            
+
+			// console.log("decodedArgs==>" +JSON.stringify(  decodedArgs  ));
+			// console.log( "decoded==>"+JSON.stringify(  decoded  ));
+			// console.log("inArguments==>"+JSON.stringify(  decoded.inArguments  ));
+			// console.log("journeyId==>"+JSON.stringify(decoded.journeyId));
+			journeyID = decoded.journeyId;
+
+			for(var i in decoded.inArguments){
+				var adCode = decoded.inArguments[i].ADCode;
+				var startDate = decoded.inArguments[i].startDate;
+				var endDate = decoded.inArguments[i].endDate;
+				var LoyaltyID = decoded.inArguments[i].LoyaltyID;
+				var LocationGroup = decoded.inArguments[i].LocationGroup;
+				var AdPosition = decoded.inArguments[i].AdPosition;
+				var RankedValue = decoded.inArguments[i].RankedValue;
+				if(adCode!=null){
+					map.ADCode = adCode;
+				}
+				else if(startDate !=null){
+					map.startDate = startDate;
+				}
+				else if(endDate !=null){
+					map.endDate = endDate;
+				}
+				else if(LoyaltyID !=null){
+					map.LoyaltyID = LoyaltyID;
+				}
+				else if(LocationGroup !=null){
+					map.LocationGroup = LocationGroup;
+				}
+				else if(AdPosition !=null){
+					map.AdPosition = AdPosition;
+				}
+				else if(RankedValue !=null){
+					map.RankedValue = RankedValue;
+				}
+			}
+			var isEmpty = JSON.stringify(map)=="{}";
+			if(isEmpty!=true){
+				map.journeyid = journeyID;
+				map.status = 'pending';
+				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::int,$9::int,$10::varchar)';
+				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
+				insertDataIntoDB(queryStr,parameters);
+			}
+			//insertActivityLog(JSON.stringify(  decodedArgs  ));
+			// map.startDate = new Date();
+			// map.endDate = new Date();
+			//requestData.items[0]=map;
+			
+			//insertDataIntoDE(insertDEUrl,requestData);
             //res.send(200, 'Execute');
-            res.status(200).send('Execute');
+            res.status(200).send('Excute');
+            //Then , it will update the status to success
         } else {
+        	//Then, it will update the status to failed, and retry is 1;
+
             console.error('inArguments invalid.');
             return res.status(400).end();
+
         }
     });
 };
@@ -254,15 +257,22 @@ exports.execute = function (req,res) {
  * POST Handler for /publish/ route of Activity.
  */
 exports.publish = function (req, res) {
+    // Data from the req and put it in an array accessible to the main app.
+    //console.log( req.body );
     console.log('publish module');
-    var rule = '0 0/15 * * * *';
+    // var nowDate = new Date();
+    // var m = nowDate.getMonth() + 1;
+    // var d = nowDate.getDate();
+    // var h = nowDate.getHours();
+    // var f = nowDate.getMinutes();
+    // var mm = parseInt(f)+5;
+    //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
+    var rule = '0 0/3 * * * *';
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
-    offerIDTarget='';
-    addDays++;
-    console.log("addDays==>"+addDays);
-    setScheduleJob(rule);
+    setScheduleJob(rule,retrieveDataFromDB);
+    //logData(req);
     //res.send(200, 'Publish');
     res.status(200).send('Publish');
 };
@@ -272,253 +282,281 @@ exports.publish = function (req, res) {
  */
 exports.validate = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
-    console.log("Validate");
+    //console.log( req.body );
+    console.log('validate module');
+    //logData(req);
     //res.send(200, 'Validate');
     res.status(200).send('Validate');
 };
 
-/*
- * POST Handler for /stop/ route of Activity.
- */
-exports.stop = function (req, res) {
-    console.log("stop");
-    addDays = -1;
-    scheduleJobRetry = 3;
-    currentEndDate = "";
-    currentStartDate = "";
-    isStartSchedule = false;
-    console.log("stop addDays==>"+addDays);
-    res.status(200).send('stop');
-};
-
 
 exports.resolveToken = function (req, res) {
+
+	// var bd = req.body;
+	
+	// //console.log ( util.inspect( req.headers) );
+	// var un = req.headers['username'];
+	// var pw = req.headers['password']; 
+	// var auth = req.headers['authorization'];
+	// var valid = false;
+	// if (un == '123' && pw =='123'){
+	// 	valid=true;
+	// }else if (auth = 'Basic MTIzOnF3ZQ==') {
+	// 	valid=true;
+	// }
+	
+	// if (!valid ){
+	// 	 res.status(401).send('Authentication not passed.');
+	// 	return;
+	// }
+	// console.log ('REQUEST BODY'+ util.inspect (bd.tokens));
+
+ //  //  logData(req);
+		 
+	// var jresp = {};
+	// jresp.resolvedTokens=[];
+	// jresp.unresolvedTokens=[];
+	// var tokens  = bd['tokens'];
+	// var tokenArray = [];
+	// var resultArray = [];
+	// var requestTokenMap = new Map();
+	// var tokenValueMap = new Map();
+	// for(var j = 0;j<tokens.length;j++){
+	// 	var tokenRequestID = tokens[j].tokenRequestId;
+	// 	tokenArray.push (tokens[j].token );
+	// 	requestTokenMap.set (tokenRequestID, tokens[j].token);
+	// }
+	
+	// for (var i =0;i<450;i++){
+	// 	var ranInt =Math.floor((Math.random()*10000)+1); 
+	// 	var t = 'tkn'+ (i+ranInt)+'@dtt.com.cn';
+	// 	tokenArray.push (t);
+	// 	requestTokenMap.set (t,t);
+	//  }
+	
+	// var channel = 'Email';
+	// var sendKey = bd['sendKey'];
+	// if (sendKey.includes('mobile')){
+	// 	channel = 'Mobile';
+	// }
+	// client.query( 'select * from public.resolve_token_batch($1 ,$2 ) ',[channel, tokenArray] ,(err, resp) => {
+	//   if (err) throw err;
+	//   for (let row of resp.rows) {
+	// 	//console.log(JSON.stringify(row));
+	// 	tokenValueMap.set (row.token, row.tokenvalue);
+
+	//   }
+	  
+	 
+	
+	//  for (var pair of requestTokenMap){
+	// 	var key = pair[0];
+	// 	var val = pair[1];
+
+	// 	var item = {};
+	// 	item.tokenRequestId = key;
+	// 	var tknVal = tokenValueMap.get(val);	
+
+	// 	if (tknVal != null ){
+	// 		item.tokenValue = tknVal;
+	// 		item.attributes = [{"name":"First_Name","value":"static_firstName"},{"name":"myAttr1","value":"myVal1"}]; 		  
+	// 		jresp.resolvedTokens.push (item);
+	// 	}else{
+	// 		item.message = 'Invalid token; token does not exist.';
+	// 		jresp.unresolvedTokens.push(item);
+	// 	}
+	//  } 
+	//   console.log( 'RESPONSE BODY: ' +JSON.stringify(jresp) );
+	//  // res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	//   res.status(200).send(JSON.stringify(jresp));
+	// }) 
  
 };
 
-function setScheduleJob(rule){
-    console.log("start scheduleJob");
-    var j = schedule.scheduleJob(rule,function(){
-        console.log("schedule Job Starting");
-        console.log("retrySchedule==>"+scheduleJobRetry);
-        if(scheduleJobRetry>=3){
-            console.log("stop schedule");
-            console.log("stop database server connection");
-            j.cancel();
-        }
-        else if(isStartSchedule==true){
-            if(offerIDTarget!=null && offerIDTarget!=''){
-                console.log("enter sfmc-fuelsdk-node");
-                retrieveDataFromDE().then(function(){
-                    retrieveDataFromDB(insertDataIntoDE);
-                });
-            }
-        }
-    });
-}
-
-function retrieveDataFromDB(insertDataIntoDE){
-    if(scheduleJobRetry>=3){
-        console.log("stop retrieveDataFromDB");
-        return;
-    }
-    else{
-        console.log("retrieveDataFromDB function");
-        // var reuslt = '';
-        var dateStr = dateFormat(new Date());
-        pgPool.connect(function (isErr, client, done) {
-            console.log("journeyID==?=>"+journeyID);
-            if (isErr) {
-                console.log('connect query:' + isErr.message);
-                return;
-            }
-            client.query("select id,offerID,startdate,enddate,duration,loyaltyid from offer.offer where status !='success' and journeyid=$1 and createddate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
-                done();//释放连接，归还给连接池
-                if (isErr) {
-                    console.log('retrieve from db query error:' + isErr.message);
-                } 
-                else {
-                    //console.log('query success, data is: ' + JSON.stringify(rst.rows));
-                    // reuslt = rst.rows;
-                    var data = rst.rows;
-                    console.log("get data-->"+JSON.stringify(data));
-                    var requestData={
-                        "items": []
-                    };
-                    //insert related DB rows
-                    var PointCost='';
-                    var PromotionCategory='';
-                    var StoreGroup = '';
-                    var Brand = '';
-                    var OfferType = '';
-                    var ALPExternalReference='';
-                    var PromotionCategoryRank='';
-                    var RankedValue = '';
-                    console.log('dataResult str==>'+JSON.stringify(dataResult));
-                    for(var i in dataResult){
-                        var nameT = dataResult[i].Name;
-                        var valueT = dataResult[i].Value;
-                        switch(nameT){
-                            case "ALPExternalReference":
-                            ALPExternalReference=valueT;
-                            break;
-                            case "OfferType":
-                            OfferType=valueT;
-                            break;
-                            case "StoreGroup":
-                            StoreGroup=valueT;
-                            break;
-                            case "Brand":
-                            Brand=valueT;
-                            break;
-                            case "PointCost":
-                            PointCost=valueT;
-                            break;
-                            case "PromotionCategory":
-                            PromotionCategory=valueT;
-                            break;
-                            case "RankedValue":
-                            RankedValue=valueT;
-                            break;
-                            case "PromotionCategoryRank":
-                            PromotionCategoryRank=valueT;
-                            break;
-                        }
-
-                    }
-
-                    for(var key in data){
-                        var resultMap = {};
-                        resultMap.LoyaltyID =data[key].loyaltyid;
-                        resultMap.OfferId =data[key].offerid;
-
-                        resultMap.PointCost =PointCost;
-                        resultMap.PromotionCategory =PromotionCategory;
-                        resultMap.StoreGroup =StoreGroup;
-                        resultMap.Brand =Brand;
-                        resultMap.OfferType =OfferType;
-                        resultMap.OfferStartDate =data[key].startdate;
-                        resultMap.OfferExpiryDate =data[key].enddate;
-                        resultMap.ALPExternalReference =ALPExternalReference;
-                        resultMap.PromotionCategoryRank =PromotionCategoryRank;
-                        resultMap.RankedValue =RankedValue;
-                        resultMap.id = data[key].id;
-
-                        requestData.items[key] = resultMap;
-                    }
-                    var temp = requestData.items;
-                    var len = temp.length;
-                    console.log("len==>"+len);
-                    if(len ==0){
-                        console.log("no data to retrieve");
-                        scheduleJobRetry++;
-                    }
-                    else{
-                        console.log("enter insertDE operation");
-                        insertDataIntoDE(insertDEUrl,requestData,retrieveAccessToken);
-                    }
-                }
-            });
-        });
-    }
-}
-
-function insertDataIntoDE(url,data,retrieveAccessToken){
-    retrieveAccessToken(retrieveTokenUrl,tokenRequestData,data,url);
-}
-
 function retrieveAccessToken(url,data,deData,deUrl){
-    request({
+	request({
         url: url,
         method: "POST",
         json: true,
         headers : {
-            "Content-type" : "application/JSON"
-        },
+			"Content-type" : "application/JSON"
+		},
         body: tokenRequestData
     }, function(error, response, body) {
         if (!error) {
             //console.log(body) // 请求成功的处理逻辑
             access_token = body.access_token;
             console.log("get token==>"+access_token);
-            console.log('dedata==>'+JSON.stringify(deData));
+            //console.log('dedata==>'+JSON.stringify(deData));
             console.log("deURL==>"+deUrl);
             request({
-                url: deUrl,
-                method: "PUT",
-                json: true,
-                headers : {
-                    "Content-type" : "application/JSON",
-                    "Authorization" : "Bearer "+access_token
-                },
-                body: deData
-                }, function(error, response, body) {
-                    if(error){
-                        console.log("has error");
-                        console.log("response==>"+JSON.stringify(response));
-                        console.log("body==>"+JSON.stringify(body));
-                    }
-                    else{
-                        console.log('done');
-                        var targetRecords = deData.items;
-                        console.log("target data len==>"+targetRecords.length);
-                        console.log("targetRecords==>"+JSON.stringify(targetRecords));
-                        var len = targetRecords.length-1;
-                        if(targetRecords.length > 0){
-                            console.log("targetID in loop==>"+targetRecords[len].id);
-                            updateRecordsStatus(targetRecords[len].id);
-                        }
-                    }
-                }
-            );
+    			url: deUrl,
+    			method: "PUT",
+    			json: true,
+    			headers : {
+					"Content-type" : "application/JSON",
+					"Authorization" : "Bearer "+access_token
+				},
+    			body: deData
+    			}, function(error, response, body) {
+    				if(error){
+    					console.log("has error");
+    					console.log("response==>"+JSON.stringify(response));
+    					console.log("body==>"+JSON.stringify(body));
+    				}
+    				else{
+    					console.log('done');
+    					//update records status
+    					//var updateList = [];
+    					
+    					//console.log("updateList==>"+JSON.stringify(updateList));
+    					//var sql = 'insert into ben.input(status, id) values ($1::varchar, $2::varchar) on duplicate key update status = $1::varchar';
+    					var targetRecords = deData.items;
+    					console.log("target data len==>"+targetRecords.length);
+    					//console.log("targetRecords==>"+JSON.stringify(targetRecords));
+    					var len = targetRecords.length-1;
+    					if(targetRecords.length > 0){
+    						updateRecordsStatus(targetRecords[len].id);
+    					}
+    					
+    					// for(var i in targetRecords){
+    					// 	console.log("loop id==>"+targetRecords[i].id);
+    					// 	updateRecordsStatus(targetRecords[i].id);
+    					// }
+    				}
+    			}
+    		);
         }
         else{
-            console.log("retrieve token error==>"+error);
+        	console.log("retrieve token error==>"+error);
         }
     });
 }
 
 function updateRecordsStatus(id){
-    pgPool.connect(function (isErr, client, done) {
+	pgPool.connect(function (isErr, client, done) {
+		if (isErr) {
+			console.log('connect query:' + isErr.message);
+			return;
+		}
+		else{
+			console.log("last index==>"+id);
+			console.log("produce journeyID==>"+journeyID);
+			//call producure
+			client.query("CALL ben.updatestatus($1,$2);",[parseInt(id),journeyID],function(isErr, rst){
+				if(isErr){
+					console.log('call proc error:' + isErr.message);
+				}	
+				else{ 
+					console.log("call proc successfully");
+				}
+			});
+			client.release();
+		}
+	});
+}
+
+function retrieveDataFromDB(insertDataIntoDE){
+	var reuslt = '';
+	var dateStr = dateFormat(new Date());
+	console.log("dateStr==>"+dateStr);
+	console.log('retrieveDataFromDB');
+	pgPool.connect(function (isErr, client, done) {
+    	console.log("start connection");
+    	console.log("journeyID==?=>"+journeyID);
         if (isErr) {
             console.log('connect query:' + isErr.message);
             return;
         }
-        else{
-            console.log("last index==>"+id);
-            console.log("produce journeyID==>"+journeyID);
-            //call producure
-            client.query("CALL offer.updatestatus($1,$2);",[parseInt(id),journeyID],function(isErr, rst){
-                if(isErr){
-                    console.log('call proc error:' + isErr.message);
-                }   
-                else{ 
-                    console.log("call proc successfully");
-                }
-            });
-            client.release();
-        }
+        client.query("select id,startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup from ben.input where status !='success' and journeyid=$1 and createdate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
+            done();//释放连接，归还给连接池
+            if (isErr) {
+                console.log('retrieve from db query error:' + isErr.message);
+            } 
+            else {
+                //console.log('query success, data is: ' + JSON.stringify(rst.rows));
+                reuslt = rst.rows;
+                var data = rst.rows;
+                //console.log("get data-->"+JSON.stringify(reuslt));
+                var requestData={
+					"items": []
+				};
+				for(var key in data){
+					var resultMap = {};
+				
+					resultMap.id = data[key].id;
+					
+					resultMap.LoyaltyID = data[key].loyaltyid;
+					resultMap.TargetedAdStartDate =data[key].startdate;
+					resultMap.TargetedAdEndDate =data[key].enddate;
+					resultMap.ModifiedDate = new Date();
+					resultMap.TargetedAdCode = data[key].adcode;
+					resultMap.AdPosition =data[key].adposition;
+					resultMap.RankedValue =data[key].rankedvalue;
+					resultMap.StoresLocationGroup = data[key].locationgroup;
+
+					requestData.items[key] = resultMap;
+				}
+				var temp = requestData.items;
+				var len = temp.length;
+				if(len ==0){
+					console.log("no data to retrieve");
+					scheduleJobRetry=3;
+				}
+				else{
+					//console.log("requestData==>"+JSON.stringify(requestData));
+					console.log("enter insertDE operation");
+                	insertDataIntoDE(insertDEUrl,requestData,retrieveAccessToken);
+				}
+            }
+        });
     });
 }
 
+function insertDataIntoDE(url,data,retrieveAccessToken){
+	//retrieve access token
+	retrieveAccessToken(retrieveTokenUrl,tokenRequestData,data,url);
+	// console.log("access token Insert DE==>"+access_token);
+	// console.log("data Insert DE==>"+JSON.stringify(data));
+    
+}
+
 function insertDataIntoDB(queryStr,parameters){
-    console.log("insert str==>"+queryStr);
-    console.log("insert str==>"+JSON.stringify(parameters));
-    pgPool.connect(function (isErr, client){
-        if (isErr) {
-            console.log('connect query:' + isErr.message);
-            return;
-        }
-        client.query(queryStr, parameters, function (isErr, rst) {
-            //done();//释放连接，归还给连接池
-            if (isErr) {
-                console.log('execute query error:' + isErr.message);
-            } else {
-                //console.log('insert success!! ');
-            }
-        });
-        client.release();
-    });
+	pgPool.connect(function (isErr, client){
+		if (isErr) {
+    		console.log('connect query:' + isErr.message);
+    		return;
+		}
+		//['testn','testp']
+		//'INSERT INTO ben.input(name,email) VALUES($1::varchar, $2::varchar)'
+		client.query(queryStr, parameters, function (isErr, rst) {
+    		//done();//释放连接，归还给连接池
+    		if (isErr) {
+        		console.log('execute query error:' + isErr.message);
+    		} else {
+        		//console.log('insert success!! ');
+    		}
+		});
+ 		client.release();
+	});
+}
+
+function setScheduleJob(rule,retrieveDataFromDB){
+	console.log("start scheduleJob");
+	var j = schedule.scheduleJob(rule,function(){
+		console.log("schedule Job Starting");
+		console.log("retrySchedule==>"+scheduleJobRetry);
+		if(scheduleJobRetry>=3){
+			console.log("stop schedule");
+			console.log("stop database server connection");
+			j.cancel();
+		}
+		else{
+			if(isStarScheduleJob==true){
+				retrieveDataFromDB(insertDataIntoDE);
+			}
+		}
+	});
 }
 
 function dateFormat(date){
@@ -527,14 +565,9 @@ function dateFormat(date){
     var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
     var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
     var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
-    var formatdate = y+'-'+m+'-'+d + "T" + h + ":" + f;
-    console.log("formdate===>"+formatdate);
+    var sec = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
+    var formatdate = y+'-'+m+'-'+d + " " + h + ":" + f+":"+sec;
+    //console.log("activity formdate===>"+formatdate);
     return formatdate;
 }
 
-function addOneDate(dateStr,actionTimes){
-    var addDays = parseInt(actionTimes);
-    var targetDate = +(new Date(dateStr)) + 1000*60*60*24*addDays;
-    var targetDateStr = dateFormat(new Date(targetDate));
-    return targetDateStr;
-}
