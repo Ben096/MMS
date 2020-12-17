@@ -41,8 +41,8 @@ var request = require('request');
 
 var tokenRequestData={
 "grant_type": "client_credentials",
-"client_id": "ax4u00gwgz98miujvqwekf5q",
-"client_secret": "HOgl7v37hVwSOjNYuPHOSdUP" 
+"client_id": "pes9dm03ov1ec39rpdeed71o",
+"client_secret": "zmg1PH3zPiFi0C7j3SOjJGAc"
 };
 
 var access_token = "";

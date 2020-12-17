@@ -8,8 +8,8 @@
     "type": "REST",
     "lang": {
         "en-US": {
-            "name": "Offer",
-          "description": "Offer Custom Activity",
+            "name": "TargetAD",
+          "description": "TargetAD Custom Activity",
           "step1Label": "Configure Activity"
         }
     },
