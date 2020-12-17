@@ -195,14 +195,6 @@ exports.execute = function (req, res) {
 			// console.log("journeyId==>"+JSON.stringify(decoded.journeyId));
 			journeyID = decoded.journeyId;
 			
-			map.ADCode = "";
-			map.startDate = "";
-			map.endDate = "";
-			map.LoyaltyID = "";
-			map.LocationGroup = "";
-			map.AdPosition = 0;
-			map.RankedValue =0;
-			
 			for(var i in decoded.inArguments){
 				var adCode = decoded.inArguments[i].ADCode;
 				var startDate = decoded.inArguments[i].startDate;
@@ -238,7 +230,7 @@ exports.execute = function (req, res) {
 			if(isEmpty!=true){
 				map.journeyid = journeyID;
 				map.status = 'pending';
-				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::int,$9::int,$10::varchar)';
+				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
 				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
 				insertDataIntoDB(queryStr,parameters);
 			}
