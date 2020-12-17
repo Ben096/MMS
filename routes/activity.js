@@ -194,7 +194,15 @@ exports.execute = function (req, res) {
 			// console.log("inArguments==>"+JSON.stringify(  decoded.inArguments  ));
 			// console.log("journeyId==>"+JSON.stringify(decoded.journeyId));
 			journeyID = decoded.journeyId;
-
+			
+			map.ADCode = "";
+			map.startDate = "";
+			map.endDate = "";
+			map.LoyaltyID = "";
+			map.LocationGroup = "";
+			map.AdPosition = 0;
+			map.RankedValue =0;
+			
 			for(var i in decoded.inArguments){
 				var adCode = decoded.inArguments[i].ADCode;
 				var startDate = decoded.inArguments[i].startDate;
@@ -203,8 +211,7 @@ exports.execute = function (req, res) {
 				var LocationGroup = decoded.inArguments[i].LocationGroup;
 				var AdPosition = decoded.inArguments[i].AdPosition;
 				var RankedValue = decoded.inArguments[i].RankedValue;
-				map.AdPosition = 0;
-				map.RankedValue =0;
+
 				if(adCode!=null){
 					map.ADCode = adCode;
 				}
