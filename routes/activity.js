@@ -502,7 +502,7 @@ function retrieveDataFromDB(insertDataIntoDE){
 				var len = temp.length;
 				if(len ==0){
 					console.log("no data to retrieve");
-					isStarScheduleJob = false;
+					//isStarScheduleJob = false;
 				}
 				else{
 					//console.log("requestData==>"+JSON.stringify(requestData));
