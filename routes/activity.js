@@ -172,7 +172,7 @@ exports.save = function (req, res) {
  * POST Handler for /execute/ route of Activity.
  */
 exports.execute = function (req, res) {
-	//console.log('execute module');
+	console.log('execute module');
     // example on how to decode JWT
     JWT(req.body, 'Hello world', (err, decoded) => {
 
@@ -271,7 +271,7 @@ exports.publish = function (req, res) {
     var rule = '0 0/15 * * * *';
     console.log("rule==>"+rule);
     //reset 
-    scheduleJobRetry = 0;
+    //scheduleJobRetry = 0;
     setScheduleJob(rule,retrieveDataFromDB);
     //logData(req);
     //res.send(200, 'Publish');
@@ -502,6 +502,7 @@ function retrieveDataFromDB(insertDataIntoDE){
 				var len = temp.length;
 				if(len ==0){
 					console.log("no data to retrieve");
+					console.log("isStarScheduleJob==>"+isStarScheduleJob);
 					//isStarScheduleJob = false;
 				}
 				else{
@@ -546,7 +547,9 @@ function setScheduleJob(rule,retrieveDataFromDB){
 	console.log("start scheduleJob");
 	var j = schedule.scheduleJob(rule,function(){
 		console.log("schedule Job Starting");
-		console.log("retrySchedule==>"+scheduleJobRetry);
+		//console.log("retrySchedule==>"+scheduleJobRetry);
+		console.log("schedule isStarScheduleJob==>"+isStarScheduleJob);
+		
 		if(scheduleJobRetry>=3){
 			console.log("stop schedule");
 			console.log("stop database server connection");
@@ -554,6 +557,7 @@ function setScheduleJob(rule,retrieveDataFromDB){
 		}
 		else{
 			if(isStarScheduleJob==true){
+				console.log("do something");
 				retrieveDataFromDB(insertDataIntoDE);
 			}
 		}
