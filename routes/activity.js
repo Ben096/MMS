@@ -268,7 +268,7 @@ exports.publish = function (req, res) {
     // var f = nowDate.getMinutes();
     // var mm = parseInt(f)+5;
     //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
-    var rule = '0 0/3 * * * *';
+    var rule = '0 0/15 * * * *';
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;

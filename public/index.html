@@ -64,6 +64,14 @@
                 $("#AdPosition").removeClass("inputStyle");
             }
         }
+
+        function clearStartDate(){
+            $("#AdStartDate").val("");
+        }
+        
+        function clearEndDate(){
+            $("#AdEndDate").val("");
+        }
 </script>
 <body>
     <div id="step1" class="step">
@@ -80,9 +88,13 @@ Instructions:
         <input id="AdCode" type="text" name="AdCode" onblur="checkADCode()" /><br/>
         <span id="adCodeInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
         Targeted Ad Start Date
-        <input id="AdStartDate" type="datetime-local" name="AdStartDate" /><br/>
+        <input id="AdStartDate" type="datetime-local" name="AdStartDate" />
+        <button type="button" onclick="clearStartDate()">clear</button>
+        <br/>
         Targeted Ad End Date
-        <input id="AdEndDate" type="datetime-local" name="AdEndDate" /><br/>
+        <input id="AdEndDate" type="datetime-local" name="AdEndDate" />
+        <button type="button" onclick="clearEndDate()">clear</button>
+        <br/>
         Targeted Ad Duration
         <input id="Duration" type="number" name="Duration" /><br/>
         Stores Location Group
