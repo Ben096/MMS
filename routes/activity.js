@@ -435,26 +435,27 @@ function retrieveAccessToken(url,data,deData,deUrl){
 }
 
 function updateRecordsStatus(id){
-	pgPool.connect(function (isErr, client, done) {
-		if (isErr) {
-			console.log('connect query:' + isErr.message);
-			return;
-		}
-		else{
-			console.log("last index==>"+id);
-			console.log("produce journeyID==>"+journeyID);
-			//call producure
-			client.query("CALL ben.updatestatus($1,$2);",[parseInt(id),journeyID],function(isErr, rst){
-				if(isErr){
-					console.log('call proc error:' + isErr.message);
-				}	
-				else{ 
-					console.log("call proc successfully");
-				}
-			});
-			client.release();
-		}
-	});
+	console.log("do update action");
+	// pgPool.connect(function (isErr, client, done) {
+	// 	if (isErr) {
+	// 		console.log('connect query:' + isErr.message);
+	// 		return;
+	// 	}
+	// 	else{
+	// 		console.log("last index==>"+id);
+	// 		console.log("produce journeyID==>"+journeyID);
+	// 		//call producure
+	// 		client.query("CALL ben.updatestatus($1,$2);",[parseInt(id),journeyID],function(isErr, rst){
+	// 			if(isErr){
+	// 				console.log('call proc error:' + isErr.message);
+	// 			}	
+	// 			else{ 
+	// 				console.log("call proc successfully");
+	// 			}
+	// 		});
+	// 		client.release();
+	// 	}
+	// });
 }
 
 function retrieveDataFromDB(insertDataIntoDE){
