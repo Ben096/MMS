@@ -191,7 +191,7 @@ exports.execute = function (req, res) {
 
 			// console.log("decodedArgs==>" +JSON.stringify(  decodedArgs  ));
 			// console.log( "decoded==>"+JSON.stringify(  decoded  ));
-			// console.log("inArguments==>"+JSON.stringify(  decoded.inArguments  ));
+			console.log("inArguments==>"+JSON.stringify(  decoded.inArguments  ));
 			// console.log("journeyId==>"+JSON.stringify(decoded.journeyId));
 			journeyID = decoded.journeyId;
 			
@@ -268,7 +268,7 @@ exports.publish = function (req, res) {
     // var f = nowDate.getMinutes();
     // var mm = parseInt(f)+5;
     //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
-    var rule = '0 0/15 * * * *';
+    var rule = '0 0/3 * * * *';
     console.log("rule==>"+rule);
     //reset 
     //scheduleJobRetry = 0;
@@ -503,7 +503,7 @@ function retrieveDataFromDB(insertDataIntoDE){
 				if(len ==0){
 					console.log("no data to retrieve");
 					console.log("isStarScheduleJob==>"+isStarScheduleJob);
-					//isStarScheduleJob = false;
+					isStarScheduleJob = false;
 				}
 				else{
 					//console.log("requestData==>"+JSON.stringify(requestData));
