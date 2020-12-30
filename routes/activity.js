@@ -268,7 +268,7 @@ exports.publish = function (req, res) {
     // var f = nowDate.getMinutes();
     // var mm = parseInt(f)+5;
     //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
-    var rule = '0 0/3 * * * *';
+    var rule = '0 0/5 * * * *';
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
@@ -406,7 +406,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
     					console.log("body==>"+JSON.stringify(body));
     				}
     				else{
-    					console.log('done');
+    					console.log('done deData==>'+JSON.stringify(deData));
     					//update records status
     					//var updateList = [];
     					
@@ -502,11 +502,11 @@ function retrieveDataFromDB(insertDataIntoDE){
 				var len = temp.length;
 				if(len ==0){
 					console.log("no data to retrieve");
-					console.log("isStarScheduleJob==>"+isStarScheduleJob);
 					isStarScheduleJob = false;
+					console.log("isStarScheduleJob==>"+isStarScheduleJob);
 				}
 				else{
-					//console.log("requestData==>"+JSON.stringify(requestData));
+					console.log("requestData==>"+JSON.stringify(requestData));
 					console.log("enter insertDE operation");
                 	insertDataIntoDE(insertDEUrl,requestData,retrieveAccessToken);
 				}
