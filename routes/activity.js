@@ -392,7 +392,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
             console.log("deURL==>"+deUrl);
             request({
     			url: deUrl,
-    			method: "PUT",
+    			method: "POST",
     			json: true,
     			headers : {
 					"Content-type" : "application/JSON",
@@ -417,8 +417,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
     					//console.log("targetRecords==>"+JSON.stringify(targetRecords));
     					var len = targetRecords.length-1;
     					if(targetRecords.length > 0){
-    						console.log("update status");
-    						//updateRecordsStatus(targetRecords[len].id);
+    						updateRecordsStatus(targetRecords[len].id);
     					}
     					
     					// for(var i in targetRecords){
@@ -436,27 +435,26 @@ function retrieveAccessToken(url,data,deData,deUrl){
 }
 
 function updateRecordsStatus(id){
-	console.log("do update action");
-	// pgPool.connect(function (isErr, client, done) {
-	// 	if (isErr) {
-	// 		console.log('connect query:' + isErr.message);
-	// 		return;
-	// 	}
-	// 	else{
-	// 		console.log("last index==>"+id);
-	// 		console.log("produce journeyID==>"+journeyID);
-	// 		//call producure
-	// 		client.query("CALL ben.updatestatus($1,$2);",[parseInt(id),journeyID],function(isErr, rst){
-	// 			if(isErr){
-	// 				console.log('call proc error:' + isErr.message);
-	// 			}	
-	// 			else{ 
-	// 				console.log("call proc successfully");
-	// 			}
-	// 		});
-	// 		client.release();
-	// 	}
-	// });
+	pgPool.connect(function (isErr, client, done) {
+		if (isErr) {
+			console.log('connect query:' + isErr.message);
+			return;
+		}
+		else{
+			console.log("last index==>"+id);
+			console.log("produce journeyID==>"+journeyID);
+			//call producure
+			client.query("CALL ben.updatestatus($1,$2);",[parseInt(id),journeyID],function(isErr, rst){
+				if(isErr){
+					console.log('call proc error:' + isErr.message);
+				}	
+				else{ 
+					console.log("call proc successfully");
+				}
+			});
+			client.release();
+		}
+	});
 }
 
 function retrieveDataFromDB(insertDataIntoDE){
@@ -487,9 +485,9 @@ function retrieveDataFromDB(insertDataIntoDE){
 				for(var key in data){
 					var resultMap = {};
 				
-					//resultMap.id = data[key].id;
+					resultMap.id = data[key].id;
 					
-					resultMap.LoyaltyID = 'ABC';
+					resultMap.LoyaltyID = data[key].loyaltyid;
 					resultMap.TargetedAdStartDate =data[key].startdate;
 					resultMap.TargetedAdEndDate =data[key].enddate;
 					resultMap.ModifiedDate = new Date();
