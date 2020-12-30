@@ -417,7 +417,8 @@ function retrieveAccessToken(url,data,deData,deUrl){
     					//console.log("targetRecords==>"+JSON.stringify(targetRecords));
     					var len = targetRecords.length-1;
     					if(targetRecords.length > 0){
-    						updateRecordsStatus(targetRecords[len].id);
+    						console.log("update status");
+    						//updateRecordsStatus(targetRecords[len].id);
     					}
     					
     					// for(var i in targetRecords){
@@ -486,9 +487,9 @@ function retrieveDataFromDB(insertDataIntoDE){
 				for(var key in data){
 					var resultMap = {};
 				
-					resultMap.id = data[key].id;
+					//resultMap.id = data[key].id;
 					
-					resultMap.LoyaltyID = data[key].loyaltyid;
+					resultMap.LoyaltyID = 'ABC';
 					resultMap.TargetedAdStartDate =data[key].startdate;
 					resultMap.TargetedAdEndDate =data[key].enddate;
 					resultMap.ModifiedDate = new Date();
