@@ -271,7 +271,7 @@ exports.publish = function (req, res) {
     var rule = '0 0/3 * * * *';
     console.log("rule==>"+rule);
     //reset 
-    //scheduleJobRetry = 0;
+    scheduleJobRetry = 0;
     setScheduleJob(rule,retrieveDataFromDB);
     //logData(req);
     //res.send(200, 'Publish');
