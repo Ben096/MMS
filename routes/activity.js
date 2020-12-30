@@ -392,7 +392,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
             console.log("deURL==>"+deUrl);
             request({
     			url: deUrl,
-    			method: "POST",
+    			method: "PUT",
     			json: true,
     			headers : {
 					"Content-type" : "application/JSON",
