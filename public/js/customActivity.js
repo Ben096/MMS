@@ -246,6 +246,8 @@ define([
 			console.log('cx debug fieldval ', fieldval);
             if("LoyaltyID"==fieldname){
                 payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
+                payload['arguments'].execute.inArguments.push({"LoyaltyID2": "{{" + fieldval+"}}" });
+                payload['arguments'].execute.inArguments.push({"LoyaltyID3":  fieldval });
             }
             //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
@@ -254,7 +256,7 @@ define([
 
         payload['metaData'].isConfigured = true;
 
-        console.log('payload=='+payload);
+        console.log('payload=='+JSON.stringify(payload));
         console.log('payload attribute=='+payload['arguments'].execute.inArguments);
         connection.trigger('updateActivity', payload);
     }
