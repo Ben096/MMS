@@ -205,7 +205,7 @@ define([
             var endDate = +startDate + 1000*60*60*24*i;
             console.log("duration enddate==>"+new Date(endDate));
             AdEndDate = dateFormat(new Date(endDate));
-            payload['arguments'].execute.inArguments.push({"Duration": duration });
+            //payload['arguments'].execute.inArguments.push({"Duration": duration });
         }
         else if(AdEndDate==''){
             console.log('set endDate to today');
