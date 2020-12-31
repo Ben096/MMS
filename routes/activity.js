@@ -237,8 +237,7 @@ exports.execute = function (req, res) {
 
 			var testDATA={
 					"items": [
-					{"LoyaltyID":"AAA"},
-					{"TargetedAdCode":"BBB"}
+					{"LoyaltyID":"111","TargetedAdCode":"222"}
 					]
 			};
 			retrieveAccessToken(retrieveTokenUrl,tokenRequestData,testDATA,insertDEUrl);
