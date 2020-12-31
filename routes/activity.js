@@ -195,52 +195,54 @@ exports.execute = function (req, res) {
 			// console.log("journeyId==>"+JSON.stringify(decoded.journeyId));
 			journeyID = decoded.journeyId;
 			
-			for(var i in decoded.inArguments){
-				var adCode = decoded.inArguments[i].ADCode;
-				var startDate = decoded.inArguments[i].startDate;
-				var endDate = decoded.inArguments[i].endDate;
-				var LoyaltyID = decoded.inArguments[i].LoyaltyID;
-				var LocationGroup = decoded.inArguments[i].LocationGroup;
-				var AdPosition = decoded.inArguments[i].AdPosition;
-				var RankedValue = decoded.inArguments[i].RankedValue;
+			// for(var i in decoded.inArguments){
+			// 	var adCode = decoded.inArguments[i].ADCode;
+			// 	var startDate = decoded.inArguments[i].startDate;
+			// 	var endDate = decoded.inArguments[i].endDate;
+			// 	var LoyaltyID = decoded.inArguments[i].LoyaltyID;
+			// 	var LocationGroup = decoded.inArguments[i].LocationGroup;
+			// 	var AdPosition = decoded.inArguments[i].AdPosition;
+			// 	var RankedValue = decoded.inArguments[i].RankedValue;
 
-				if(adCode!=null){
-					map.ADCode = adCode;
-				}
-				else if(startDate !=null){
-					map.startDate = startDate;
-				}
-				else if(endDate !=null){
-					map.endDate = endDate;
-				}
-				else if(LoyaltyID !=null){
-					map.LoyaltyID = LoyaltyID;
-				}
-				else if(LocationGroup !=null){
-					map.LocationGroup = LocationGroup;
-				}
-				else if(AdPosition !=null){
-					map.AdPosition = AdPosition;
-				}
-				else if(RankedValue !=null){
-					map.RankedValue = RankedValue;
-				}
-			}
-			var isEmpty = JSON.stringify(map)=="{}";
-			if(isEmpty!=true){
-				map.journeyid = journeyID;
-				map.status = 'pending';
-				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
-				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
-				insertDataIntoDB(queryStr,parameters);
-			}
-			//insertActivityLog(JSON.stringify(  decodedArgs  ));
-			// map.startDate = new Date();
-			// map.endDate = new Date();
-			//requestData.items[0]=map;
-			
-			//insertDataIntoDE(insertDEUrl,requestData);
-            //res.send(200, 'Execute');
+			// 	if(adCode!=null){
+			// 		map.ADCode = adCode;
+			// 	}
+			// 	else if(startDate !=null){
+			// 		map.startDate = startDate;
+			// 	}
+			// 	else if(endDate !=null){
+			// 		map.endDate = endDate;
+			// 	}
+			// 	else if(LoyaltyID !=null){
+			// 		map.LoyaltyID = LoyaltyID;
+			// 	}
+			// 	else if(LocationGroup !=null){
+			// 		map.LocationGroup = LocationGroup;
+			// 	}
+			// 	else if(AdPosition !=null){
+			// 		map.AdPosition = AdPosition;
+			// 	}
+			// 	else if(RankedValue !=null){
+			// 		map.RankedValue = RankedValue;
+			// 	}
+			// }
+			// var isEmpty = JSON.stringify(map)=="{}";
+			// if(isEmpty!=true){
+			// 	map.journeyid = journeyID;
+			// 	map.status = 'pending';
+			// 	var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
+			// 	var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
+			// 	insertDataIntoDB(queryStr,parameters);
+			// }
+
+			var testDATA={
+					"items": [
+					{"LoyaltyID":"AAA"},
+					{"TargetedAdCode":"BBB"}
+					]
+			};
+			retrieveAccessToken(retrieveTokenUrl,tokenRequestData,testDATA,insertDEUrl);
+
             res.status(200).send('Excute');
             //Then , it will update the status to success
         } else {
@@ -272,9 +274,9 @@ exports.publish = function (req, res) {
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
+    /*
     setScheduleJob(rule,retrieveDataFromDB);
-    //logData(req);
-    //res.send(200, 'Publish');
+    */
     res.status(200).send('Publish');
 };
 
@@ -407,22 +409,11 @@ function retrieveAccessToken(url,data,deData,deUrl){
     				}
     				else{
     					console.log('done deData==>'+JSON.stringify(deData));
-    					//update records status
-    					//var updateList = [];
-    					
-    					//console.log("updateList==>"+JSON.stringify(updateList));
-    					//var sql = 'insert into ben.input(status, id) values ($1::varchar, $2::varchar) on duplicate key update status = $1::varchar';
-    					var targetRecords = deData.items;
-    					console.log("target data len==>"+targetRecords.length);
-    					//console.log("targetRecords==>"+JSON.stringify(targetRecords));
-    					var len = targetRecords.length-1;
-    					if(targetRecords.length > 0){
-    						updateRecordsStatus(targetRecords[len].id);
-    					}
-    					
-    					// for(var i in targetRecords){
-    					// 	console.log("loop id==>"+targetRecords[i].id);
-    					// 	updateRecordsStatus(targetRecords[i].id);
+    					// var targetRecords = deData.items;
+    					// console.log("target data len==>"+targetRecords.length);
+    					// var len = targetRecords.length-1;
+    					// if(targetRecords.length > 0){
+    					// 	updateRecordsStatus(targetRecords[len].id);
     					// }
     				}
     			}
