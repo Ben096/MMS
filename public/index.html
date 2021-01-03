@@ -101,10 +101,10 @@ Instructions:
         Stores Location Group
         <input id="LocationGroup" type="text" name="LocationGroup" /><br/>
         Ad Position<font color="#FF0000">*</font>
-        <input id="AdPosition" type="text" name="AdPosition" onblur="checkAdPosition()" /><br/>
+        <input id="AdPosition" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="AdPosition" onblur="checkAdPosition()" /><br/>
         <span id="AdPositionInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
         Ranked Value
-        <input id="RankedValue" type="text" name="RankedValue" /><br/>
+        <input id="RankedValue" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="RankedValue" /><br/>
 
     </div>
 </body>

@@ -27,13 +27,6 @@ define([
 
         connection.trigger('requestTokens');
         connection.trigger('requestEndpoints');
-		/*
- connection.trigger('updateButton', {
-            button: 'next',
-            text: 'next',
-            enabled: true
-        });*/
-        // $('#AdCode').val(AdCode);
 		console.log ('onRender function');
 		
     }
@@ -179,17 +172,8 @@ define([
             console.log('set startDate to today');
             var today = new Date();
             AdStartDate = dateFormat(today);
-            //convert local dateTime
-            // var addHour = today.setHours(today.getHours() + 14);
-            // AdStartDate = new Date(addHour);
         }
         payload['arguments'].execute.inArguments.push({"startDate": AdStartDate });
-        // else{
-        //     var targetDate = new Date(AdStartDate);
-        //     //convert local dateTime
-        //     var addHour = targetDate.setHours(targetDate.getHours() + 14);
-        //     AdStartDate = new Date(addHour);
-        // }
 
 
         var AdEndDate = $('#AdEndDate').val();
@@ -211,17 +195,8 @@ define([
             console.log('set endDate to today');
             var today = new Date();
             AdEndDate = dateFormat(today);
-            // //convert local dateTime
-            // var addHour = today.setHours(today.getHours() + 14);
-            // AdEndDate = new Date(addHour);
         }
         payload['arguments'].execute.inArguments.push({"endDate": AdEndDate });
-        // else{
-        //     var targetDate = new Date(AdEndDate);
-        //     //convert local dateTime
-        //     var addHour = targetDate.setHours(targetDate.getHours() + 14);
-        //     AdEndDate = new Date(addHour);
-        // }
         
         
         payload['arguments'].execute.inArguments.push({"LocationGroup": LocationGroup });
@@ -247,6 +222,15 @@ define([
             if("LoyaltyID"==fieldname){
                 payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
                 //payload['arguments'].execute.inArguments.push({"LoyaltyID2": "{{" + fieldval+"}}" });
+            }
+            else if("DynStartDate"==fieldname && fieldval!=""){
+                console.log("enter DynStartDate && not empty");
+                console.log("DynStartDate==>"+fieldval);
+                payload['arguments'].execute.inArguments.push({"startDate": "" + fieldval+"" });
+            }
+            else if("DynEndDate"==fieldname && fieldval!=""){
+                console.log("enter DynEndDate && not empty");
+                payload['arguments'].execute.inArguments.push({"endDate": "{{Event." + eventDefinitionKey+".DynEndDate}}" });
             }
             //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
