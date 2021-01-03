@@ -203,8 +203,8 @@ exports.execute = function (req, res) {
 				var LocationGroup = decoded.inArguments[i].LocationGroup;
 				var AdPosition = decoded.inArguments[i].AdPosition;
 				var RankedValue = decoded.inArguments[i].RankedValue;
-				// var startDateDynamic = convertToLocalDateTime(decoded.inArguments[i].startDateDynamic);
-				// var endDateDynamic = convertToLocalDateTime(decoded.inArguments[i].endDateDynamic);
+				var startDateDynamic = convertToLocalDateTime(decoded.inArguments[i].startDateDynamic);
+				//var endDateDynamic = convertToLocalDateTime(decoded.inArguments[i].endDateDynamic);
 
 				if(adCode!=null){
 					map.ADCode = adCode;
