@@ -246,7 +246,6 @@ define([
 			console.log('cx debug fieldval ', fieldval);
             if("LoyaltyID"==fieldname){
                 payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
-                //payload['arguments'].execute.inArguments.push({"LoyaltyID2": "{{" + fieldval+"}}" });
             }
             //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
