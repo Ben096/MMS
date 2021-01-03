@@ -203,8 +203,7 @@ exports.execute = function (req, res) {
 				var LocationGroup = decoded.inArguments[i].LocationGroup;
 				var AdPosition = decoded.inArguments[i].AdPosition;
 				var RankedValue = decoded.inArguments[i].RankedValue;
-				//var startDateDynamic = convertToLocalDateTime(decoded.inArguments[i].startDateDynamic);
-				//var endDateDynamic = convertToLocalDateTime(decoded.inArguments[i].endDateDynamic);
+				var duration = decoded.inArguments[i].Duration;
 
 				if(adCode!=null){
 					map.ADCode = adCode;
@@ -227,15 +226,25 @@ exports.execute = function (req, res) {
 				else if(RankedValue !=null){
 					map.RankedValue = RankedValue;
 				}
+				else if(duration !=null){
+					map.duration = duration;
+				}
 			}
-			// var isEmpty = JSON.stringify(map)=="{}";
-			// if(isEmpty!=true){
-			// 	map.journeyid = journeyID;
-			// 	map.status = 'pending';
-			// 	var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
-			// 	var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
-			// 	insertDataIntoDB(queryStr,parameters);
-			// }
+			var isEmpty = JSON.stringify(map)=="{}";
+			if(isEmpty!=true){
+				map.journeyid = journeyID;
+				map.status = 'pending';
+				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
+				//If duration is zero, then it will be set to increase automatically
+				if(map.duration==0){
+					//override date value
+					map.startDate = convertToLocalDateTime(new Date());
+					map.endDate = convertToLocalDateTime(new Date());
+				}
+				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
+				insertDataIntoDB(queryStr,parameters);
+			}
+	
             res.status(200).send('Excute');
             //Then , it will update the status to success
         } else {
@@ -256,20 +265,12 @@ exports.publish = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
     console.log('publish module');
-    // var nowDate = new Date();
-    // var m = nowDate.getMonth() + 1;
-    // var d = nowDate.getDate();
-    // var h = nowDate.getHours();
-    // var f = nowDate.getMinutes();
-    // var mm = parseInt(f)+5;
-    //var rule = '0 '+mm+' '+h+' '+d+' '+m+' *';
     var rule = '0 0/5 * * * *';
     console.log("rule==>"+rule);
     //reset 
     scheduleJobRetry = 0;
     setScheduleJob(rule,retrieveDataFromDB);
-    //logData(req);
-    //res.send(200, 'Publish');
+
     res.status(200).send('Publish');
 };
 
@@ -280,8 +281,6 @@ exports.validate = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
     console.log('validate module');
-    //logData(req);
-    //res.send(200, 'Validate');
     res.status(200).send('Validate');
 };
 
@@ -565,23 +564,18 @@ function dateFormat(date){
 }
 
 function convertToLocalDateTime(usDate){
-	if(usDate==""){
-		console.log("is empty dynamic date");
-		return "";
-	}
-	else{
-		var newDate = new Date(usDate);
-		var localDate = +newDate + 1000*60*60*14;
-		var date = new Date(newDate);
-		var y = date.getFullYear();
-    	var m = (date.getMonth() + 1) < 10 ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1);
-    	var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
-    	var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
-    	var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
-    	var sec = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
-    	var formatdate = y+'-'+m+'-'+d + " " + h + ":" + f+":"+sec;
-    	console.log("convertToLocalDateTime formdate===>"+formatdate);
-    	return formatdate;
-	}
+    var localDate = +usDate + 1000*60*60*8;
+    console.log("localDate==>"+new Date(localDate));
+    var date = new Date(localDate);
+
+    var y = date.getFullYear();
+    var m = (date.getMonth() + 1) < 10 ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1);
+    var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
+    var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
+    var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
+    var sec = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
+    var formatdate = y+'-'+m+'-'+d + " " + h + ":" + f+":"+sec;
+    console.log("convertToLocalDateTime formdate===>"+formatdate);
+    return formatdate;
 }
 
