@@ -203,8 +203,8 @@ exports.execute = function (req, res) {
 				var LocationGroup = decoded.inArguments[i].LocationGroup;
 				var AdPosition = decoded.inArguments[i].AdPosition;
 				var RankedValue = decoded.inArguments[i].RankedValue;
-				var startDateDynamic = ;
-				var endDateDynamic = ;
+				// var startDateDynamic = convertToLocalDateTime(decoded.inArguments[i].startDateDynamic);
+				// var endDateDynamic = convertToLocalDateTime(decoded.inArguments[i].endDateDynamic);
 
 				if(adCode!=null){
 					map.ADCode = adCode;
@@ -409,8 +409,6 @@ function retrieveAccessToken(url,data,deData,deUrl){
     				}
     				else{
     					console.log('done deData==>'+JSON.stringify(deData));
-    					//update records status
-    					//var updateList = [];
     					
     					//console.log("updateList==>"+JSON.stringify(updateList));
     					//var sql = 'insert into ben.input(status, id) values ($1::varchar, $2::varchar) on duplicate key update status = $1::varchar';
@@ -421,11 +419,6 @@ function retrieveAccessToken(url,data,deData,deUrl){
     					if(targetRecords.length > 0){
     						updateRecordsStatus(targetRecords[len].id);
     					}
-    					
-    					// for(var i in targetRecords){
-    					// 	console.log("loop id==>"+targetRecords[i].id);
-    					// 	updateRecordsStatus(targetRecords[i].id);
-    					// }
     				}
     			}
     		);
