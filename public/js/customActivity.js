@@ -223,12 +223,12 @@ define([
                 payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
                 //payload['arguments'].execute.inArguments.push({"LoyaltyID2": "{{" + fieldval+"}}" });
             }
-            else if("DynStartDate"==fieldname && fieldval!=""){
+            else if("DynStartDate"==fieldname){
                 console.log("enter DynStartDate && not empty");
                 console.log("DynStartDate==>"+fieldval);
                 payload['arguments'].execute.inArguments.push({"startDateDynamic": "{{" + fieldval+"}}" });
             }
-            else if("DynEndDate"==fieldname && fieldval!=""){
+            else if("DynEndDate"==fieldname){
                 console.log("enter DynEndDate && not empty");
                 payload['arguments'].execute.inArguments.push({"endDateDynamic": "{{Event." + eventDefinitionKey+".DynEndDate}}" });
             }
