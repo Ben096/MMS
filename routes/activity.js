@@ -203,7 +203,7 @@ exports.execute = function (req, res) {
 				var LocationGroup = decoded.inArguments[i].LocationGroup;
 				var AdPosition = decoded.inArguments[i].AdPosition;
 				var RankedValue = decoded.inArguments[i].RankedValue;
-				var startDateDynamic = convertToLocalDateTime(decoded.inArguments[i].startDateDynamic);
+				//var startDateDynamic = convertToLocalDateTime(decoded.inArguments[i].startDateDynamic);
 				//var endDateDynamic = convertToLocalDateTime(decoded.inArguments[i].endDateDynamic);
 
 				if(adCode!=null){
@@ -228,21 +228,14 @@ exports.execute = function (req, res) {
 					map.RankedValue = RankedValue;
 				}
 			}
-			var isEmpty = JSON.stringify(map)=="{}";
-			if(isEmpty!=true){
-				map.journeyid = journeyID;
-				map.status = 'pending';
-				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
-				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
-				insertDataIntoDB(queryStr,parameters);
-			}
-			//insertActivityLog(JSON.stringify(  decodedArgs  ));
-			// map.startDate = new Date();
-			// map.endDate = new Date();
-			//requestData.items[0]=map;
-			
-			//insertDataIntoDE(insertDEUrl,requestData);
-            //res.send(200, 'Execute');
+			// var isEmpty = JSON.stringify(map)=="{}";
+			// if(isEmpty!=true){
+			// 	map.journeyid = journeyID;
+			// 	map.status = 'pending';
+			// 	var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
+			// 	var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
+			// 	insertDataIntoDB(queryStr,parameters);
+			// }
             res.status(200).send('Excute');
             //Then , it will update the status to success
         } else {
