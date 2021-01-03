@@ -203,6 +203,8 @@ exports.execute = function (req, res) {
 				var LocationGroup = decoded.inArguments[i].LocationGroup;
 				var AdPosition = decoded.inArguments[i].AdPosition;
 				var RankedValue = decoded.inArguments[i].RankedValue;
+				var startDateDynamic = ;
+				var endDateDynamic = ;
 
 				if(adCode!=null){
 					map.ADCode = adCode;
@@ -574,5 +576,26 @@ function dateFormat(date){
     var formatdate = y+'-'+m+'-'+d + " " + h + ":" + f+":"+sec;
     //console.log("activity formdate===>"+formatdate);
     return formatdate;
+}
+
+function convertToLocalDateTime(usDate){
+	if(usDate==""){
+		console.log("is empty dynamic date");
+		return "";
+	}
+	else{
+		var newDate = new Date(usDate);
+		var localDate = +newDate + 1000*60*60*14;
+		var date = new Date(newDate);
+		var y = date.getFullYear();
+    	var m = (date.getMonth() + 1) < 10 ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1);
+    	var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
+    	var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
+    	var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
+    	var sec = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
+    	var formatdate = y+'-'+m+'-'+d + " " + h + ":" + f+":"+sec;
+    	console.log("convertToLocalDateTime formdate===>"+formatdate);
+    	return formatdate;
+	}
 }
 
