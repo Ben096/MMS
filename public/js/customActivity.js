@@ -226,11 +226,11 @@ define([
             else if("DynStartDate"==fieldname && fieldval!=""){
                 console.log("enter DynStartDate && not empty");
                 console.log("DynStartDate==>"+fieldval);
-                payload['arguments'].execute.inArguments.push({"startDate": "" + fieldval+"" });
+                payload['arguments'].execute.inArguments.push({"startDate2": "{{" + fieldval+"}}" });
             }
             else if("DynEndDate"==fieldname && fieldval!=""){
                 console.log("enter DynEndDate && not empty");
-                payload['arguments'].execute.inArguments.push({"endDate": "{{Event." + eventDefinitionKey+".DynEndDate}}" });
+                payload['arguments'].execute.inArguments.push({"endDate2": "{{Event." + eventDefinitionKey+".DynEndDate}}" });
             }
             //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
