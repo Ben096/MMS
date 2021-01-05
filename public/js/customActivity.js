@@ -175,21 +175,14 @@ define([
         //CA UI Input value
         payload['arguments'].execute.inArguments.push({"ADCode": AdC });
 
-        if(AdStartDate==''){
-            console.log('set startDate to today');
-            var today = new Date();
-            AdStartDate = dateFormat(today);
-            //convert local dateTime
-            // var addHour = today.setHours(today.getHours() + 14);
-            // AdStartDate = new Date(addHour);
-        }
-        payload['arguments'].execute.inArguments.push({"startDate": AdStartDate });
-        // else{
-        //     var targetDate = new Date(AdStartDate);
-        //     //convert local dateTime
-        //     var addHour = targetDate.setHours(targetDate.getHours() + 14);
-        //     AdStartDate = new Date(addHour);
+        // if(AdStartDate==''){
+        //     console.log('set startDate to today');
+        //     var today = new Date();
+        //     AdStartDate = dateFormat(today);
         // }
+
+        payload['arguments'].execute.inArguments.push({"startDate": AdStartDate });
+
 
 
         var AdEndDate = $('#AdEndDate').val();
@@ -197,31 +190,23 @@ define([
         
         payload['arguments'].execute.inArguments.push({"Duration": duration });
 
-        if(duration != ''){
-            console.log("se enddate with duration");
-            var startDate = new Date(AdStartDate);
-            var i = parseInt(duration);
-            console.log("i==>"+i);
-            var endDate = +startDate + 1000*60*60*24*i;
-            console.log("duration enddate==>"+new Date(endDate));
-            AdEndDate = dateFormat(new Date(endDate));
-            //payload['arguments'].execute.inArguments.push({"Duration": duration });
-        }
-        else if(AdEndDate==''){
-            console.log('set endDate to today');
-            var today = new Date();
-            AdEndDate = dateFormat(today);
-            // //convert local dateTime
-            // var addHour = today.setHours(today.getHours() + 14);
-            // AdEndDate = new Date(addHour);
-        }
-        payload['arguments'].execute.inArguments.push({"endDate": AdEndDate });
-        // else{
-        //     var targetDate = new Date(AdEndDate);
-        //     //convert local dateTime
-        //     var addHour = targetDate.setHours(targetDate.getHours() + 14);
-        //     AdEndDate = new Date(addHour);
+        // if(duration != ''){
+        //     console.log("se enddate with duration");
+        //     var startDate = new Date(AdStartDate);
+        //     var i = parseInt(duration);
+        //     console.log("i==>"+i);
+        //     var endDate = +startDate + 1000*60*60*24*i;
+        //     console.log("duration enddate==>"+new Date(endDate));
+        //     AdEndDate = dateFormat(new Date(endDate));
         // }
+        // else if(AdEndDate==''){
+        //     console.log('set endDate to today');
+        //     var today = new Date();
+        //     AdEndDate = dateFormat(today);
+        // }
+
+        payload['arguments'].execute.inArguments.push({"endDate": AdEndDate });
+
         
         
         payload['arguments'].execute.inArguments.push({"LocationGroup": LocationGroup });
@@ -247,7 +232,6 @@ define([
             if("LoyaltyID"==fieldname){
                 payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
             }
-            //the key is still fieldname, can not change into field name
 			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
  		}
         

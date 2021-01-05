@@ -105,33 +105,8 @@ function logData(req) {
     console.log("originalUrl: " + req.originalUrl);
 	console.log("headers inspect: " + util.inspect(req.headers) );
 	console.log("headers stringify: " + JSON.stringify( req.headers  ));
-	/*
-	var buf = Buffer.from(util.inspect(req.body));  
-	console.log("body no inspect: " + req.body);	
-	console.log("body buffer: " + buf.toString());
-	
-	var j2 = buf.toJSON();
-	console.log("body json: " + JSON.stringify(j2) );
-	
-	var j3 = buf.toJSON();
-	console.log("body json: " + JSON.stringify(buf.toString()) );
-	*/
-	//let j1 = JSON.stringify(buf);
-	//console.log("body json: " + j1 );
 	
 }
-
-// function insertActivityLog(pl) {
-// 	client.connect();
-// 	var qry = 'CALL insert_activity_log ( \'HourlyBatch\' ,  \'JBInbound\',\''+ pl+'\',\'Log\' )';
-// 	client.query(qry, (err, res) => {
-// 	  if (err) throw err;
-// 	  for (let row of res.rows) {
-// 		console.log(JSON.stringify(row));
-// 	  }
-// 	  client.end();
-// 	});
-// }
 
 /*
  * POST Handler for / route of Activity (this is the edit route).
@@ -139,8 +114,6 @@ function logData(req) {
 exports.edit = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log( 'Edit module' );
-    //logData(req);
-    //res.send(200, 'Edit');
     res.status(200).send('Edit');
 };
 
@@ -186,6 +159,9 @@ exports.execute = function (req, res) {
         if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
         	isStarScheduleJob = true;
             var map = {};
+            map.runningStartDate="";
+            map.runningEndDate="";
+
             // decoded in arguments
             var decodedArgs = decoded.inArguments[0];            
 
@@ -209,10 +185,10 @@ exports.execute = function (req, res) {
 					map.ADCode = adCode;
 				}
 				else if(startDate !=null){
-					map.startDate = startDate;
+					map.startDate = startDate!=""?startDate.replace('T',' '):"";
 				}
 				else if(endDate !=null){
-					map.endDate = endDate;
+					map.endDate = endDate!=""?endDate.replace('T',' '):"";
 				}
 				else if(LoyaltyID !=null){
 					map.LoyaltyID = LoyaltyID;
@@ -234,14 +210,14 @@ exports.execute = function (req, res) {
 			if(isEmpty!=true){
 				map.journeyid = journeyID;
 				map.status = 'pending';
-				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar)';
-				//If duration is zero, then it will be set to increase automatically
-				if(map.duration==0){
-					//override date value
-					map.startDate = convertToLocalDateTime(new Date());
-					map.endDate = convertToLocalDateTime(new Date());
+				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup,runningstartdate,runningenddate) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar,$12::varchar)';
+				//
+				if(map.duration>0){
+					map.runningStartDate = convertToLocalDateTime(new Date());
+					map.runningEndDate = addDays(new Date(),map.duration,map.startDate);
 				}
-				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup];
+
+				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup,map.runningStartDate,map.runningEndDate];
 				insertDataIntoDB(queryStr,parameters);
 			}
 	
@@ -573,9 +549,38 @@ function convertToLocalDateTime(usDate){
     var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
     var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
     var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
-    var sec = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
-    var formatdate = y+'-'+m+'-'+d + " " + h + ":" + f+":"+sec;
+    //var sec = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
+    var formatdate = y+'-'+m+'-'+d + " " + h + ":" + f;
     console.log("convertToLocalDateTime formdate===>"+formatdate);
     return formatdate;
+}
+
+function addDays(usDate,duration,startDate){
+	var date;
+	var i = parseInt(duration);
+	if(startDate!=''){
+		var currentDate = convertToLocalDateTime(usDate);
+		if(currentDate <= startDate){
+			currentDate = startDate;
+		}
+    	var targetDate = +(new Date(currentDate)) + 1000*60*60*24*i;
+    	date = new Date(targetDate);
+	}
+	else{
+		var localDate = +usDate + 1000*60*60*8;
+    	var targetDate = +localDate + 1000*60*60*24*i;
+    	date = new Date(targetDate);
+	}
+
+	var y = date.getFullYear();
+	var m = (date.getMonth() + 1) < 10 ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1);
+	var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
+	var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
+	var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
+	//var sec = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
+	var formatdate = y+'-'+m+'-'+d + " " + h + ":" + f;
+	console.log("addDays formdate===>"+formatdate);
+	return formatdate;
+
 }
 
