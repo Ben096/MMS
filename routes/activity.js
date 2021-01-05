@@ -432,7 +432,7 @@ function retrieveDataFromDB(insertDataIntoDE){
             console.log('connect query:' + isErr.message);
             return;
         }
-        client.query("select id,startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup from ben.input where status !='success' and journeyid=$1 and createdate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
+        client.query("select id,targetstartdate,targetenddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup from ben.input where status !='success' and journeyid=$1 and createdate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
             done();//释放连接，归还给连接池
             if (isErr) {
                 console.log('retrieve from db query error:' + isErr.message);
@@ -451,8 +451,8 @@ function retrieveDataFromDB(insertDataIntoDE){
 					resultMap.id = data[key].id;
 					
 					resultMap.LoyaltyID = data[key].loyaltyid;
-					resultMap.TargetedAdStartDate =data[key].startdate;
-					resultMap.TargetedAdEndDate =data[key].enddate;
+					resultMap.TargetedAdStartDate =data[key].targetstartdate;
+					resultMap.TargetedAdEndDate =data[key].targetenddate;
 					resultMap.ModifiedDate = new Date();
 					resultMap.TargetedAdCode = data[key].adcode;
 					resultMap.AdPosition =data[key].adposition;
