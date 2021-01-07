@@ -111,7 +111,7 @@ exports.stop = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log( 'stop module' );
     //stop all process
-    //process.exit(1);
+    process.exit();
     res.status(200).send('stop');
 };
 
