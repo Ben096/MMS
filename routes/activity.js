@@ -228,7 +228,7 @@ exports.publish = function (req, res) {
     var rule = '0 0/5 * * * *';
     console.log("rule==>"+rule);
     //reset 
-    scheduleJobRetry = 0;
+    //scheduleJobRetry = 0;
     setScheduleJob(rule,retrieveDataFromDB);
 
     res.status(200).send('Publish');
@@ -238,93 +238,12 @@ exports.publish = function (req, res) {
  * POST Handler for /validate/ route of Activity.
  */
 exports.validate = function (req, res) {
-    // Data from the req and put it in an array accessible to the main app.
-    //console.log( req.body );
     console.log('validate module');
     res.status(200).send('Validate');
 };
 
 
 exports.resolveToken = function (req, res) {
-
-	// var bd = req.body;
-	
-	// //console.log ( util.inspect( req.headers) );
-	// var un = req.headers['username'];
-	// var pw = req.headers['password']; 
-	// var auth = req.headers['authorization'];
-	// var valid = false;
-	// if (un == '123' && pw =='123'){
-	// 	valid=true;
-	// }else if (auth = 'Basic MTIzOnF3ZQ==') {
-	// 	valid=true;
-	// }
-	
-	// if (!valid ){
-	// 	 res.status(401).send('Authentication not passed.');
-	// 	return;
-	// }
-	// console.log ('REQUEST BODY'+ util.inspect (bd.tokens));
-
- //  //  logData(req);
-		 
-	// var jresp = {};
-	// jresp.resolvedTokens=[];
-	// jresp.unresolvedTokens=[];
-	// var tokens  = bd['tokens'];
-	// var tokenArray = [];
-	// var resultArray = [];
-	// var requestTokenMap = new Map();
-	// var tokenValueMap = new Map();
-	// for(var j = 0;j<tokens.length;j++){
-	// 	var tokenRequestID = tokens[j].tokenRequestId;
-	// 	tokenArray.push (tokens[j].token );
-	// 	requestTokenMap.set (tokenRequestID, tokens[j].token);
-	// }
-	
-	// for (var i =0;i<450;i++){
-	// 	var ranInt =Math.floor((Math.random()*10000)+1); 
-	// 	var t = 'tkn'+ (i+ranInt)+'@dtt.com.cn';
-	// 	tokenArray.push (t);
-	// 	requestTokenMap.set (t,t);
-	//  }
-	
-	// var channel = 'Email';
-	// var sendKey = bd['sendKey'];
-	// if (sendKey.includes('mobile')){
-	// 	channel = 'Mobile';
-	// }
-	// client.query( 'select * from public.resolve_token_batch($1 ,$2 ) ',[channel, tokenArray] ,(err, resp) => {
-	//   if (err) throw err;
-	//   for (let row of resp.rows) {
-	// 	//console.log(JSON.stringify(row));
-	// 	tokenValueMap.set (row.token, row.tokenvalue);
-
-	//   }
-	  
-	 
-	
-	//  for (var pair of requestTokenMap){
-	// 	var key = pair[0];
-	// 	var val = pair[1];
-
-	// 	var item = {};
-	// 	item.tokenRequestId = key;
-	// 	var tknVal = tokenValueMap.get(val);	
-
-	// 	if (tknVal != null ){
-	// 		item.tokenValue = tknVal;
-	// 		item.attributes = [{"name":"First_Name","value":"static_firstName"},{"name":"myAttr1","value":"myVal1"}]; 		  
-	// 		jresp.resolvedTokens.push (item);
-	// 	}else{
-	// 		item.message = 'Invalid token; token does not exist.';
-	// 		jresp.unresolvedTokens.push(item);
-	// 	}
-	//  } 
-	//   console.log( 'RESPONSE BODY: ' +JSON.stringify(jresp) );
-	//  // res.setHeader('Content-Type', 'application/json;charset=utf-8');
-	//   res.status(200).send(JSON.stringify(jresp));
-	// }) 
  
 };
 
