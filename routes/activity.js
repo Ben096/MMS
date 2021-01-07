@@ -35,6 +35,7 @@ var tokenRequestData={
 var access_token = "";
 var journeyID = '';
 var scheduleJobRetry=0;
+var scheduleJob;
 // var requestData={
 // 	"items": []
 // };
@@ -110,8 +111,8 @@ exports.edit = function (req, res) {
 exports.stop = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log( 'stop module' );
-    //stop the current process
-    process.kill(process.pid);
+    scheduleJob.cancel();
+    console.log("stop schedule Job");
     res.status(200).send('stop');
 };
 
@@ -120,9 +121,6 @@ exports.stop = function (req, res) {
  */
 exports.save = function (req, res) {
     console.log('save module');
-
-    //logData(req);
-    //res.send(200, 'Save');
     res.status(200).send('Save');
 };
 
@@ -228,7 +226,7 @@ exports.publish = function (req, res) {
     var rule = '0 0/5 * * * *';
     console.log("rule==>"+rule);
     //reset 
-    //scheduleJobRetry = 0;
+    scheduleJobRetry = 0;
     setScheduleJob(rule,retrieveDataFromDB);
 
     res.status(200).send('Publish');
@@ -406,7 +404,7 @@ function insertDataIntoDB(queryStr,parameters){
 
 function setScheduleJob(rule,retrieveDataFromDB){
 	console.log("start scheduleJob");
-	var j = schedule.scheduleJob(rule,function(){
+	scheduleJob = schedule.scheduleJob(rule,function(){
 		console.log("schedule Job Starting");
 		//console.log("retrySchedule==>"+scheduleJobRetry);
 		console.log("schedule isStarScheduleJob==>"+isStarScheduleJob);
@@ -414,7 +412,6 @@ function setScheduleJob(rule,retrieveDataFromDB){
 		if(scheduleJobRetry>=3){
 			console.log("stop schedule");
 			console.log("stop database server connection");
-			j.cancel();
 		}
 		else{
 			if(isStarScheduleJob==true){
