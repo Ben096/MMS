@@ -212,10 +212,9 @@ exports.execute = function (req, res) {
 				map.status = 'pending';
 				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup,runningstartdate,runningenddate) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar,$12::varchar)';
 				//
-				if(map.duration>0){
-					map.runningStartDate = convertToLocalDateTime(new Date());
-					map.runningEndDate = addDays(new Date(),map.duration,map.startDate);
-				}
+				let durationTemp = map.duration == "" ? '0' : map.duration;
+				map.runningStartDate = convertToLocalDateTime(new Date());
+				map.runningEndDate = addDays(new Date(),durationTemp,map.startDate);
 
 				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup,map.runningStartDate,map.runningEndDate];
 				insertDataIntoDB(queryStr,parameters);
