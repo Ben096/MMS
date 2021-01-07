@@ -1,5 +1,6 @@
 'use strict';
 var util = require('util');
+var process = require("process");
 
 // Deps
 const Path = require('path');
@@ -21,20 +22,6 @@ var pgConfig = {
     reapIntervalMillis: 10000
 };
 var pgPool = new pgOpt.Pool(pgConfig);
-
-    // var mysql = require('mysql');
-//connect mysql
-// var mysql = require('mysql');
-// var connection = mysql.createConnection({
-//   host     : 'cdb-5sm6xif4.cd.tencentcdb.com',
-//   user     : 'ben',
-//   password : 'ben_123@456!',
-//   port:'10009',
-//   database : 'big_data'
-// });
-// connection.connect();
-
-//var sync = require('synchronize');
 
 //must install this module
 var request = require('request');
@@ -123,11 +110,8 @@ exports.edit = function (req, res) {
 exports.stop = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log( 'stop module' );
-    
-    //isStarScheduleJob = false;
-    //scheduleJobRetry = 3;
-    //logData(req);
-    //res.send(200, 'stop');
+    //stop all process
+    process.exit(1);
     res.status(200).send('stop');
 };
 
@@ -377,9 +361,6 @@ function retrieveAccessToken(url,data,deData,deUrl){
     				}
     				else{
     					console.log('done deData==>'+JSON.stringify(deData));
-    					
-    					//console.log("updateList==>"+JSON.stringify(updateList));
-    					//var sql = 'insert into ben.input(status, id) values ($1::varchar, $2::varchar) on duplicate key update status = $1::varchar';
     					var targetRecords = deData.items;
     					console.log("target data len==>"+targetRecords.length);
     					//console.log("targetRecords==>"+JSON.stringify(targetRecords));
@@ -465,8 +446,6 @@ function retrieveDataFromDB(insertDataIntoDE){
 				var len = temp.length;
 				if(len ==0){
 					console.log("no data to retrieve");
-					isStarScheduleJob = false;
-					console.log("isStarScheduleJob==>"+isStarScheduleJob);
 				}
 				else{
 					console.log("requestData==>"+JSON.stringify(requestData));
