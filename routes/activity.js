@@ -123,6 +123,7 @@ exports.edit = function (req, res) {
 exports.stop = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log( 'stop module' );
+    
     //isStarScheduleJob = false;
     //scheduleJobRetry = 3;
     //logData(req);
