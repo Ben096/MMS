@@ -218,10 +218,10 @@ exports.publish = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
     console.log('publish module');
-    // var rule = '0 0/5 * * * *';
-    // console.log("rule==>"+rule);
-    // scheduleJobRetry = 0;
-    // setScheduleJob(rule,retrieveDataFromDB);
+    var rule = '0 0/5 * * * *';
+    console.log("rule==>"+rule);
+    scheduleJobRetry = 0;
+    setScheduleJob(rule,retrieveDataFromDB);
 
     res.status(200).send('Publish');
 };
