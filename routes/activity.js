@@ -222,7 +222,6 @@ exports.publish = function (req, res) {
     console.log("rule==>"+rule);
     scheduleJobRetry = 0;
     setScheduleJob(rule,retrieveDataFromDB);
-
     res.status(200).send('Publish');
 };
 
