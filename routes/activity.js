@@ -33,9 +33,7 @@ var tokenRequestData={
 };
 
 var access_token = "";
-var journeyID = '';
 var scheduleJobRetry=0;
-var scheduleJob;
 // var requestData={
 // 	"items": []
 // };
@@ -111,8 +109,6 @@ exports.edit = function (req, res) {
 exports.stop = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     console.log( 'stop module' );
-    scheduleJob.cancel();
-    console.log("stop schedule Job");
     res.status(200).send('stop');
 };
 
@@ -152,7 +148,7 @@ exports.execute = function (req, res) {
 			// console.log( "decoded==>"+JSON.stringify(  decoded  ));
 			console.log("inArguments==>"+JSON.stringify(  decoded.inArguments  ));
 			// console.log("journeyId==>"+JSON.stringify(decoded.journeyId));
-			journeyID = decoded.journeyId;
+			map.journeyid = decoded.journeyId;
 			
 			for(var i in decoded.inArguments){
 				var adCode = decoded.inArguments[i].ADCode;
@@ -191,7 +187,6 @@ exports.execute = function (req, res) {
 			}
 			var isEmpty = JSON.stringify(map)=="{}";
 			if(isEmpty!=true){
-				map.journeyid = journeyID;
 				map.status = 'pending';
 				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup,runningstartdate,runningenddate) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar,$12::varchar)';
 				//
@@ -223,7 +218,6 @@ exports.publish = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
     console.log('publish module');
-    console.log("publish journeyID==>"+journeyID);
     // var rule = '0 0/5 * * * *';
     // console.log("rule==>"+rule);
     // scheduleJobRetry = 0;
@@ -303,9 +297,8 @@ function updateRecordsStatus(id){
 		}
 		else{
 			console.log("last index==>"+id);
-			console.log("produce journeyID==>"+journeyID);
 			//call producure
-			client.query("CALL ben.updatestatus($1,$2);",[parseInt(id),journeyID],function(isErr, rst){
+			client.query("CALL ben.updatestatus($1);",[parseInt(id)],function(isErr, rst){
 				if(isErr){
 					console.log('call proc error:' + isErr.message);
 				}	
@@ -325,12 +318,11 @@ function retrieveDataFromDB(insertDataIntoDE){
 	console.log('retrieveDataFromDB');
 	pgPool.connect(function (isErr, client, done) {
     	console.log("start connection");
-    	console.log("journeyID==?=>"+journeyID);
         if (isErr) {
             console.log('connect query:' + isErr.message);
             return;
         }
-        client.query("select id,targetstartdate,targetenddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup from ben.input where status !='success' and journeyid=$1 and createdate <=$2 order by id asc", [journeyID,dateStr], function (isErr, rst) {
+        client.query("select id,targetstartdate,targetenddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup from ben.input where status !='success' and createdate <=$1 order by id asc", [dateStr], function (isErr, rst) {
             done();//释放连接，归还给连接池
             if (isErr) {
                 console.log('retrieve from db query error:' + isErr.message);
@@ -404,14 +396,13 @@ function insertDataIntoDB(queryStr,parameters){
 
 function setScheduleJob(rule,retrieveDataFromDB){
 	console.log("start scheduleJob");
-	scheduleJob = schedule.scheduleJob(rule,function(){
+	var j = schedule.scheduleJob(rule,function(){
 		console.log("schedule Job Starting");
-		//console.log("retrySchedule==>"+scheduleJobRetry);
-		console.log("schedule isStarScheduleJob==>"+isStarScheduleJob);
 		
 		if(scheduleJobRetry>=3){
 			console.log("stop schedule");
 			console.log("stop database server connection");
+			j.cancel();
 		}
 		else{
 			if(isStarScheduleJob==true){
