@@ -16,6 +16,12 @@ define([
     $(window).ready(onRender);
 
     connection.on('initActivity', initialize);
+
+    //running modal
+    connection.on('initActivityRunningModal', initRunningModal);
+    //hover modal
+    connection.on('initActivityRunningHover', initRunningHover);
+
     connection.on('requestedTokens', onGetTokens);
     connection.on('requestedEndpoints', onGetEndpoints);
 
@@ -27,13 +33,6 @@ define([
 
         connection.trigger('requestTokens');
         connection.trigger('requestEndpoints');
-		/*
- connection.trigger('updateButton', {
-            button: 'next',
-            text: 'next',
-            enabled: true
-        });*/
-        // $('#AdCode').val(AdCode);
 		console.log ('onRender function');
 		
     }
@@ -42,67 +41,26 @@ define([
         console.log("init==>"+JSON.stringify(data));
         if (data) {
             payload = data;
+            initOperation(data);
         }
-        
-        var hasInArguments = Boolean(
-            payload['arguments'] &&
-            payload['arguments'].execute &&
-            payload['arguments'].execute.inArguments &&
-            payload['arguments'].execute.inArguments.length > 0
-        );
-
-        var inArguments = hasInArguments ? payload['arguments'].execute.inArguments : {};
-
-        console.log(inArguments);
-
-        var map = {};
-        map.ADCode = '';
-        map.duration='';
-        map.endDate = '';
-        map.startDate = '';
-        map.LocationGroup = '';
-        map.AdPosition = '';
-        map.RankedValue = '';
-        //init UI data form
-        $.each(inArguments, function (index, inArgument) {
-            $.each(inArgument, function (key, val) {
-                console.log("customActivity key==>"+key);
-                console.log("customActivity val==>"+val);
-                if(key=='startDate'){
-                    map.startDate = val;
-                }
-                else if(key=='endDate'){
-                    map.endDate = val;
-                }
-                else if(key=='ADCode'){
-                    map.ADCode = val;
-                }
-                else if(key=='Duration'){
-                    map.duration = val;
-                }
-                else if(key=='LocationGroup'){
-                    map.LocationGroup = val;
-                }
-                else if(key=='AdPosition'){
-                    map.AdPosition = val;
-                }
-                else if(key=='RankedValue'){
-                    map.RankedValue = val;
-                }
-            });
-        });
-
-        //init 
-        $('#AdCode').val(map.ADCode);
-        $('#Duration').val(map.duration);
-        $('#AdEndDate').val(map.endDate);
-        $('#AdStartDate').val(map.startDate);
-        $('#LocationGroup').val(map.LocationGroup);
-        $('#AdPosition').val(map.AdPosition);
-        $('#RankedValue').val(map.RankedValue);
-
        console.log('initActivity function');
     }
+
+    function initRunningModal(data){
+        console.log("initRunningModal function==>"+JSON.stringify(data));
+        if (data) {
+            initOperation(data);
+        }
+    }
+
+    function initRunningHover(data){
+        console.log("initRunningHover function==>"+JSON.stringify(data));
+        if (data) {
+            initOperation(data);
+        }
+    }
+
+
 
     function onGetTokens(tokens) {
         console.log(tokens);
@@ -252,6 +210,64 @@ define([
         var formatdate = y+'-'+m+'-'+d + "T" + h + ":" + f;
         console.log("formdate===>"+formatdate);
         return formatdate;
+    }
+
+    function initOperation(payLoadTemp){
+
+        var hasInArguments = Boolean(
+            payLoadTemp['arguments'] &&
+            payLoadTemp['arguments'].execute &&
+            payLoadTemp['arguments'].execute.inArguments &&
+            payLoadTemp['arguments'].execute.inArguments.length > 0
+        );
+
+        var inArguments = hasInArguments ? payLoadTemp['arguments'].execute.inArguments : {};
+
+        var map = {};
+        map.ADCode = '';
+        map.duration='';
+        map.endDate = '';
+        map.startDate = '';
+        map.LocationGroup = '';
+        map.AdPosition = '';
+        map.RankedValue = '';
+        //init UI data form
+        $.each(inArguments, function (index, inArgument) {
+            $.each(inArgument, function (key, val) {
+                console.log("customActivity key==>"+key);
+                console.log("customActivity val==>"+val);
+                if(key=='startDate'){
+                    map.startDate = val;
+                }
+                else if(key=='endDate'){
+                    map.endDate = val;
+                }
+                else if(key=='ADCode'){
+                    map.ADCode = val;
+                }
+                else if(key=='Duration'){
+                    map.duration = val;
+                }
+                else if(key=='LocationGroup'){
+                    map.LocationGroup = val;
+                }
+                else if(key=='AdPosition'){
+                    map.AdPosition = val;
+                }
+                else if(key=='RankedValue'){
+                    map.RankedValue = val;
+                }
+            });
+        });
+
+        //init 
+        $('#AdCode').val(map.ADCode);
+        $('#Duration').val(map.duration);
+        $('#AdEndDate').val(map.endDate);
+        $('#AdStartDate').val(map.startDate);
+        $('#LocationGroup').val(map.LocationGroup);
+        $('#AdPosition').val(map.AdPosition);
+        $('#RankedValue').val(map.RankedValue);
     }
 
 
