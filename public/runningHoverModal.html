@@ -18,8 +18,9 @@
             var dependencies = [
                 'customActivity'
             ];
-
             require(config, dependencies);
+            var StartDate = $("#AdStartDate").val();
+            $("#StartDateSpan").text(StartDate);
         })();
     </script>
 </head>
@@ -30,6 +31,8 @@
         <br/>
         StartDate
         <input readonly="true" id="AdStartDate" type="datetime-local" name="AdStartDate" />
+        <br>
+        <span id="StartDateSpan"></span>
         <br/>
         EndDate
         <input readonly="true" id="AdEndDate" type="datetime-local" name="AdEndDate" />
