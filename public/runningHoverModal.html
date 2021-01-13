@@ -21,12 +21,6 @@
             require(config, dependencies);
         })();
     </script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $("#StartDateSpan").text("Hello23");
-            $("#adc").text($("#AdCode").val());
-        });
-    </script>
 </head>
 <body>
     <div id="step1" class="step">
@@ -36,7 +30,8 @@
         StartDate::
         <input readonly="true" id="AdStartDate" type="datetime-local" name="AdStartDate" />
         <br>
-        <span id="StartDateSpan"></span><br>
+        <span id="StartDateSpan"></span>
+        <br>///
         <span id="adc"></span>
         <br/>
         EndDate
@@ -53,5 +48,10 @@
         <input readonly="true" id="RankedValue" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="RankedValue" /><br/>
     </div>
 </body>
-
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#StartDateSpan").text("Hello23");
+        $("#adc").text($("#AdCode").val());
+    });
+</script>
 </html>
