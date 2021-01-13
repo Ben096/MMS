@@ -25,18 +25,16 @@
 </head>
 <body>
     <div id="step1" class="step">
-        <h1>Targeted Ad Allocation</h1>
-        <h3>Define the following targeted ad details for campaign execution</h3>
-        Targeted Ad Code<font color="#FF0000">*</font>
+        Code<font color="#FF0000">*</font>
         <input readonly="true" id="AdCode" type="text" name="AdCode" />
         <br/>
-        Targeted Ad Start Date
+        StartDate
         <input readonly="true" id="AdStartDate" type="datetime-local" name="AdStartDate" />
         <br/>
-        Targeted Ad End Date
+        EndDate
         <input readonly="true" id="AdEndDate" type="datetime-local" name="AdEndDate" />
         <br/>
-        Targeted Ad Duration
+        Duration
         <input readonly="true" id="Duration" name="Duration" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''">
         <br/>
         Stores Location Group
@@ -45,7 +43,6 @@
         <input readonly="true" id="AdPosition" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="AdPosition" /><br/>
         Ranked Value
         <input readonly="true" id="RankedValue" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="RankedValue" /><br/>
-
     </div>
 </body>
 

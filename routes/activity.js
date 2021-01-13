@@ -32,7 +32,6 @@ var tokenRequestData={
 "client_secret": "zmg1PH3zPiFi0C7j3SOjJGAc"
 };
 
-var access_token = "";
 var scheduleJobRetry=0;
 // var requestData={
 // 	"items": []
@@ -250,7 +249,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
     }, function(error, response, body) {
         if (!error) {
             //console.log(body) // 请求成功的处理逻辑
-            access_token = body.access_token;
+            //access_token = body.access_token;
             console.log("get token==>"+access_token);
             //console.log('dedata==>'+JSON.stringify(deData));
             console.log("deURL==>"+deUrl);
@@ -260,7 +259,7 @@ function retrieveAccessToken(url,data,deData,deUrl){
     			json: true,
     			headers : {
 					"Content-type" : "application/JSON",
-					"Authorization" : "Bearer "+access_token
+					"Authorization" : "Bearer "+body.access_token
 				},
     			body: deData
     			}, function(error, response, body) {
