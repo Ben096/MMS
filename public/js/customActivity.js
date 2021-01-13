@@ -319,10 +319,12 @@ define([
         });
 
         //init 
+        var startDate = map.startDate;
+        var endDate = map.endDate;
         $('#AdCode').text(map.ADCode);
         $('#Duration').text(map.duration);
-        $('#AdEndDate').text(map.endDate);
-        $('#AdStartDate').text(map.startDate);
+        $('#AdEndDate').text(endDate.replace("T"," "));
+        $('#AdStartDate').text(startDate.replace("T"," "));
         $('#LocationGroup').text(map.LocationGroup);
         $('#AdPosition').text(map.AdPosition);
         $('#RankedValue').text(map.RankedValue);
