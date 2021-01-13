@@ -56,7 +56,7 @@ define([
     function initRunningHover(data){
         console.log("initRunningHover function==>"+JSON.stringify(data));
         if (data) {
-            initOperation(data);
+            initOperationForHover(data);
         }
     }
 
