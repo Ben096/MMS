@@ -249,8 +249,6 @@ function retrieveAccessToken(url,data,deData,deUrl){
     }, function(error, response, body) {
         if (!error) {
             //console.log(body) // 请求成功的处理逻辑
-            //access_token = body.access_token;
-            console.log("get token==>"+access_token);
             //console.log('dedata==>'+JSON.stringify(deData));
             console.log("deURL==>"+deUrl);
             request({
@@ -367,8 +365,6 @@ function retrieveDataFromDB(insertDataIntoDE){
 function insertDataIntoDE(url,data,retrieveAccessToken){
 	//retrieve access token
 	retrieveAccessToken(retrieveTokenUrl,tokenRequestData,data,url);
-	// console.log("access token Insert DE==>"+access_token);
-	// console.log("data Insert DE==>"+JSON.stringify(data));
     
 }
 
