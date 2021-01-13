@@ -21,25 +21,15 @@
             require(config, dependencies);
         })();
     </script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var val = $("#AdCode").val();
-            console.log("val==>"+val);
-            $("#StartDateSpan").text("Hello23");
-            $("#adc").text(val);
-        });
-    </script>
 </head>
 <body>
     <div id="step1" class="step">
         Code<font color="#FF0000">*</font>
         <input readonly="true" id="AdCode" type="text" name="AdCode" />
         <br/>
-        StartDate::
-        <input readonly="true" id="AdStartDate" type="datetime-local" name="AdStartDate" />
+        StartDate:
+        <span id="AdStartDate" name="AdStartDate"></span>
         <br>
-        <span id="StartDateSpan"></span><br>
-        <span id="adc"></span>
         <br/>
         EndDate
         <input readonly="true" id="AdEndDate" type="datetime-local" name="AdEndDate" />
