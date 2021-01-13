@@ -319,13 +319,13 @@ define([
         });
 
         //init 
-        $('#AdCode').val(map.ADCode);
-        $('#Duration').val(map.duration);
-        $('#AdEndDate').val(map.endDate);
+        $('#AdCode').text(map.ADCode);
+        $('#Duration').text(map.duration);
+        $('#AdEndDate').text(map.endDate);
         $('#AdStartDate').text(map.startDate);
-        $('#LocationGroup').val(map.LocationGroup);
-        $('#AdPosition').val(map.AdPosition);
-        $('#RankedValue').val(map.RankedValue);
+        $('#LocationGroup').text(map.LocationGroup);
+        $('#AdPosition').text(map.AdPosition);
+        $('#RankedValue').text(map.RankedValue);
     }
 
 

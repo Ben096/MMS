@@ -24,25 +24,26 @@
 </head>
 <body>
     <div id="step1" class="step">
-        Code<font color="#FF0000">*</font>
-        <input readonly="true" id="AdCode" type="text" name="AdCode" />
+        Targeted Ad Code : <font color="#FF0000">*</font><br/>
+        <span id="AdCode" name="AdCode"></span>
         <br/>
-        StartDate:
+        Targeted Ad Start Date : <br>
         <span id="AdStartDate" name="AdStartDate"></span>
-        <br>
         <br/>
-        EndDate
-        <input readonly="true" id="AdEndDate" type="datetime-local" name="AdEndDate" />
+        Targeted Ad End Date : <br/>
+        <span id="AdEndDate" name="AdEndDate"></span>
         <br/>
-        Duration
-        <input readonly="true" id="Duration" name="Duration" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''">
+        Duration : 
+        <span id="Duration" name="Duration"></span>
         <br/>
-        Stores Location Group
-        <input readonly="true" id="LocationGroup" type="text" name="LocationGroup" /><br/>
-        Ad Position<font color="#FF0000">*</font>
-        <input readonly="true" id="AdPosition" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="AdPosition" /><br/>
-        Ranked Value
-        <input readonly="true" id="RankedValue" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="RankedValue" /><br/>
+        Stores Location Group : <br/>
+        <span id="LocationGroup" name="LocationGroup"></span>
+        <br/>
+        Ad Position<font color="#FF0000">*</font> : 
+        <span id="AdPosition" name="AdPosition"></span>
+        <br/>
+        Ranked Value : 
+        <span id="RankedValue" name="RankedValue"></span>
     </div>
 </body>
 
