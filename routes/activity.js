@@ -186,15 +186,17 @@ exports.execute = function (req, res) {
 			}
 			var isEmpty = JSON.stringify(map)=="{}";
 			if(isEmpty!=true){
-				map.status = 'pending';
-				var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup,runningstartdate,runningenddate) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar,$12::varchar)';
-				//
-				let durationTemp = map.duration == "" ? '0' : map.duration;
-				map.runningStartDate = convertToLocalDateTime(new Date());
-				map.runningEndDate = addDays(new Date(),durationTemp,map.startDate);
+                if(map.duration!="" || map.duration!="0"){
+                    map.status = 'pending';
+                    var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup,runningstartdate,runningenddate) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar,$12::varchar)';
+                    //
+                    let durationTemp = map.duration == "" ? '0' : map.duration;
+                    map.runningStartDate = convertToLocalDateTime(new Date());
+                    map.runningEndDate = addDays(new Date(),durationTemp,map.startDate);
 
-				var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup,map.runningStartDate,map.runningEndDate];
-				insertDataIntoDB(queryStr,parameters);
+                    var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup,map.runningStartDate,map.runningEndDate];
+                    insertDataIntoDB(queryStr,parameters);
+                }
 			}
 	
             res.status(200).send('Excute');
@@ -439,11 +441,7 @@ function addDays(usDate,duration,startDate){
 	var date;
 	var i = parseInt(duration);
 	if(startDate!=''){
-		var currentDate = convertToLocalDateTime(usDate);
-		if(currentDate <= startDate){
-			currentDate = startDate;
-		}
-    	var targetDate = +(new Date(currentDate)) + 1000*60*60*24*i;
+    	var targetDate = +(new Date(startDate)) + 1000*60*60*24*i;
     	date = new Date(targetDate);
 	}
 	else{
