@@ -186,7 +186,10 @@ exports.execute = function (req, res) {
 			}
 			var isEmpty = JSON.stringify(map)=="{}";
 			if(isEmpty!=true){
-                if(map.duration!="" || map.duration!="0"){
+                console.log("map.duration==>"+(map.duration));
+                console.log("map.duration!=''==>"+(map.duration!=""));
+                console.log("map.duration!=0==>"+(map.duration!="0"));
+                if(map.duration!="" && map.duration!="0"){
                     map.status = 'pending';
                     var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup,runningstartdate,runningenddate) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar,$12::varchar)';
                     //
