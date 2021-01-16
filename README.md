@@ -46,4 +46,7 @@ Modification content£º
 3.Heroku Setting:
 --on your heroku app-->Settings-->Config Vars-->input key & value(key=jwtSecret ; value = "from your created installed package JWT Signing Secret")
 
+4.Heroku DB:
+---on your heroku app-->Resources-->search heroku postgres and install it for free
+
 	
