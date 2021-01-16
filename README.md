@@ -29,6 +29,19 @@ Modification content£º
     	poolIdleTimeout: 30000,
     	reapIntervalMillis: 10000
     };
+If need SSL to connect DB,please use this below code:
+----var pgConfig = {
+	user: 'Your Heroku DB user',
+    	database: 'Your Heroku DB',
+    	password: 'Your Heroku DB password',
+    	host: 'Your Heroku DB host',
+    	port: '5432',
+    	poolSize: 5,
+	ssl:{ rejectUnauthorized: false },
+    	poolIdleTimeout: 30000,
+    	reapIntervalMillis: 10000
+    };
+
 
 ----var tokenRequestData={
 	"grant_type": "client_credentials",
