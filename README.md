@@ -1,58 +1,49 @@
-# Journey Builder Activity Template
-### Starter template for a messaging JB Activity using Node.JS
+Modification content£º
 
-**NOTE:** This app and the associated code is NOT production quality, its pure purpose is to demonstrate the full flow of custom interactions in Journey Builder
+1. config.json(Path: ./public/config.json)
 
-### Pre-Requisites
+--"applicationExtensionKey": "Your Installed Package Unique key"
+( Note: Setup-->Installed Package-->Your created Installed Package-->Components( If you don't create component,please create it([Name:Journey Builder Activity-->Categorys: Messages] And [Name:API Integration-->server to server-->grant access to data extension(Read & write)]) ) )
 
-* Node.js (if you'd like to test locally)
-* A Marketing Cloud Account with Journey Builder
-* A publicly accessible web server (this template was built using a free [Heroku](https://heroku.com) account with SSL support
+--Url Setting:
+	execute : https://"Your domain name"/offer/execute
+	save : https://"Your domain name"/offer/save
+	publish : https://"Your domain name"/offer/publish
+	validate : https://"Your domain name"/offer/validate
+	stop : https://"Your domain name"/offer/stop
 
-### Getting Started
+--"customerKey" : "your external key"
+(Ps: In MC, Setup-->Key Management-->create-->select Salt key type-->input Words in hexadecimal in require field[e.g. Hello world becomes 0x48656c6c6f20776f726c64])
 
-#### Configure web server 
-This guide covers Heroku, skip this step if you are familiar on how to deploy a Node.js app
 
-1. Fork and Clone this repository
-2. Login into [Heroku](https://heroku.com)
-3. Click on New > Create new app
-4. Give a name to the app and click on "Create App"
-5. Choose your preferred Deployment method (Github or Heroku Cli are nice to work with) 
-6. Click on "Deploy branch"
-7. Once your branch is deployed, click on the "View" button and verify you see the welcome message
+2. activity.js(Path: ./routes/activity.js)
+-Modify variable values( Name:pgConfig,tokenRequestData,retrieveTokenUrl,insertDEUrl )
 
-#### Configure your package in Marketing Cloud
+----var pgConfig = {
+	user: 'Your Heroku DB user',
+    	database: 'Your Heroku DB',
+    	password: 'Your Heroku DB password',
+    	host: 'Your Heroku DB host',
+    	port: '5432',
+    	poolSize: 5,
+    	poolIdleTimeout: 30000,
+    	reapIntervalMillis: 10000
+    };
 
-1. Login to Marketing Cloud and Navigate to Administration > Account > Installed Packages
-2. Click on New and enter a name and a description for your package
-3. **Copy the JWT Secret value from the Summary page and save it for later**
-4. Click on Add Component, select Journey Builder Activity and Click next
-5. Enter the information about the activity, enter [url of your activity] as your Endpoint URL
-6. Click Save
-7. **Copy the Unique Key value from the Journey Builder Activity panel and save it for later**
+----var tokenRequestData={
+	"grant_type": "client_credentials",
+	"client_id": "the value from your created Installed package--->API Integration-->Client Id",
+	"client_secret": "the value from your created Installed package--->API Integration-->Client Secret"
+     };
 
-#### Configure Activity
+----var retrieveTokenUrl = "Authentication Base URI/v2/token";
+----var insertDEUrl = "REST Base URI/data/v1/async/dataextensions/key:Your data extension external key/rows";
 
-1. Open /public/config.json and:
-* Replace __application_key_from_appcenter_here__ for the value you got from step 7 from the previous section
-* Replace [your-domain-here] with the domain for your website
-2. Open /public/images and replace with the icons for the activity to your liking
+-----on exports.execute = function (req, res), set JWT code. If you use 'Hello world' to create JWT, then you don't change this code. If not, please use your JWT code. Like£º
+	JWT(req.body, 'your word using to create key in key Management', (err, decoded) => {})
 
-#### Add Heroku vars
 
-1. Log back into Heroku and navigate to your app
-2. Click on "Settings"
-3. Click on "Reveal config vars"
-4. Add a new var called jwtSecret and paste the App Signature you got from step 3 when configuring your package in Marketing Cloud
+3.Heroku Setting:
+--on your heroku app-->Settings-->Config Vars-->input key & value(key=jwtSecret ; value = "from your created installed package JWT Signing Secret")
 
-#### Testing your Activity
-
-1. Login into Marketing Cloud and navigate to Journey Builder
-2. You should be able to see your custom activity and drag it into the canvas!
-
-#### Want to learn more?
-
-If you'd like to learn more about building custom Journey Builder Activities and our collection of Custom Activities available to you today, email us at [info@devsutd.com](mailto:info@devsutd.com)
-
-Also, follow us on [LinkedIn](https://www.linkedin.com/company/10701607/) to get the latest updates and great articles about Salesforce Marketing Cloud!
+	
