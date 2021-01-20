@@ -190,7 +190,7 @@ define([
             if("LoyaltyID"==fieldname){
                 payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
             }
-			//payload['arguments'].execute.inArguments.push({fieldname: fieldval });
+			//payload['arguments'].execute.inArguments.push({[fieldname]: "{{" + fieldval+"}}" });
  		}
         
 
