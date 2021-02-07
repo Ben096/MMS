@@ -191,13 +191,15 @@ exports.execute = function (req, res) {
                 console.log("map.duration!=0==>"+(map.duration!="0"));
                 if(map.duration!="" && map.duration!="0"){
                     map.status = 'pending';
-                    var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup,runningstartdate,runningenddate) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar,$12::varchar)';
+                    var queryStr = 'INSERT INTO ben.input(startdate,enddate,adcode,journeyid,status,createdate,loyaltyid,adposition,rankedvalue,locationgroup,runningstartdate,runningenddate,targetstartdate,targetenddate) VALUES($1::varchar,$2::varchar,$3::varchar,$4::varchar,$5::varchar,$6::varchar,$7::varchar,$8::varchar,$9::varchar,$10::varchar,$11::varchar,$12::varchar,$13::varchar,$14::varchar)';
                     //
                     let durationTemp = map.duration == "" ? '0' : map.duration;
                     map.runningStartDate = convertToLocalDateTime(new Date());
                     map.runningEndDate = addDays(new Date(),durationTemp,map.startDate);
 
-                    var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup,map.runningStartDate,map.runningEndDate];
+                    var targetDateTime = retrieveTargetDate(map.runningStartDate,map.runningEndDate,map.startDate,map.endDate);
+
+                    var parameters = [map.startDate,map.endDate,map.ADCode,map.journeyid,map.status,dateFormat(new Date()),map.LoyaltyID,map.AdPosition,map.RankedValue,map.LocationGroup,map.runningStartDate,map.runningEndDate,targetDateTime.TargetStartDate,targetDateTime.TargetEndDate];
                     insertDataIntoDB(queryStr,parameters);
                 }
 			}
@@ -463,5 +465,51 @@ function addDays(usDate,duration,startDate){
 	console.log("addDays formdate===>"+formatdate);
 	return formatdate;
 
+}
+
+function retrieveTargetDate(runningStartDate,runningEndDate,originalStartDate,originalEndDate){
+    var result = {};
+    console.log("runningStartDate=="+runningStartDate);
+    console.log("runningEndDate=="+runningEndDate);
+    console.log("originalStartDate=="+originalStartDate);
+    console.log("originalEndDate=="+originalEndDate);
+    
+    if(originalStartDate=="" && originalEndDate==""){
+        result.TargetStartDate = runningStartDate;
+        result.TargetEndDate = runningEndDate.substring(0,10)+" 23:59";
+    }
+    
+    if(originalStartDate!="" && originalEndDate!=""){
+        result.TargetStartDate = originalStartDate;
+        if(runningEndDate > originalEndDate){
+            result.TargetEndDate = originalEndDate
+        }
+        else{
+            result.TargetEndDate = runningEndDate.substring(0,10)+" 23:59";
+        }
+    }
+    
+    if(originalStartDate=="" && originalEndDate!=""){
+        if(runningStartDate >= originalEndDate){
+            result.TargetStartDate = originalEndDate;
+        }
+        else{
+            result.TargetStartDate = runningStartDate;
+        }
+        
+        if(runningEndDate >= originalEndDate){
+            result.TargetEndDate = originalEndDate;
+        }
+        else{
+            result.TargetEndDate = runningEndDate.substring(0,10)+" 23:59";
+        }
+    }
+    
+    if(originalStartDate!="" && originalEndDate==""){
+        result.TargetStartDate = originalStartDate;
+        result.TargetEndDate = runningEndDate.substring(0,10)+" 23:59";
+    }
+    
+    return result;
 }
 
