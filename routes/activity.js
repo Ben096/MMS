@@ -124,6 +124,8 @@ exports.save = function (req, res) {
  */
 exports.execute = function (req, res) {
 	console.log('execute module');
+    let keyVal = req.body.interactionId;
+    console.log("execute interactionid==>"+keyVal);
     // example on how to decode JWT
     JWT(req.body, 'Hello world', (err, decoded) => {
 
@@ -224,6 +226,8 @@ exports.publish = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
     console.log('publish module');
+    let keyVal = req.body.interactionId;
+    console.log("publich interactionid==>"+keyVal);
     var rule = '0 0/5 * * * *';
     console.log("rule==>"+rule);
     scheduleJobRetry = 0;
