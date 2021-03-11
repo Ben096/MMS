@@ -146,7 +146,7 @@ exports.execute = function (req, res) {
             var decodedArgs = decoded.inArguments[0];            
 
 			// console.log("decodedArgs==>" +JSON.stringify(  decodedArgs  ));
-			// console.log( "decoded==>"+JSON.stringify(  decoded  ));
+			console.log( "decoded==>"+JSON.stringify(  decoded  ));
 			console.log("inArguments==>"+JSON.stringify(  decoded.inArguments  ));
 			// console.log("journeyId==>"+JSON.stringify(decoded.journeyId));
 			map.journeyid = decoded.journeyId;
