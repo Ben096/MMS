@@ -116,6 +116,9 @@ exports.stop = function (req, res) {
  */
 exports.save = function (req, res) {
     console.log('save module');
+	JWT(req.body, 'Hello world', (err, decoded) => {
+		console.log( "decoded==>"+JSON.stringify(  decoded  ));
+	});
     res.status(200).send('Save');
 };
 
