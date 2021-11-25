@@ -21,37 +21,34 @@
                 }              
       ],
           "outArguments": [],
-          "url": "https://caoffer.herokuapp.com/offer/execute",
+          "url": "https://mmsca.herokuapp.com/offer/execute",
            "verb": "POST",
             "body": "",
             "header": "",
             "format": "json",
-            "useJwt": true,
-            "customerKey":"31283535-3541-48c5-8336-a748b4af9e80",
+            "useJwt": false,
             "timeout": 10000
         }
     },
     "configurationArguments": {
-      "applicationExtensionKey": "a916f834-cc28-4aa9-a7bc-12f86b0f58d7",
+      "applicationExtensionKey": "39eed30d-f000-4775-a159-37e041c1b054",
       "save": {
-        "url": "https://caoffer.herokuapp.com/offer/save",
+        "url": "https://mmsca.herokuapp.com/offer/save",
         "verb": "POST",
-        "customerKey":"31283535-3541-48c5-8336-a748b4af9e80",
-        "useJwt": true
+        "useJwt": false
        },
        "publish": {
-        "url": "https://caoffer.herokuapp.com/offer/publish",
+        "url": "https://mmsca.herokuapp.com/offer/publish",
         "verb": "POST",
-        "customerKey":"31283535-3541-48c5-8336-a748b4af9e80",
-        "useJwt": true
+        "useJwt": false
        },
       "stop": {
-        "url": "https://caoffer.herokuapp.com/offer/stop",
+        "url": "https://mmsca.herokuapp.com/offer/stop",
            "verb": "POST",
         "useJwt": false
       },
       "validate": {
-        "url": "https://caoffer.herokuapp.com/offer/validate",
+        "url": "https://mmsca.herokuapp.com/offer/validate",
         "verb": "POST",
         "useJwt": false
       }
