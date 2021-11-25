@@ -35,7 +35,7 @@ $(document).ready(function() {
 			"</div>" +
 			"<div class='toright clearfix'>" +
 			"<div class='chuans'>" +
-			"<img src='img/plus1.png' data-imgsrc='img/plus1.png' alt=''>" +
+			"<img src='images/plus1.png' data-imgsrc='images/plus1.png' alt=''>" +
 			"<input class='uploadImg file3' type='file' name='file3'  >" +
 			"<span class='delx Hui-iconfont'>X</span>" +
 			"</div>" +
@@ -54,7 +54,7 @@ $(document).ready(function() {
 	function mobileOne() {
 		$("#mobileContentTemplate").empty();
 		var uploadContent = "<div style='text-align: center;'>" +
-			"<img id='monitor' src='img/DTTDigitalSmall.png' data-imgsrc='img/DTTDigitalSmall.png' alt='upload'>" +
+			"<img id='monitor' src='images/DTTDigitalSmall.png' data-imgsrc='images/DTTDigitalSmall.png' alt='upload'>" +
 			"</div>";
 		var mobileContent = "<div class='templateText'></div>" +
 			"<div class='mobileItem-Div'>【Deloitte】<span>您报名参加的Deloitte中国峰会正在火热直播中！点此参会链接:https://abc.com 请使用手机号登入, 我们期待与您相聚云端。</span></div>";
@@ -69,7 +69,7 @@ $(document).ready(function() {
 			"</div>" +
 			"<div class='toright clearfix'>" +
 			"<div class='chuans'>" +
-			"<img src='img/plus1.png' data-imgsrc='img/plus1.png' alt=''>" +
+			"<img src='images/plus1.png' data-imgsrc='images/plus1.png' alt=''>" +
 			"<input class='uploadImg file3' type='file' name='file3'  >" +
 			"<span class='delx Hui-iconfont'>X</span>" +
 			"</div>" +
@@ -97,7 +97,7 @@ $(document).ready(function() {
 	function mobileTwo() {
 		$("#mobileContentTemplate").empty();
 		var uploadContent = "<div style='text-align: center;'>" +
-			"<img id='monitor' src='img/DTTDigitalSmall.png' data-imgsrc='img/DTTDigitalSmall.png' alt='upload'>" +
+			"<img id='monitor' src='images/DTTDigitalSmall.png' data-imgsrc='images/DTTDigitalSmall.png' alt='upload'>" +
 			"</div>";
 		var mobileContent = "<div class='mobileItem-Div'>【Deloitte】"+
 							"尊敬的<span class='templateText'>{参与者}</span>, 您预约出席（报名参与）的"+

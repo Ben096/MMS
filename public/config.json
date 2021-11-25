@@ -61,7 +61,7 @@
         "configModal": {
             "height": 400,
             "width": 1240,
-          "fullscreen": false
+          "fullscreen": true
         },
         "runningModal": {
             "url": "runningModal.html"
