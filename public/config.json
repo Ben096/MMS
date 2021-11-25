@@ -1,15 +1,15 @@
 {
     "workflowApiVersion": "1.1",
     "metaData": {
-        "icon": "images/DTTDigital.png",
-        "iconSmall": "images/DTTDigitalSmall.png",
+        "icon": "images/MMS.jpeg",
+        "iconSmall": "images/MMS.jpeg",
         "category": "message"
     },
     "type": "REST",
     "lang": {
         "en-US": {
-            "name": "TargetAD",
-          "description": "TargetAD Custom Activity",
+            "name": "MMS",
+          "description": "MMS Custom Activity",
           "step1Label": "Configure Activity"
         }
     },
@@ -54,8 +54,9 @@
       }
     },
     "wizardSteps": [
-        { "label": "Configure Activity", "key": "step1" }
-    ],
+    {"key": "step1", "label": "Step1"},
+    {"key": "step2", "label": "Step2"}
+  ],
     "userInterfaces": {
         "configModal": {
             "height": 400,

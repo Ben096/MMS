@@ -9,9 +9,13 @@ define([
     var authTokens = {};
     var payload = {};
 
+    var steps = [
+        {'key': 'step1', 'label': 'Step1'},
+        {'key': 'step2', 'label': 'Step2'}
+    ];
+    var currentStep = steps[0].key;
 
-	
-	var AdCode = '';
+    var globalVariable="";
 
     $(window).ready(onRender);
 
@@ -20,12 +24,56 @@ define([
     //running modal
     connection.on('initActivityRunningModal', initRunningModal);
     //hover modal
-    connection.on('initActivityRunningHover', initRunningHover);
+    connection.on('initActivityRunningHover', initRunningModal);
 
     connection.on('requestedTokens', onGetTokens);
     connection.on('requestedEndpoints', onGetEndpoints);
 
-    connection.on('clickedNext', save);
+    //click Next & Previous button
+    connection.on('clickedNext', onClickedNext);
+    connection.on('clickedBack', onClickedBack);
+    connection.on('gotoStep', onGotoStep);
+
+
+    function onClickedNext () {
+        if (currentStep.key === 'summary') {
+            save();
+        } else {
+            connection.trigger('nextStep');
+        }
+    }
+
+    function onClickedBack () {
+        connection.trigger('prevStep');
+    }
+
+    function onGotoStep (step) {
+        showStep(step);
+        connection.trigger('ready');
+    }
+
+    function showStep (step, stepIndex) {
+        console.log("showStep function");
+        console.log("step==>"+step);
+        console.log("stepIndex==>"+stepIndex);
+        if (stepIndex && !step) {
+            step = steps[stepIndex - 1];
+        }
+
+        currentStep = step;
+
+        $('.step').hide();
+
+        switch (currentStep.key) {
+        case 'step1':
+            $('#step1').show();
+            break;
+        case 'step2':
+            $('#step2').show();
+            break;
+        }
+    }
+
    
     function onRender() {
         // JB will respond the first time 'ready' is called with 'initActivity'
@@ -33,16 +81,18 @@ define([
 
         connection.trigger('requestTokens');
         connection.trigger('requestEndpoints');
-		console.log ('onRender function');
-		
+        console.log ('onRender function');
+        
     }
 
     function initialize(data) {
         console.log("init==>"+JSON.stringify(data));
         if (data) {
             payload = data;
+            //init 
             initOperation(data);
         }
+
        console.log('initActivity function');
     }
 
@@ -56,11 +106,9 @@ define([
     function initRunningHover(data){
         console.log("initRunningHover function==>"+JSON.stringify(data));
         if (data) {
-            initOperationForHover(data);
+            initOperation(data);
         }
     }
-
-
 
     function onGetTokens(tokens) {
         console.log(tokens);
@@ -70,29 +118,35 @@ define([
     function onGetEndpoints(endpoints) {
         console.log(endpoints);
     }
-	
-	var eventDefinitionKey;
-	connection.trigger('requestTriggerEventDefinition');
-	connection.on('requestedTriggerEventDefinition',
-	function(eventDefinitionModel) {
-		if(eventDefinitionModel){
+    
+    var eventDefinitionKey;
+    connection.trigger('requestTriggerEventDefinition');
+    connection.on('requestedTriggerEventDefinition',function(eventDefinitionModel) {
+        if(eventDefinitionModel){
 
-			eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
-			console.log(">>>Event Definition Key " + eventDefinitionKey);
-			/*If you want to see all*/
-			console.log('>>>Request Trigger', 
-			JSON.stringify(eventDefinitionModel));
-		}
+            eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
+            console.log(">>>Event Definition Key " + eventDefinitionKey);
+            /*If you want to see all*/
+            console.log('>>>Request Trigger',JSON.stringify(eventDefinitionModel));
+        }
 
-	});
-	
-	var entrySchema;
-	connection.trigger('requestSchema');
-	connection.on('requestedSchema', function (data) {
-	   // save schema, retrieve field attributes
-	   console.log('*** Schema ***', JSON.stringify(data['schema']));
-	   entrySchema = data['schema'];
-	});
+    });
+    
+    var entrySchema;
+    connection.trigger('requestSchema');
+    connection.on('requestedSchema', function (data) {
+       // save schema, retrieve field attributes
+       console.log('*** Schema ***', JSON.stringify(data['schema']));
+       entrySchema = data['schema'];
+       for(var i = 0; i < entrySchema.length; i++) {
+            var fld = entrySchema[i];
+            var fieldval = JSON.stringify(fld.key).replaceAll('"','');
+            var fieldname = fieldval.split('.')[2];
+            var fieldType = JSON.stringify(fld.type).replaceAll('"','');
+            console.log('Debug fieldname ', fieldname);
+            console.log('Debug fieldType ', fieldType);
+        }
+    });
 
     //trigger JB, and retrieve its information
     connection.trigger('requestInteraction');
@@ -100,120 +154,92 @@ define([
         console.log("interaction==>"+JSON.stringify(interaction));
     });
 
-	String.prototype.replaceAll = function (FindText, RepText) {
-		var regExp = new RegExp(FindText, "g");
-		return this.replace(regExp, RepText);
-	}
+    String.prototype.replaceAll = function (FindText, RepText) {
+        var regExp = new RegExp(FindText, "g");
+        return this.replace(regExp, RepText);
+    }
  
     function save() {
+
+        var isRemovedPath = $('#chekcboxId').is(':checked');
         console.log('customActivity Save function');
-        var postcardURLValue = $('#postcard-url').val();
-        var postcardTextValue = $('#postcard-text').val();
-
-        //retrieve the input field value
-        var AdC = $('#AdCode').val();
-        var AdStartDate = $('#AdStartDate').val();
-        var LocationGroup = $('#LocationGroup').val();
-        var AdPosition = $('#AdPosition').val();
-        var RankedValue = $('#RankedValue').val();
-        //check required field
-        if(AdPosition==""){
-            $("#AdPositionInfo").addClass("show");
-            $("#AdPositionInfo").removeClass("hide");
-            $("#AdPosition").addClass("inputStyle");
-            return;
+        //Create new path
+        var pathCount = parseInt($("#pathCount").val());
+        console.log("save pathCount=="+pathCount);
+        if(isRemovedPath==true){
+            //remove path
+            payload['outcomes'].splice(pathCount,1);
+            payload['arguments'].execute.inArguments[1].pathCount=pathCount;
         }
-        if(AdC==""){
-            $("#adCodeInfo").addClass("show");
-            $("#adCodeInfo").removeClass("hide");
-            $("#AdCode").addClass("inputStyle");
-            return;
-        }
-         
-        //CA UI Input value
-        payload['arguments'].execute.inArguments.push({"ADCode": AdC });
+        else{
+            console.log("CustomActivity pathCount=="+pathCount);
+            payload['arguments'].execute.inArguments.push({"pathCount":$("#pathCount").val()});
 
-        // if(AdStartDate==''){
-        //     console.log('set startDate to today');
-        //     var today = new Date();
-        //     AdStartDate = dateFormat(today);
-        // }
-
-        payload['arguments'].execute.inArguments.push({"startDate": AdStartDate });
-
-
-
-        var AdEndDate = $('#AdEndDate').val();
-        var duration = $('#Duration').val();
-        
-        payload['arguments'].execute.inArguments.push({"Duration": duration });
-
-        // if(duration != ''){
-        //     console.log("se enddate with duration");
-        //     var startDate = new Date(AdStartDate);
-        //     var i = parseInt(duration);
-        //     console.log("i==>"+i);
-        //     var endDate = +startDate + 1000*60*60*24*i;
-        //     console.log("duration enddate==>"+new Date(endDate));
-        //     AdEndDate = dateFormat(new Date(endDate));
-        // }
-        // else if(AdEndDate==''){
-        //     console.log('set endDate to today');
-        //     var today = new Date();
-        //     AdEndDate = dateFormat(today);
-        // }
-
-        payload['arguments'].execute.inArguments.push({"endDate": AdEndDate });
-
-        
-        
-        payload['arguments'].execute.inArguments.push({"LocationGroup": LocationGroup });
-    
-  
-        payload['arguments'].execute.inArguments.push({"AdPosition": AdPosition });
-    
-        payload['arguments'].execute.inArguments.push({"RankedValue": RankedValue });
-        
-		
-		//
-		//payload['arguments'].execute.inArguments.push({"DEName": "{{Event." + eventDefinitionKey+".name}}" });
-
-
-
-		for(var i = 0; i < entrySchema.length; i++) {
-			var fld = entrySchema[i];
-			console.log('cx debug fld', JSON.stringify(fld));
-			var fieldval = JSON.stringify(fld.key).replaceAll('"','');
-			var fieldname = fieldval.split('.')[2];
-			console.log('cx debug fieldname ', fieldname);
-			console.log('cx debug fieldval ', fieldval);
-            if("LoyaltyID"==fieldname){
-                payload['arguments'].execute.inArguments.push({"LoyaltyID": "{{Event." + eventDefinitionKey+".LoyaltyID}}" });
+            var externalArr =[]; 
+            for(var i=0;i<pathCount;i++){
+                var externalJSON = {};
+                var index = pathCount-i;
+                var inputFieldId = "#val"+index;
+                var inputValue = $(inputFieldId).val();
+                var operatorFieldId = "#operator"+index;
+                var operatorValue = $(operatorFieldId).val();
+                var fieldId = "#sel"+index;
+                var fieldSelectValue = $(fieldId).val();
+                var inputLabelId = "#vLabel"+index;
+                var InputLabelValue = $(inputLabelId).val();
+                //create path Information
+                var brandResultValue = "<KEY FOR Test "+index+">";
+                var brandResult = {"branchResult": brandResultValue };
+                var labelValue = InputLabelValue;
+                var label = {"label": labelValue };
+                console.log("argument:"+JSON.stringify(brandResult));
+                console.log("metaData:"+JSON.stringify(label));
+                var pathInfo = {
+                    "arguments":brandResult,
+                    "metaData":label
+                }
+                payload['outcomes'].push(pathInfo);
+                console.log("add path==>"+index);
+                externalJSON.Field = fieldSelectValue;
+                externalJSON.operator = operatorValue;
+                externalJSON.Input = inputValue;
+                externalJSON.pathName = InputLabelValue;
+                externalJSON.pathIndex = index;
+                externalJSON.BrandResult = brandResultValue;
+                externalJSON.PathCount = pathCount;
+                externalArr.push(externalJSON);
             }
-			//payload['arguments'].execute.inArguments.push({[fieldname]: "{{" + fieldval+"}}" });
- 		}
-        
 
+            var entrySourceJSON = {};
+            entrySourceJSON.External = externalArr;
+            console.log("Before entrySourceJSON.External==>"+JSON.stringify(entrySourceJSON.External));
+            for(var i = 0; i < entrySchema.length; i++) {
+                var fld = entrySchema[i];
+                console.log('cx debug fld', JSON.stringify(fld));
+                var fieldval = JSON.stringify(fld.key).replaceAll('"','');
+                var fieldname = fieldval.split('.')[2];
+                console.log('cx debug fieldname ', fieldname);
+                console.log('cx debug fieldval ', fieldval);
+                entrySourceJSON[fieldname]="{{"+fieldval+"}}";
+            }
+            console.log("EntrySource JSON==>"+JSON.stringify(entrySourceJSON));
+            //payload['arguments'].execute.inArguments.push({[fieldname]: "{{"+fieldval+"}}" });
+            payload['arguments'].execute.inArguments.push(entrySourceJSON);
+            console.log("Save InArgument==>"+JSON.stringify(payload['arguments'].execute.inArguments));
+
+            //array reverse
+            console.log("Before Reserve");
+            console.log("outcomes==>"+JSON.stringify(payload['outcomes']));
+            payload['outcomes'].reverse();
+            console.log("After Reserve");
+            console.log("outcomes==>"+JSON.stringify(payload['outcomes']));
+        }
         payload['metaData'].isConfigured = true;
-
-        console.log('payload=='+JSON.stringify(payload));
-        console.log('payload attribute=='+payload['arguments'].execute.inArguments);
         connection.trigger('updateActivity', payload);
     }
 
-    function dateFormat(date){
-        var y = date.getFullYear();
-        var m = (date.getMonth() + 1) < 10 ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1);
-        var d = date.getDate() < 10 ? ("0" + date.getDate()) : date.getDate();
-        var h = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
-        var f = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
-        var formatdate = y+'-'+m+'-'+d + "T" + h + ":" + f;
-        console.log("formdate===>"+formatdate);
-        return formatdate;
-    }
 
     function initOperation(payLoadTemp){
-
         var hasInArguments = Boolean(
             payLoadTemp['arguments'] &&
             payLoadTemp['arguments'].execute &&
@@ -222,114 +248,16 @@ define([
         );
 
         var inArguments = hasInArguments ? payLoadTemp['arguments'].execute.inArguments : {};
-
-        var map = {};
-        map.ADCode = '';
-        map.duration='';
-        map.endDate = '';
-        map.startDate = '';
-        map.LocationGroup = '';
-        map.AdPosition = '';
-        map.RankedValue = '';
         //init UI data form
         $.each(inArguments, function (index, inArgument) {
             $.each(inArgument, function (key, val) {
-                console.log("customActivity key==>"+key);
-                console.log("customActivity val==>"+val);
-                if(key=='startDate'){
-                    map.startDate = val;
-                }
-                else if(key=='endDate'){
-                    map.endDate = val;
-                }
-                else if(key=='ADCode'){
-                    map.ADCode = val;
-                }
-                else if(key=='Duration'){
-                    map.duration = val;
-                }
-                else if(key=='LocationGroup'){
-                    map.LocationGroup = val;
-                }
-                else if(key=='AdPosition'){
-                    map.AdPosition = val;
-                }
-                else if(key=='RankedValue'){
-                    map.RankedValue = val;
-                }
+                console.log("init 1 key==>"+key);
+                console.log("init 1 val==>"+val);
             });
         });
-
-        //init 
-        $('#AdCode').val(map.ADCode);
-        $('#Duration').val(map.duration);
-        $('#AdEndDate').val(map.endDate);
-        $('#AdStartDate').val(map.startDate);
-        $('#LocationGroup').val(map.LocationGroup);
-        $('#AdPosition').val(map.AdPosition);
-        $('#RankedValue').val(map.RankedValue);
     }
 
-    function initOperationForHover(payLoadTemp){
-
-        var hasInArguments = Boolean(
-            payLoadTemp['arguments'] &&
-            payLoadTemp['arguments'].execute &&
-            payLoadTemp['arguments'].execute.inArguments &&
-            payLoadTemp['arguments'].execute.inArguments.length > 0
-        );
-
-        var inArguments = hasInArguments ? payLoadTemp['arguments'].execute.inArguments : {};
-
-        var map = {};
-        map.ADCode = '';
-        map.duration='';
-        map.endDate = '';
-        map.startDate = '';
-        map.LocationGroup = '';
-        map.AdPosition = '';
-        map.RankedValue = '';
-        //init UI data form
-        $.each(inArguments, function (index, inArgument) {
-            $.each(inArgument, function (key, val) {
-                console.log("customActivity key==>"+key);
-                console.log("customActivity val==>"+val);
-                if(key=='startDate'){
-                    map.startDate = val;
-                }
-                else if(key=='endDate'){
-                    map.endDate = val;
-                }
-                else if(key=='ADCode'){
-                    map.ADCode = val;
-                }
-                else if(key=='Duration'){
-                    map.duration = val;
-                }
-                else if(key=='LocationGroup'){
-                    map.LocationGroup = val;
-                }
-                else if(key=='AdPosition'){
-                    map.AdPosition = val;
-                }
-                else if(key=='RankedValue'){
-                    map.RankedValue = val;
-                }
-            });
-        });
-
-        //init 
-        var startDate = map.startDate;
-        var endDate = map.endDate;
-        $('#AdCode').text(map.ADCode);
-        $('#Duration').text(map.duration);
-        $('#AdEndDate').text(endDate.replace("T"," "));
-        $('#AdStartDate').text(startDate.replace("T"," "));
-        $('#LocationGroup').text(map.LocationGroup);
-        $('#AdPosition').text(map.AdPosition);
-        $('#RankedValue').text(map.RankedValue);
+    function createHTML(num){
     }
-
-
 
 });

@@ -1,112 +1,131 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title></title>
-    <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="css/styles.css">
-	<script src="js/jquery.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="js/require.js"></script>
-    <script type="text/javascript">
-        (function () {
-            var config = {
-                baseUrl: 'js'
-            };
+    <head>
+        <title></title>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/mobile.css">
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+        <script src="js/weChatFunc.js" type="text/javascript"></script>
+        <script type="text/javascript" src="js/require.js"></script>
+        <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+            integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+        <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css"
+            integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+            integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous">
+        </script>
+        <script type="text/javascript">
+            (function() {
+                var config = {
+                    baseUrl: 'js'
+                };
 
-            var dependencies = [
-                'customActivity'
-            ];
+                var dependencies = [
+                    'customActivity'
+                ];
 
-            require(config, dependencies);
-        })();
-    </script>
-    <style>
-        .hide{
-            display: none;
-        }
-    
-        .show{
-            display: block;
-        }
+                require(config, dependencies);
+            })();
+        </script>
+    </head>
 
-        .inputStyle{
-            border-color: rgba(255, 0, 0, 0.8);
-        }
-    </style>
-</head>
-<script type="text/javascript">
-    function checkADCode(){
-            var adCodeVal = $("#AdCode").val();
-            if(adCodeVal==""){
-                $("#adCodeInfo").addClass("show");
-                $("#adCodeInfo").removeClass("hide");
-                $("#AdCode").addClass("inputStyle");
-            }
-            else{
-                $("#adCodeInfo").addClass("hide");
-                $("#adCodeInfo").removeClass("show");
-                $("#AdCode").removeClass("inputStyle");
-            }
-        }
 
-        function checkAdPosition(){
-            var AdPositionVal = $("#AdPosition").val();
-            if(AdPositionVal==""){
-                $("#AdPositionInfo").addClass("show");
-                $("#AdPositionInfo").removeClass("hide");
-                $("#AdPosition").addClass("inputStyle");
-            }
-            else{
-                $("#AdPositionInfo").addClass("hide");
-                $("#AdPositionInfo").removeClass("show");
-                $("#AdPosition").removeClass("inputStyle");
-            }
-        }
-
-        function clearStartDate(){
-            $("#AdStartDate").val("");
-        }
-        
-        function clearEndDate(){
-            $("#AdEndDate").val("");
-        }
-</script>
 <body>
-    <div id="step1" class="step">
-        <h1>Targeted Ad Allocation</h1>
-        <pre>
-Instructions:
-1.  *Compulsory input: (1) Targeted Ad Code (2) Ad Position
-2.  If no Targeted Ad Start Date is specified, Targeted Ad Start Date will be considered as current datetime (UTC+8)
-3.  To set Targeted Ad End Date, please either specify a fixed date, or input Duration and Targeted Ad End Date will be considered as Targeted Ad Start Date + Duration
-4.  If Targeted Ad End Date and Duration are both specified, Targeted Ad End Date will be considered as Targeted Ad Start Date + Duration
-        </pre>
-        <h3>Define the following targeted ad details for campaign execution</h3>
-        Targeted Ad Code<font color="#FF0000">*</font>
-        <input id="AdCode" type="text" name="AdCode" onblur="checkADCode()" /><br/>
-        <span id="adCodeInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
-        Targeted Ad Start Date
-        <input id="AdStartDate" type="datetime-local" name="AdStartDate" />
-        <button type="button" onclick="clearStartDate()">clear</button>
-        <br/>
-        Targeted Ad End Date
-        <input id="AdEndDate" type="datetime-local" name="AdEndDate" />
-        <button type="button" onclick="clearEndDate()">clear</button>
-        <br/>
-        Targeted Ad Duration
-        <input id="Duration" name="Duration" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''">
-        <br/>
-        Stores Location Group
-        <input id="LocationGroup" type="text" name="LocationGroup" /><br/>
-        Ad Position<font color="#FF0000">*</font>
-        <input id="AdPosition" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="AdPosition" onblur="checkAdPosition()" /><br/>
-        <span id="AdPositionInfo" class="hide"><font color="#FF0000">please fill in a value in the field</font></span>
-        Ranked Value
-        <input id="RankedValue" type="number" step="1"  min="0" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" name="RankedValue" /><br/>
-
-    </div>
-</body>
+        <div id="step1" class="step">
+            <h4>请选择运营商</h4>
+            <select id="official">
+              <option value="">请选择</option>
+              <option value="Deloitte">Deloitte</option>
+            </select>
+            
+            <div id="pannel" class="panel hideDiv">
+                <div class="panel-body">
+                    <p>请选择MMS模板</p>
+                </div>
+                <!-- Table -->
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="active">
+                            <th>选择</th>
+                            <th>
+                                模板名称
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </th>
+                            <th>
+                                模板标题
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </th>
+                            <th>
+                                审核状态
+                                <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                            </th>
+                            <th>
+                                MMS类型
+                                <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input name="template" value="1" type="radio" aria-label="...">
+                            </td>
+                            <td>活动开展</td>
+                            <td>商场100周年年庆</td>
+                            <td>审核成功</td>
+                            <td>营销</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input name="template" value="2" type="radio" aria-label="...">
+                            </td>
+                            <td>活动提醒</td>
+                            <td>活动提醒通知</td>
+                            <td>审核成功</td>
+                            <td>通知</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Step2 -->
+        <div id="step2" class="step">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="row">
+                  <div id="config" class="col-md-6">
+                      
+                  </div>
+                  <div class="col-md-2"></div>
+                  <div class="col-md-4">
+                      <!-- Mobile Preview -->
+                      <div class="preview-box">
+                        <div id="mobileContentTemplate" class="public-style template-box">
+                            
+                        </div>
+                      </div>
+                      <!-- Button group -->
+                      <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-primary">参数定位</button>
+                        <button id="showInfo" type="button" class="btn btn-default">消息示例</button>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        <script>
+                 var otijiourl = "{:url('insorder/submitInsInfo')}";
+        </script>
+        
+    </body>
 
 </html>
