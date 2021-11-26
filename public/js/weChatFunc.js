@@ -12,10 +12,52 @@ $(document).ready(function() {
 		}
 	});
 
-	$(":radio").click(function() {
+		//因为动态创建的html无法绑定事件，所以用事件冒泡绑定到顶级元素
+	$("body").on("click",":radio",function(){
 		var radioValue = $(this).val();
-		createMobileContent(radioValue);
+		var radioName = $(this).attr("name");
+		console.log("name=="+radioName);
+		if(radioName!="template"){
+			if(radioValue=="DataExtension"){
+				console.log("DE");
+				var parent = $(this).parent();
+				var inputElement = parent.next(".form-control");
+				var selectElement = inputElement.next("select");
+				inputElement.addClass("hideDiv");
+				inputElement.removeClass("form-control");
+				selectElement.addClass("showDiv");
+				selectElement.removeClass("hideDiv");
+			}
+			else{
+				console.log("INPUT");
+				var parent = $(this).parent();
+				var inputElement = parent.next(".hideDiv");
+				var selectElement = inputElement.next(".showDiv");
+				inputElement.addClass("form-control");
+				inputElement.removeClass("hideDiv");
+				selectElement.addClass("hideDiv");
+				selectElement.removeClass("showDiv");
+			}
+		}
+		else{
+			createMobileContent(radioValue);
+			appendSelectOption();
+		}
 	});
+
+	// $(":radio").click(function() {
+	// 	var radioValue = $(this).val();
+	// 	createMobileContent(radioValue);
+	// });
+
+	function appendSelectOption(){
+		console.log("weChat option="+$("input[name='optArr']").val());
+		var opts = $("input[name='optArr']").val();
+		var optArray = opts.split(",");
+		for(var i=0;i<optArray.length;i++){
+			$("select[name='de']").append("<option value='"+optArray[i]+"'>"+optArray[i]+"</option>");
+		}
+	}
 
 	function createMobileContent(type) {
 		if (type == "1") {
@@ -45,7 +87,12 @@ $(document).ready(function() {
 			"<h5>MMS签名：Deloitte</h5>" +
 			"<h5>MMS类型：营销</h5><h3>MMS设置</h3>" +
 			"<span class='label-box'>手机号码</span>" +
+			"<div>"+
+			 "<input checked='checked' name='A' type='radio' value='输入参数'>输入参数"+
+			 "<input name='A' type='radio' value='DataExtension'>Data Extension"+
+			 "</div>"+
 			"<input name='configuration' type='text' class='form-control'>" +
+			"<select class='hideDiv' name='de'></select>"+
 			"<span class='label-box'>MMS签名</span>" +
 			"<input readonly='readonly' value='Deloitte' name='configuration' type='text' class='form-control'>";
 		$("#config").append((configuration + uploadElement));
@@ -79,18 +126,46 @@ $(document).ready(function() {
 			"<h5>MMS签名：Deloitte</h5>" +
 			"<h5>MMS类型：通知</h5><h3>MMS设置</h3>" +
 			"<span class='label-box'>手机号码</span>" +
+			"<div>"+
+			 "<input checked='checked' name='A' type='radio' value='输入参数'>输入参数"+
+			 "<input name='A' type='radio' value='DataExtension'>Data Extension"+
+			 "</div>"+
 			"<input type='text' class='form-control'>" +
+			"<select class='hideDiv' name='de'></select>"+
 			"<span class='label-box'>MMS签名</span>" +
 			"<input readonly='readonly' value='Deloitte' type='text' class='form-control'>"+
 			"<h3>配置参数</h3>"+
 			"<span class='label-box'>参与者</span>"+
+			"<div>"+
+			 "<input checked='checked' name='B' type='radio' value='输入参数'>输入参数"+
+			 "<input name='B' type='radio' value='DataExtension'>Data Extension"+
+			 "</div>"+
 			"<input name='configuration' type='text' class='form-control'>"+
+			"<select class='hideDiv' name='de'></select>"+
+
 			"<span class='label-box'>活动名称</span>"+
+			"<div>"+
+			 "<input checked='checked' name='C' type='radio' value='输入参数'>输入参数"+
+			 "<input name='C' type='radio' value='DataExtension'>Data Extension"+
+			 "</div>"+
 			"<input name='configuration' type='text' class='form-control'>"+
+			"<select class='hideDiv' name='de'></select>"+
+
 			"<span class='label-box'>活动时间</span>"+
+			"<div>"+
+			 "<input checked='checked' name='D' type='radio' value='输入参数'>输入参数"+
+			 "<input name='D' type='radio' value='DataExtension'>Data Extension"+
+			 "</div>"+
 			"<input name='configuration' type='text' class='form-control'>"+
+			"<select class='hideDiv' name='de'></select>"+
+
 			"<span class='label-box'>活动地点</span>"+
-			"<input name='configuration' type='text' class='form-control'>";
+			"<div>"+
+			 "<input checked='checked' name='E' type='radio' value='输入参数'>输入参数"+
+			 "<input name='E' type='radio' value='DataExtension'>Data Extension"+
+			 "</div>"+
+			"<input name='configuration' type='text' class='form-control'>"+
+			"<select class='hideDiv' name='de'></select>";
 		$("#config").append((configuration + uploadElement));
 	}
 	

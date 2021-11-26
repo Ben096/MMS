@@ -9,6 +9,8 @@ define([
     var authTokens = {};
     var payload = {};
 
+    var fieldArr = [];
+
     var steps = [
         {'key': 'step1', 'label': 'Step1'},
         {'key': 'step2', 'label': 'Step2'}
@@ -145,7 +147,10 @@ define([
             var fieldType = JSON.stringify(fld.type).replaceAll('"','');
             console.log('Debug fieldname ', fieldname);
             console.log('Debug fieldType ', fieldType);
+            fieldArr.push(fieldname);
         }
+        $("input[name='optArr']").val(fieldArr);
+        console.log("Fields=="+JSON.stringify($("input[name='optArr']").val()));
     });
 
     //trigger JB, and retrieve its information
