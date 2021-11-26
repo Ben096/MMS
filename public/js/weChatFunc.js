@@ -70,6 +70,7 @@ $(document).ready(function() {
 	}
 
 	function templateOne() {
+		console.log("template one");
 		$("#config").empty();
 		var uploadElement = "<ul class='inul erlei clearfix'>" +
 			"<div class='toleft'>" +
