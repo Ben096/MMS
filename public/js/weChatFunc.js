@@ -45,6 +45,10 @@ $(document).ready(function() {
 		}
 	});
 
+	$("body").on("keyup","textarea",function(){
+		$("div.mobileItem-Div").text($("textarea").val());
+	});
+
 	// $(":radio").click(function() {
 	// 	var radioValue = $(this).val();
 	// 	createMobileContent(radioValue);
@@ -95,7 +99,10 @@ $(document).ready(function() {
 			"<input name='configuration' type='text' class='form-control'>" +
 			"<select class='hideDiv' name='de'></select>"+
 			"<span class='label-box'>MMS签名</span>" +
-			"<input readonly='readonly' value='Deloitte' name='configuration' type='text' class='form-control'>";
+			"<input readonly='readonly' value='Deloitte' name='configuration' type='text' class='form-control'>"+
+			"<h3>配置参数</h3>"+
+			"<span class='label-box'>MMS内容</span>"+
+			"<textarea row='3' name='configuration' type='text' class='form-control'></textarea>";
 		$("#config").append((configuration + uploadElement));
 	}
 
@@ -105,7 +112,7 @@ $(document).ready(function() {
 			"<img id='monitor' src='images/DTTDigitalSmall.png' data-imgsrc='images/DTTDigitalSmall.png' alt='upload'>" +
 			"</div>";
 		var mobileContent = "<div class='templateText'></div>" +
-			"<div class='mobileItem-Div'>【Deloitte】<span>您报名参加的Deloitte中国峰会正在火热直播中！点此参会链接:https://abc.com 请使用手机号登入, 我们期待与您相聚云端。</span></div>";
+			"<div class='mobileItem-Div'></div>";
 		$("#mobileContentTemplate").append((uploadContent+mobileContent));
 	}
 	
