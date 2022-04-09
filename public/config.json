@@ -1,14 +1,14 @@
 {
     "workflowApiVersion": "1.1",
     "metaData": {
-        "icon": "images/MMS.jpeg",
-        "iconSmall": "images/MMS.jpeg",
+        "icon": "images/ePro.jpg",
+        "iconSmall": "images/ePro.jpg",
         "category": "message"
     },
     "type": "REST",
     "lang": {
         "en-US": {
-            "name": "MMS",
+            "name": "ePro",
           "description": "MMS Custom Activity",
           "step1Label": "Configure Activity"
         }
