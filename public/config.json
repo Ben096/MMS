@@ -27,7 +27,7 @@
             "header": "",
             "format": "json",
             "useJwt": true,
-            "customerKey": "bbe682bf-733d-436f-b1aa-e6c228fb9040",
+            "customerKey": "3bd2a4b3-0289-48ac-90a9-6f14b5224846",
             "timeout": 10000
         }
     },

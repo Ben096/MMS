@@ -90,11 +90,11 @@ exports.save = function (req, res) {
 exports.execute = function (req, res) {
 	console.log('execute module');
     // example on how to decode JWT
-    JWT(req.body, 'Hello world', (err, decoded) => {
+    JWT(req.body, "Hello world", (err, decoded) => {
 
         // verification error -> unauthorized request
         if (err) {
-            console.error("JWT<==>"+err);			
+            console.error("JWT<=+=>"+err);			
             return res.status(401).end();
         }
 
