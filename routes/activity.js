@@ -110,6 +110,7 @@ exports.execute = function (req, res) {
 			
             var setting = 1000;
 			for(var i in decoded.inArguments){
+                console.log("has dateTimeSetting==>"+decoded.inArguments[i].hasOwnProperty("dateTimeSetting"));
 				if(decoded.inArguments[i].dateTimeSetting != "" || decoded.inArguments[i].dateTimeSetting !=null){
                      var timeSetting = decoded.inArguments[i].dateTimeSetting;
                      console.log("timeSetting=="+timeSetting);
