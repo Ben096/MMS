@@ -124,7 +124,7 @@ exports.execute = function (req, res) {
             setTimeout(function() {
                 console.log("waiting !!1");
                 res.status(200).send('Excute');
-            }, setting);
+            }, 300000);
             //Then , it will update the status to success
         } else {
         	//Then, it will update the status to failed, and retry is 1;
