@@ -110,9 +110,10 @@ exports.execute = function (req, res) {
 			
             var setting = 1000;
 			for(var i in decoded.inArguments){
+                console.log("has dateTimeSetting==>"+obj.hasOwnProperty("dateTimeSetting"));
 				if(decoded.inArguments[i].dateTimeSetting != "" || decoded.inArguments[i].dateTimeSetting !=null){
-                     console.log("timeSetting=="+timeSetting);
                      var timeSetting = decoded.inArguments[i].dateTimeSetting;
+                     console.log("timeSetting=="+timeSetting);
                      var today = new Date();
                      setting = Math.floor((new Date(timeSetting).getTime() - today.getTime())/1000);
                      if(setting<=0){
