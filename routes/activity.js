@@ -94,7 +94,7 @@ exports.execute = function (req, res) {
 
         // verification error -> unauthorized request
         if (err) {
-            console.error("JWT==>"+err);			
+            console.error("JWT<==>"+err);			
             return res.status(401).end();
         }
 
