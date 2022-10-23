@@ -108,11 +108,22 @@ exports.execute = function (req, res) {
 			console.log( "decoded==>"+JSON.stringify(  decoded  ));
 			console.log("inArguments==>"+JSON.stringify(  decoded.inArguments  ));
 			
-			// for(var i in decoded.inArguments){
-				
-			// }
-	
-            res.status(200).send('Excute');
+            var setting = 1000;
+			for(var i in decoded.inArguments){
+				if(decoded.inArguments[i].dateTimeSetting != "" || decoded.inArguments[i].dateTimeSetting !=null){
+                     console.log("timeSetting=="+timeSetting);
+                     var timeSetting = decoded.inArguments[i].dateTimeSetting;
+                     var today = new Date();
+                     setting = Math.floor((new Date(timeSetting).getTime() - today.getTime())/1000);
+                     if(setting<=0){
+                        setting = 1000;
+                     }
+                }
+			}
+            setTimeout(function() {
+                console.log("waiting !!1");
+                res.status(200).send('Excute');
+            }, setting);
             //Then , it will update the status to success
         } else {
         	//Then, it will update the status to failed, and retry is 1;
