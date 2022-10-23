@@ -8,7 +8,7 @@
     "type": "REST",
     "lang": {
         "en-US": {
-            "name": "ePro",
+            "name": "Block",
           "description": "MMS Custom Activity",
           "step1Label": "Configure Activity"
         }
